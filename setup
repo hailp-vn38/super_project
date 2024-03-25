@@ -1,0 +1,6 @@
+Packages : cached_network_image,expandable_text,flex_color_scheme,draggable_scrollbar,extended_image,intl,url_launcher,permission_handler,isar,isar_flutter_libs,archive,path_provider,js_packer
+
+equatable,collection,easy_localization,flutter_spinkit,flutter_svg,get_it,hive_flutter,json_annotation,rxdart,sliver_tools,text_scroll,uuid,wakelock,json_annotation
+
+dev: build_runner,flutter_launcher_icons,isar_generator,json_serializable
+

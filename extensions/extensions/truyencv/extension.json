@@ -1,0 +1,20 @@
+{
+  "metadata": {
+    "name": "Truyện Cv",
+    "author": "admin",
+    "version": 3,
+    "source": "https://truyencv.info",
+    "regexp": "(truyencv).(info)",
+    "description": "Đọc truyện trên trang TruyệnCv",
+    "type": "novel"
+  },
+  "script": {
+    "tabs": "src/tabs.js",
+    "home": "src/home.js",
+    "detail": "src/detail.js",
+    "chapters": "src/chapters.js",
+    "chapter": "src/chapter.js",
+    "search": "src/search.js",
+    "genre": "src/genre.js"
+  }
+}

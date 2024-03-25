@@ -1,0 +1,185 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "super_app",
+      "request": "launch",
+      "type": "dart"
+    },
+    {
+      "name": "super_app (profile mode)",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "profile"
+    },
+    {
+      "name": "super_app (release mode)",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "release"
+    },
+    {
+      "name": "dio_client",
+      "cwd": "packages/dio_client",
+      "request": "launch",
+      "type": "dart"
+    },
+    {
+      "name": "dio_client (profile mode)",
+      "cwd": "packages/dio_client",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "profile"
+    },
+    {
+      "name": "dio_client (release mode)",
+      "cwd": "packages/dio_client",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "release"
+    },
+    {
+      "name": "flutter_inappwebview-6.0.0",
+      "cwd": "packages/flutter_inappwebview-6.0.0",
+      "request": "launch",
+      "type": "dart"
+    },
+    {
+      "name": "flutter_inappwebview-6.0.0 (profile mode)",
+      "cwd": "packages/flutter_inappwebview-6.0.0",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "profile"
+    },
+    {
+      "name": "flutter_inappwebview-6.0.0 (release mode)",
+      "cwd": "packages/flutter_inappwebview-6.0.0",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "release"
+    },
+    {
+      "name": "js_runtime",
+      "cwd": "packages/js_runtime",
+      "request": "launch",
+      "type": "dart"
+    },
+    {
+      "name": "js_runtime (profile mode)",
+      "cwd": "packages/js_runtime",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "profile"
+    },
+    {
+      "name": "js_runtime (release mode)",
+      "cwd": "packages/js_runtime",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "release"
+    },
+    {
+      "name": "flutter_inappwebview_android-1.0.13",
+      "cwd": "packages/flutter_inappwebview-6.0.0/packages/flutter_inappwebview_android-1.0.13",
+      "request": "launch",
+      "type": "dart"
+    },
+    {
+      "name": "flutter_inappwebview_android-1.0.13 (profile mode)",
+      "cwd": "packages/flutter_inappwebview-6.0.0/packages/flutter_inappwebview_android-1.0.13",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "profile"
+    },
+    {
+      "name": "flutter_inappwebview_android-1.0.13 (release mode)",
+      "cwd": "packages/flutter_inappwebview-6.0.0/packages/flutter_inappwebview_android-1.0.13",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "release"
+    },
+    {
+      "name": "flutter_inappwebview_ios-1.0.13",
+      "cwd": "packages/flutter_inappwebview-6.0.0/packages/flutter_inappwebview_ios-1.0.13",
+      "request": "launch",
+      "type": "dart"
+    },
+    {
+      "name": "flutter_inappwebview_ios-1.0.13 (profile mode)",
+      "cwd": "packages/flutter_inappwebview-6.0.0/packages/flutter_inappwebview_ios-1.0.13",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "profile"
+    },
+    {
+      "name": "flutter_inappwebview_ios-1.0.13 (release mode)",
+      "cwd": "packages/flutter_inappwebview-6.0.0/packages/flutter_inappwebview_ios-1.0.13",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "release"
+    },
+    {
+      "name": "flutter_inappwebview_macos-1.0.11",
+      "cwd": "packages/flutter_inappwebview-6.0.0/packages/flutter_inappwebview_macos-1.0.11",
+      "request": "launch",
+      "type": "dart"
+    },
+    {
+      "name": "flutter_inappwebview_macos-1.0.11 (profile mode)",
+      "cwd": "packages/flutter_inappwebview-6.0.0/packages/flutter_inappwebview_macos-1.0.11",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "profile"
+    },
+    {
+      "name": "flutter_inappwebview_macos-1.0.11 (release mode)",
+      "cwd": "packages/flutter_inappwebview-6.0.0/packages/flutter_inappwebview_macos-1.0.11",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "release"
+    },
+    {
+      "name": "flutter_inappwebview_platform_interface-1.0.10",
+      "cwd": "packages/flutter_inappwebview-6.0.0/packages/flutter_inappwebview_platform_interface-1.0.10",
+      "request": "launch",
+      "type": "dart"
+    },
+    {
+      "name": "flutter_inappwebview_platform_interface-1.0.10 (profile mode)",
+      "cwd": "packages/flutter_inappwebview-6.0.0/packages/flutter_inappwebview_platform_interface-1.0.10",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "profile"
+    },
+    {
+      "name": "flutter_inappwebview_platform_interface-1.0.10 (release mode)",
+      "cwd": "packages/flutter_inappwebview-6.0.0/packages/flutter_inappwebview_platform_interface-1.0.10",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "release"
+    },
+    {
+      "name": "flutter_inappwebview_web-1.0.8",
+      "cwd": "packages/flutter_inappwebview-6.0.0/packages/flutter_inappwebview_web-1.0.8",
+      "request": "launch",
+      "type": "dart"
+    },
+    {
+      "name": "flutter_inappwebview_web-1.0.8 (profile mode)",
+      "cwd": "packages/flutter_inappwebview-6.0.0/packages/flutter_inappwebview_web-1.0.8",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "profile"
+    },
+    {
+      "name": "flutter_inappwebview_web-1.0.8 (release mode)",
+      "cwd": "packages/flutter_inappwebview-6.0.0/packages/flutter_inappwebview_web-1.0.8",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "release"
+    }
+  ]
+}
