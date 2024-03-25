@@ -1,4 +1,3 @@
-
 part of 'read_novel_view.dart';
 
 class ReadNovelPage extends StatefulWidget {
@@ -9,7 +8,6 @@ class ReadNovelPage extends StatefulWidget {
 }
 
 class _ReadNovelPageState extends State<ReadNovelPage> {
-
   late ReadNovelCubit _readNovelCubit;
   @override
   void initState() {
@@ -17,7 +15,6 @@ class _ReadNovelPageState extends State<ReadNovelPage> {
     super.initState();
   }
 
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(

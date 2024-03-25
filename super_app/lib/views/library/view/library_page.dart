@@ -1,4 +1,3 @@
-
 part of 'library_view.dart';
 
 class LibraryPage extends StatefulWidget {
@@ -9,7 +8,6 @@ class LibraryPage extends StatefulWidget {
 }
 
 class _LibraryPageState extends State<LibraryPage> {
-
   late LibraryCubit _libraryCubit;
   @override
   void initState() {
@@ -17,7 +15,6 @@ class _LibraryPageState extends State<LibraryPage> {
     super.initState();
   }
 
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(

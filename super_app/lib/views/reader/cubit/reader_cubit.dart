@@ -19,15 +19,37 @@ class ReaderCubit extends Cubit<ReaderState> {
     required this.args,
   })  : _databaseService = databaseService,
         _jsRuntime = jsRuntime,
-        super(const ReaderState());
+        super(ReaderState(
+            chapters: args.chapters,
+            trackRead: args.track,
+            loadExtensionErr: false,
+            readCurrentChapter: StateRes(
+                status: StatusType.init,
+                data: args.chapters[args.track.readCurrentChapter ?? 0])));
 
   final _logger = Logger("ReaderCubit");
 
   final DatabaseService _databaseService;
   final JsRuntime _jsRuntime;
+
+  List<Chapter> get getChapters => state.chapters;
+  TrackRead get getTrackRead => state.trackRead;
+
+  Extension? extension;
+  Book? book;
+
   ReaderArgs args;
-  void onInit() {
-    getExtension();
+  void onInit() async {
+    book = args.book;
+
+    await getExtension();
+    if (extension == null) return;
+    if (getTrackRead.readCurrentChapter != null &&
+        getTrackRead.readCurrentChapter! > getChapters.length) {
+      emit(state.copyWith(loadExtensionErr: true));
+      return;
+    }
+    getDetailChapter(getChapters[getTrackRead.readCurrentChapter!]);
   }
 
   Future<void> getExtension() async {
@@ -36,15 +58,13 @@ class ReaderCubit extends Cubit<ReaderState> {
     if (args.extension == null) {
       final ext =
           await _databaseService.getExtensionBySource(args.book.getSource);
+      if (ext == null) {
+        emit(state.copyWith(loadExtensionErr: true));
+        return;
+      }
       args = args.copyWith(extension: ext);
-      // Err k co extension duoc cai dat
     }
-  }
-
-  String url() {
-    final movie = args.chapters.first.getMovies!.first;
-
-    return movie.data;
+    extension = args.extension!;
   }
 
   Future<Chapter> getChapterByType(
@@ -63,11 +83,47 @@ class ReaderCubit extends Cubit<ReaderState> {
       chapter.addContentFromMap({type.name: res});
     }
 
+    // _logger.info("chapterId : ${chapter.id}", name: "getChapterByType");
+
     return chapter;
+  }
+
+  void getDetailChapter(Chapter chapter) async {
+    _logger.info("chapterId : ${chapter.id}", name: "getDetailChapter");
+
+    try {
+      emit(state.copyWith(
+          loadExtensionErr: false,
+          readCurrentChapter:
+              StateRes(status: StatusType.loading, data: chapter)));
+      chapter = await getChapterByType(
+          chapter: chapter, type: extension!.metadata.type!);
+      if (chapter.getMovies == null || chapter.getMovies!.isEmpty) {
+        emit(state.copyWith(
+            readCurrentChapter: StateRes(
+                status: StatusType.error,
+                data: chapter,
+                message: "Lỗi lấy dữ liệu")));
+      } else {
+        emit(state.copyWith(
+            readCurrentChapter: StateRes(
+          status: StatusType.loaded,
+          data: chapter,
+        )));
+      }
+    } catch (err) {
+      emit(state.copyWith(
+          readCurrentChapter: StateRes(
+              status: StatusType.error,
+              data: chapter,
+              message: "load chapter err")));
+    }
   }
 
   Future<bool> refreshChapters() async {
     try {
+      _logger.info("[]", name: "refreshChapters");
+
       final res = await _jsRuntime.getChapters(
           url: args.book.url!.replaceUrl(args.extension!.source),
           jsScript: args.extension!.getChaptersScript);
@@ -78,14 +134,15 @@ class ReaderCubit extends Cubit<ReaderState> {
           chapters.add(Chapter.fromMap({...map, "index": i}));
         }
       }
-      if(chapters.isEmpty){
-
-      }else{
-        
-      }
+      if (chapters.isEmpty) {
+      } else {}
     } catch (err) {
       //
     }
     return true;
+  }
+
+  void updateTrackRead(TrackRead trackRead) {
+    emit(state.copyWith(trackRead: trackRead));
   }
 }

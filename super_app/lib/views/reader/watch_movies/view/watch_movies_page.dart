@@ -36,29 +36,47 @@ class _WatchMoviesPageState extends State<WatchMoviesPage> {
                       _watchMoviesCubit.onWatchWebView();
                     }
                   },
-                  child: BlocConsumer<WatchMoviesCubit, WatchMoviesState>(
+                  child: BlocConsumer<ReaderCubit, ReaderState>(
                     listener: (context, state) {
-                      if (state.currentWatch.status == StatusType.error) {
+                      if (state.readCurrentChapter.status == StatusType.error) {
                         DialogUtils.showAlertDialog(context,
-                            title: state.currentWatch.data?.name,
-                            content: state.currentWatch.message);
+                            title: state.readCurrentChapter.data?.name,
+                            content: state.readCurrentChapter.message);
+                      }
+                      switch (state.readCurrentChapter.status) {
+                        case StatusType.error:
+                          break;
+                        case StatusType.loaded:
+                          _watchMoviesCubit
+                              .onSetMovie(state.readCurrentChapter.data!);
+                          break;
+                        default:
+                          break;
                       }
                     },
                     buildWhen: (previous, current) =>
-                        previous.currentWatch != current.currentWatch,
+                        previous.readCurrentChapter !=
+                        current.readCurrentChapter,
                     builder: (context, state) {
-                      final current = state.currentWatch;
+                      final current = state.readCurrentChapter;
                       return switch (current.status) {
                         StatusType.loaded => BlocSelector<WatchMoviesCubit,
                               WatchMoviesState, Movie?>(
                             selector: (state) => state.movie,
                             builder: (context, movie) {
-                              if (movie == null) return const SizedBox();
-                              if (Platform.isMacOS || Platform.isWindows) {
+                              if (movie == null) {
                                 return LoadErrMovie(
                                   onTap: () {
                                     _watchMoviesCubit
                                         .onChangeChapter(current.data!);
+                                  },
+                                );
+                              }
+
+                              if (Platform.isMacOS || Platform.isWindows) {
+                                return LoadErrMovie(
+                                  onTap: () {
+                                    _watchMoviesCubit.onWatchWebView();
                                   },
                                 );
                               }
@@ -67,7 +85,17 @@ class _WatchMoviesPageState extends State<WatchMoviesPage> {
                                     "${current.data!.name}_${movie.serverName}"),
                                 url: movie.data,
                                 onTapWatch: () {
-                                  _watchMoviesCubit.onWatchWebView();
+                                  // _watchMoviesCubit.onWatchWebView();
+                                  final snackBar = SnackBar(
+                                    content: const Text('Hi, I am a SnackBar!'),
+                                    backgroundColor: (Colors.black12),
+                                    action: SnackBarAction(
+                                      label: 'dismiss',
+                                      onPressed: () {},
+                                    ),
+                                  );
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snackBar);
                                 },
                               );
                             },
@@ -83,9 +111,9 @@ class _WatchMoviesPageState extends State<WatchMoviesPage> {
                   ),
                 ),
               ),
-              BlocSelector<WatchMoviesCubit, WatchMoviesState, Chapter>(
+              BlocSelector<ReaderCubit, ReaderState, Chapter>(
                 selector: (state) {
-                  return state.currentWatch.data!;
+                  return state.readCurrentChapter.data!;
                 },
                 builder: (context, currentChapter) {
                   return Column(
@@ -94,7 +122,19 @@ class _WatchMoviesPageState extends State<WatchMoviesPage> {
                       Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 8),
-                        child: Text("Đang xem : ${currentChapter.name}"),
+                        // child: Text(
+                        //   "Đang xem : ${currentChapter.name}",
+                        //   style: context.appTextTheme.titleMedium,
+                        // ),
+                        child: RichText(
+                            text: TextSpan(children: [
+                          TextSpan(
+                              text: "Đang xem : ",
+                              style: context.appTextTheme.bodyMedium),
+                          TextSpan(
+                              text: "${currentChapter.name}",
+                              style: context.appTextTheme.titleMedium),
+                        ])),
                       ),
                       BlocSelector<WatchMoviesCubit, WatchMoviesState, Movie?>(
                         selector: (state) {
@@ -107,7 +147,7 @@ class _WatchMoviesPageState extends State<WatchMoviesPage> {
                               const Padding(
                                 padding: EdgeInsets.symmetric(
                                     horizontal: 8, vertical: 8),
-                                child: Text("Server name:"),
+                                child: Text("Server :"),
                               ),
                               Wrap(
                                 children: currentChapter.getMovies!
@@ -160,16 +200,22 @@ class _WatchMoviesPageState extends State<WatchMoviesPage> {
                                         _watchMoviesCubit.getBook.name!,
                                         style: context.appTextTheme.titleMedium,
                                       ),
-                                      Gaps.hGap4,
                                       Text(
                                         "${_watchMoviesCubit.getChapters.length} tập",
-                                        style: context.appTextTheme.labelMedium,
+                                        style: context.appTextTheme.bodySmall,
                                       ),
-                                      Gaps.hGap4,
-                                      Text(
-                                        "Trạng thái : ${_watchMoviesCubit.getBook.status}",
-                                        style: context.appTextTheme.labelMedium,
-                                      ),
+                                      RichText(
+                                          text: TextSpan(children: [
+                                        TextSpan(
+                                            text: "Trạng thái : ",
+                                            style: context
+                                                .appTextTheme.bodyMedium),
+                                        TextSpan(
+                                            text:
+                                                "${_watchMoviesCubit.getBook.status}",
+                                            style: context
+                                                .appTextTheme.titleMedium),
+                                      ])),
                                       Gaps.hGap4,
                                     ],
                                   )
@@ -189,7 +235,13 @@ class _WatchMoviesPageState extends State<WatchMoviesPage> {
                             Gaps.wGap4,
                             IconButton(
                                 onPressed: () {
-                                  // _watchMoviesCubit.
+                                  final snackBar = SnackBar(
+                                    content: const Text('Hi, I am a SnackBar!'),
+                                    backgroundColor:
+                                        context.colorScheme.onSurface,
+                                  );
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snackBar);
                                 },
                                 icon: const Icon(Icons.refresh_rounded))
                           ],
@@ -197,20 +249,26 @@ class _WatchMoviesPageState extends State<WatchMoviesPage> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          children: _watchMoviesCubit.getChapters
-                              .map((chapter) => ChapterCard(
-                                    chapter: chapter,
-                                    currentWatch:
-                                        chapter.index == currentChapter.index,
-                                    onTap: () {
-                                      _watchMoviesCubit
-                                          .onChangeChapter(chapter);
-                                    },
-                                  ))
-                              .toList(),
+                        child: BlocSelector<ReaderCubit, ReaderState,
+                            List<Chapter>>(
+                          selector: (state) => state.chapters,
+                          builder: (context, chapters) {
+                            return Wrap(
+                              spacing: 8,
+                              runSpacing: 8,
+                              children: chapters
+                                  .map((chapter) => ChapterCard(
+                                        chapter: chapter,
+                                        currentWatch: chapter.index ==
+                                            currentChapter.index,
+                                        onTap: () {
+                                          _watchMoviesCubit
+                                              .onChangeChapter(chapter);
+                                        },
+                                      ))
+                                  .toList(),
+                            );
+                          },
                         ),
                       ),
                     ],

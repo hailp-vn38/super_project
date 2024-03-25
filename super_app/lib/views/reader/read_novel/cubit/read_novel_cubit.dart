@@ -6,7 +6,5 @@ part 'read_novel_state.dart';
 class ReadNovelCubit extends Cubit<ReadNovelState> {
   ReadNovelCubit() : super(ReadNovelInitial());
 
-  void onInit(){
-    
-  }
+  void onInit() {}
 }

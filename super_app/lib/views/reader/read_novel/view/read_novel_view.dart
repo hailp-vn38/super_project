@@ -7,8 +7,6 @@ import '../cubit/read_novel_cubit.dart';
 part 'read_novel_page.dart';
 part '../widgets/widgets.dart';
 
-
-
 class ReadNovelView extends StatelessWidget {
   const ReadNovelView({super.key});
   static const String routeName = '/read_novel_view';

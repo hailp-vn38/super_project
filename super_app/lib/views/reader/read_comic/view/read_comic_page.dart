@@ -1,4 +1,3 @@
-
 part of 'read_comic_view.dart';
 
 class ReadComicPage extends StatefulWidget {
@@ -9,7 +8,6 @@ class ReadComicPage extends StatefulWidget {
 }
 
 class _ReadComicPageState extends State<ReadComicPage> {
-
   late ReadComicCubit _readComicCubit;
   @override
   void initState() {
@@ -17,7 +15,6 @@ class _ReadComicPageState extends State<ReadComicPage> {
     super.initState();
   }
 
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(

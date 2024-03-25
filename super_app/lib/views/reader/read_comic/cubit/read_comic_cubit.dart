@@ -6,7 +6,5 @@ part 'read_comic_state.dart';
 class ReadComicCubit extends Cubit<ReadComicState> {
   ReadComicCubit() : super(ReadComicInitial());
 
-  void onInit(){
-    
-  }
+  void onInit() {}
 }

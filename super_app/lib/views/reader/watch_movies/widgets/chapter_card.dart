@@ -23,7 +23,13 @@ class ChapterCard extends StatelessWidget {
           color: currentWatch ? colorScheme.primaryContainer : null,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            child: Text(chapter.name ?? ""),
+            child: Text(
+              chapter.name ?? "",
+              style: currentWatch
+                  ? context.appTextTheme.titleSmall
+                  : context.appTextTheme.titleSmall
+                      ?.copyWith(fontWeight: FontWeight.normal),
+            ),
           ),
         ),
       ),

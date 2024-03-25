@@ -44,7 +44,6 @@ class _EmptyWidgetState extends State<EmptyWidget> {
         child: SizedBox(
           height: constraints.maxHeight,
           width: constraints.maxWidth,
-        
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

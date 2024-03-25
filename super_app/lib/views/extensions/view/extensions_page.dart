@@ -42,7 +42,10 @@ class _ExtensionsPageState extends State<ExtensionsPage> {
                     Tab(
                       text: "Tất cả nguồn",
                     )
-                  ]))
+                  ])),
+              Gaps.wGap8,
+              IconButton(
+                  onPressed: () {}, icon: const Icon(Icons.search_rounded))
             ],
           ),
         ),

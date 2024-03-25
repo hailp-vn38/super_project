@@ -8,8 +8,6 @@ import '../cubit/splash_cubit.dart';
 part 'splash_page.dart';
 part '../widgets/widgets.dart';
 
-
-
 class SplashView extends StatelessWidget {
   const SplashView({super.key});
   static const String routeName = '/splash_view';

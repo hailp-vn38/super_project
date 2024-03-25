@@ -6,7 +6,5 @@ part 'library_state.dart';
 class LibraryCubit extends Cubit<LibraryState> {
   LibraryCubit() : super(LibraryInitial());
 
-  void onInit(){
-    
-  }
+  void onInit() {}
 }

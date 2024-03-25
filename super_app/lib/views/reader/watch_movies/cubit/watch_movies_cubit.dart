@@ -11,54 +11,24 @@ part 'watch_movies_state.dart';
 
 class WatchMoviesCubit extends Cubit<WatchMoviesState> {
   WatchMoviesCubit({required this.readerCubit})
-      : super(const WatchMoviesState(
-            currentWatch: StateRes(status: StatusType.init)));
+      : super(const WatchMoviesState());
 
   final ReaderCubit readerCubit;
 
   Book get getBook => readerCubit.args.book;
 
   List<Chapter> get getChapters => readerCubit.args.chapters;
-  void onInit() async {
-    Chapter currentChapter =
-        getChapters[readerCubit.args.track.readCurrentChapter ?? 0];
-    getChapter(currentChapter);
-  }
+  void onInit() async {}
 
   Webview? _webviewDesktop;
 
-  void getChapter(Chapter chapter) async {
-    try {
-      emit(WatchMoviesState(
-          currentWatch: StateRes(status: StatusType.loading, data: chapter)));
-      // await Future.delayed(Duration(seconds: 1));
-      chapter = await readerCubit.getChapterByType(
-          chapter: chapter, type: getBook.type!);
-      if (chapter.getMovies == null || chapter.getMovies!.isEmpty) {
-        emit(state.copyWith(
-            currentWatch: StateRes(
-                status: StatusType.error,
-                data: chapter,
-                message: "Lỗi lấy dữ liệu")));
-      } else {
-        emit(WatchMoviesState(
-            movie: chapter.getMovies!.first,
-            currentWatch: StateRes(
-              status: StatusType.loaded,
-              data: chapter,
-            )));
-      }
-    } catch (err) {
-      emit(state.copyWith(
-          currentWatch: StateRes(
-              status: StatusType.error,
-              data: chapter,
-              message: "load chapter err")));
-    }
+  void onSetMovie(Chapter chapter) {
+    if (chapter.getMovies == null) return;
+    emit(state.copyWith(movie: chapter.getMovies!.first));
   }
 
   void onChangeChapter(Chapter chapter) {
-    getChapter(chapter);
+    readerCubit.getDetailChapter(chapter);
   }
 
   void onChangeServer(Movie movie) {
@@ -69,7 +39,8 @@ class WatchMoviesCubit extends Cubit<WatchMoviesState> {
     if (Platform.isAndroid && Platform.isIOS) return;
     _webviewDesktop ??= await WebviewWindow.create(
       configuration: CreateConfiguration(
-          title: "${getBook.name} - ${state.currentWatch.data?.name ?? ""}",
+          title:
+              "${getBook.name} - ${readerCubit.state.readCurrentChapter.data?.name ?? ""}",
           openMaximized: true),
     );
     _webviewDesktop!.launch(state.movie!.data);

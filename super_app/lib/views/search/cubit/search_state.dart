@@ -1,11 +1,11 @@
 part of 'search_cubit.dart';
 
 class SearchState extends Equatable {
-  const SearchState({required this.books,required this.status});
+  const SearchState({required this.books, required this.status});
   final StatusType status;
   final List<Book> books;
   @override
-  List<Object> get props => [status,books];
+  List<Object> get props => [status, books];
 
   SearchState copyWith({
     StatusType? status,
