@@ -67,9 +67,17 @@ class WatchMoviesCubit extends Cubit<WatchMoviesState> {
 
   void onWatchWebView() async {
     if (Platform.isAndroid && Platform.isIOS) return;
-    _webviewDesktop ??= await WebviewWindow.create();
-
+    _webviewDesktop ??= await WebviewWindow.create(
+      configuration: CreateConfiguration(
+          title: "${getBook.name} - ${state.currentWatch.data?.name ?? ""}",
+          openMaximized: true),
+    );
     _webviewDesktop!.launch(state.movie!.data);
+    _webviewDesktop?.onClose.then((value) => _webviewDesktop = null);
+  }
+
+  void checkNewMovie() {
+    readerCubit.refreshChapters();
   }
 
   @override

@@ -322,36 +322,31 @@ class _BookDetailState extends State<BookDetail> {
                                 itemCount: chaptersRes.data!.length,
                                 itemBuilder: (context, index) {
                                   final chapter = chaptersRes.data![index];
-                                  return GestureDetector(
-                                    onTap: () {
-                                      Navigator.pushNamed(
-                                          context, RoutesName.reader,
-                                          arguments: ReaderArgs(
-                                              book: _book,
-                                              chapters: chaptersRes.data!,
-                                              track: TrackRead(
-                                                  readCurrentChapter: index),
-                                              extension:
-                                                  _detailCubit.getExtension));
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 16, vertical: 8),
-                                      child: Text(
-                                        chapter.name ?? "",
-                                        style: textTheme.bodyMedium,
+                                  return MouseRegion(
+                                    cursor: SystemMouseCursors.click,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.pushNamed(
+                                            context, RoutesName.reader,
+                                            arguments: ReaderArgs(
+                                                book: _book,
+                                                chapters: chaptersRes.data!,
+                                                track: TrackRead(
+                                                    readCurrentChapter: index),
+                                                extension:
+                                                    _detailCubit.getExtension));
+                                      },
+                                      child: Container(
+                                        width: double.infinity,
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 16, vertical: 8),
+                                        child: Text(
+                                          chapter.name ?? "",
+                                          style: textTheme.bodyMedium,
+                                        ),
                                       ),
                                     ),
                                   );
-                                  // return ListTile(
-                                  //   onTap: () {
-
-                                  //   },
-                                  //   title: Text(
-                                  //     chapter.name ?? "",
-                                  //     style: textTheme.bodyMedium,
-                                  //   ),
-                                  // );
                                 },
                               ),
                             )

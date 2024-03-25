@@ -1,10 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-
+import 'package:flutter/widgets.dart';
 
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:super_app/app/routes/routes_name.dart';
 import 'package:super_app/utils/device_utils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:super_app/app/constants/gaps.dart';
@@ -13,6 +14,8 @@ import 'package:super_app/app/types.dart';
 import 'package:super_app/models/models.dart';
 import 'package:super_app/utils/dialog_utils.dart';
 import 'package:super_app/views/reader/cubit/reader_cubit.dart';
+import 'package:super_app/widgets/widgets.dart';
+import 'package:super_app/app/extensions/string_extension.dart';
 
 import '../cubit/watch_movies_cubit.dart';
 
@@ -23,7 +26,6 @@ part '../widgets/loading_movie.dart';
 part '../widgets/play_movie_webview.dart';
 part '../widgets/server_name_card.dart';
 part '../widgets/chapter_card.dart';
-
 
 class WatchMoviesView extends StatelessWidget {
   const WatchMoviesView({super.key});

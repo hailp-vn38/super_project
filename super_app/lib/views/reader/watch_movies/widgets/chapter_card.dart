@@ -14,14 +14,17 @@ class ChapterCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = context.colorScheme;
 
-    return GestureDetector(
-      onTap: onTap,
-      child: Card(
-        margin: EdgeInsets.zero,
-        color: currentWatch ? colorScheme.primaryContainer : null,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          child: Text(chapter.name ?? ""),
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Card(
+          margin: EdgeInsets.zero,
+          color: currentWatch ? colorScheme.primaryContainer : null,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            child: Text(chapter.name ?? ""),
+          ),
         ),
       ),
     );

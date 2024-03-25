@@ -6,14 +6,19 @@ class LoadErrMovie extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: const ColoredBox(
-        color: Colors.black,
-        child: Icon(
-          Icons.play_arrow,
-          size: 40,
-          color: Colors.grey,
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: onTap,
+        child: const ColoredBox(
+          color: Colors.black,
+          child: Center(
+            child: Icon(
+              Icons.play_arrow,
+              size: 40,
+              color: Colors.grey,
+            ),
+          ),
         ),
       ),
     );

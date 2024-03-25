@@ -67,6 +67,25 @@ class ReaderCubit extends Cubit<ReaderState> {
   }
 
   Future<bool> refreshChapters() async {
+    try {
+      final res = await _jsRuntime.getChapters(
+          url: args.book.url!.replaceUrl(args.extension!.source),
+          jsScript: args.extension!.getChaptersScript);
+      List<Chapter> chapters = [];
+      for (var i = 0; i < res.length; i++) {
+        final map = res[i];
+        if (map is Map<String, dynamic>) {
+          chapters.add(Chapter.fromMap({...map, "index": i}));
+        }
+      }
+      if(chapters.isEmpty){
+
+      }else{
+        
+      }
+    } catch (err) {
+      //
+    }
     return true;
   }
 }

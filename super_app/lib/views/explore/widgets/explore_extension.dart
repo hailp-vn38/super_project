@@ -23,44 +23,47 @@ class _ExploreExtensionState extends State<ExploreExtension> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: GestureDetector(
-          onTap: () async {
-            _exploreCubit
-                .getListExtension()
-                .then((extensions) => showModalBottomSheet(
-                      elevation: 0,
-                      context: context,
-                      backgroundColor: Colors.transparent,
-                      clipBehavior: Clip.hardEdge,
-                      isScrollControlled: true,
-                      builder: (context) => ExtensionsBottomSheet(
-                        extensions: extensions,
-                        exceptionPrimary: _extension,
-                        onSelected: _exploreCubit.onChangeExtension,
-                      ),
-                    ));
-          },
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                  width: 40,
-                  alignment: Alignment.center,
-                  child: IconExtension(
-                    icon: _extension.metadata.icon,
-                  )),
-              Gaps.wGap8,
-              Flexible(
-                  child: Text(
-                _extension.metadata.name ?? "",
-                style: context.appTextTheme.titleMedium,
-              )),
-              Gaps.wGap8,
-              const Icon(
-                Icons.expand_more_rounded,
-                size: 26,
-              )
-            ],
+        title: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: GestureDetector(
+            onTap: () async {
+              _exploreCubit
+                  .getListExtension()
+                  .then((extensions) => showModalBottomSheet(
+                        elevation: 0,
+                        context: context,
+                        backgroundColor: Colors.transparent,
+                        clipBehavior: Clip.hardEdge,
+                        isScrollControlled: true,
+                        builder: (context) => ExtensionsBottomSheet(
+                          extensions: extensions,
+                          exceptionPrimary: _extension,
+                          onSelected: _exploreCubit.onChangeExtension,
+                        ),
+                      ));
+            },
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                    width: 40,
+                    alignment: Alignment.center,
+                    child: IconExtension(
+                      icon: _extension.metadata.icon,
+                    )),
+                Gaps.wGap8,
+                Flexible(
+                    child: Text(
+                  _extension.metadata.name ?? "",
+                  style: context.appTextTheme.titleMedium,
+                )),
+                Gaps.wGap8,
+                const Icon(
+                  Icons.expand_more_rounded,
+                  size: 26,
+                )
+              ],
+            ),
           ),
         ),
         actions: [

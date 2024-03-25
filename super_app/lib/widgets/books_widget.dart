@@ -7,6 +7,7 @@ import 'package:js_runtime/js_runtime.dart';
 import 'package:super_app/app/extensions/context_extension.dart';
 import 'package:super_app/app/extensions/string_extension.dart';
 import 'package:super_app/models/models.dart';
+import 'package:super_app/widgets/widgets.dart';
 
 typedef OnFetchListBook = Future<List<Book>> Function(String url, int page);
 
@@ -57,7 +58,7 @@ class _BooksWidgetState extends State<BooksWidget> {
     // } else {
     //   _onLoading();
     // }
-    if (widget.initialData!= null) {
+    if (widget.initialData != null) {
       _listBook.addAll(widget.initialData!);
       _isLoading = false;
     } else {
@@ -66,7 +67,7 @@ class _BooksWidgetState extends State<BooksWidget> {
     super.initState();
   }
 
-  void _onLoading() async {
+  Future<void> _onLoading() async {
     try {
       setState(() {
         _isLoading = true;
@@ -132,44 +133,49 @@ class _BooksWidgetState extends State<BooksWidget> {
         child: Text("Loading"),
       );
     }
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: CustomScrollView(
-        controller: _scrollController,
-        slivers: [
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 8),
-          ),
-          SliverGrid(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: getCrossAxisCount(),
-                crossAxisSpacing: 8,
-                childAspectRatio: 2 / 3.4,
-                mainAxisSpacing: 8),
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                final book = _listBook[index];
-                return BookItem(
-                  book: book,
-                  onTap: () => widget.onTap?.call(book),
-                  onLongTap: () => widget.onLongTap?.call(book),
-                );
-              },
-              childCount: _listBook.length,
+    return RefreshIndicator(
+      onRefresh: () async {
+        _onLoading();
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: CustomScrollView(
+          controller: _scrollController,
+          slivers: [
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 8),
             ),
-          ),
-          SliverToBoxAdapter(
-            child: _isLoadMore
-                ? Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    child: SpinKitThreeBounce(
-                      color: context.colorScheme.primary,
-                      size: 25.0,
-                    ),
-                  )
-                : const SizedBox(height: 8),
-          ),
-        ],
+            SliverGrid(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: getCrossAxisCount(),
+                  crossAxisSpacing: 8,
+                  childAspectRatio: 2 / 3.4,
+                  mainAxisSpacing: 8),
+              delegate: SliverChildBuilderDelegate(
+                (BuildContext context, int index) {
+                  final book = _listBook[index];
+                  return BookItem(
+                    book: book,
+                    onTap: () => widget.onTap?.call(book),
+                    onLongTap: () => widget.onLongTap?.call(book),
+                  );
+                },
+                childCount: _listBook.length,
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: _isLoadMore
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: SpinKitThreeBounce(
+                        color: context.colorScheme.primary,
+                        size: 25.0,
+                      ),
+                    )
+                  : const SizedBox(height: 8),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -195,53 +201,55 @@ class BookItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      onLongPress: onLongTap,
-      child: Card(
-        margin: EdgeInsets.zero,
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            AspectRatio(
-              aspectRatio: 2 / 2.6,
-              child: CachedNetworkImage(
-                imageUrl: book.cover!,
-                fit: BoxFit.cover,
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: onTap,
+        onLongPress: onLongTap,
+        child: Card(
+          margin: EdgeInsets.zero,
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              AspectRatio(
+                aspectRatio: 2 / 2.6,
+                child: ImageWidget(
+                  image: book.cover!,
+                ),
               ),
-            ),
-            const SizedBox(
-              height: 4,
-            ),
-            Expanded(
-                child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: Text(
-                      book.name!.toTitleCase(),
-                      style: context.appTextTheme.labelMedium
-                          ?.copyWith(height: 1.2),
-                      maxLines: 2,
-                      textAlign: TextAlign.center,
+              const SizedBox(
+                height: 4,
+              ),
+              Expanded(
+                  child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        book.name!.toTitleCase(),
+                        style: context.appTextTheme.labelMedium
+                            ?.copyWith(height: 1.2),
+                        maxLines: 2,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
-                  ),
-                  Text(
-                    book.description ?? "",
-                    style: context.appTextTheme.bodySmall
-                        ?.copyWith(height: 1, fontSize: 11),
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    overflow: TextOverflow.visible,
-                  ),
-                  const SizedBox(
-                    height: 4,
-                  ),
-                ],
-              ),
-            ))
-          ],
+                    Text(
+                      book.description ?? "",
+                      style: context.appTextTheme.bodySmall
+                          ?.copyWith(height: 1, fontSize: 11),
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.visible,
+                    ),
+                    const SizedBox(
+                      height: 4,
+                    ),
+                  ],
+                ),
+              ))
+            ],
+          ),
         ),
       ),
     );

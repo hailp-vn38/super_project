@@ -12,15 +12,18 @@ class ServerMovieCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Card(
-        color: currentWatch ? context.colorScheme.primaryContainer : null,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          child: Text(
-            movie.serverName ?? "",
-            style: context.appTextTheme.titleSmall,
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Card(
+          color: currentWatch ? context.colorScheme.primaryContainer : null,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            child: Text(
+              movie.serverName ?? "",
+              style: context.appTextTheme.titleSmall,
+            ),
           ),
         ),
       ),

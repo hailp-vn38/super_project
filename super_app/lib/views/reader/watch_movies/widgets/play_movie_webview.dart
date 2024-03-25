@@ -27,12 +27,6 @@ class _PlayMovieWebViewState extends State<PlayMovieWebView> {
 
   @override
   Widget build(BuildContext context) {
-    if (Platform.isMacOS) {
-      return Center(
-        child: ElevatedButton(
-            onPressed: widget.onTapWatch, child: const Text("Watch")),
-      );
-    }
     return Stack(
       children: [
         Positioned.fill(
