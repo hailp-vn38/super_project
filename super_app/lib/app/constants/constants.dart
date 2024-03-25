@@ -4,7 +4,7 @@ class Constants {
   const Constants._();
 
   static const urlExtensions =
-      "https://raw.githubusercontent.com/lamphuchai-dev/super_app/main/extensions/extensions.json";
+      "https://raw.githubusercontent.com/lamphuchai-dev/super_project/exts/super_exts/extensions.json";
   static const defaultLocal = Locale('vi', 'VN');
   static const supportedLocales = <Locale>[
     Locale('en', 'US'),

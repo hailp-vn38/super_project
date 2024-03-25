@@ -1,2 +1,0 @@
-url-html/player?url="file video"
-https://player.phimapi.com/player/?url=https://s2.phim1280.tv/20240302/b1xwdSI4/index.m3u8
