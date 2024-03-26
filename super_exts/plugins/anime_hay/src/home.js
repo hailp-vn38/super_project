@@ -10,9 +10,10 @@ async function home(url, page) {
 
   for (const item of lstEl) {
     const html = item.content;
+
     result.push({
       name: (await Extension.querySelector(html, ".name-movie").text).trim(),
-      url: await Extension.getAttributeText(html, "a", "href"),
+      url: await Extension.getAttributeText(html, "a:nth-child(2)", "href"),
       description: await await Extension.querySelector(
         html,
         "div.episode-latest span"
