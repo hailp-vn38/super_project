@@ -79,7 +79,7 @@ class ReaderCubit extends Cubit<ReaderState> {
         url: chapter.url!.replaceUrl(args.extension!.source),
         jsScript: args.extension!.getChapterScript);
 
-    if (res != null && res is Map) {
+    if (res != null) {
       chapter.addContentFromMap({type.name: res});
     }
 
