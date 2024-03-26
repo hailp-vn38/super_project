@@ -53,7 +53,7 @@ async function detail(book_url) {
   for (var item of chapterEls) {
     var title = await Extension.querySelector(item.content, "a").text;
     chapters.push({
-      title: title.trim(),
+      name: title.trim(),
       url: await Extension.getAttributeText(item.content, "a", "href"),
     });
   }
