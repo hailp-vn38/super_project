@@ -2,7 +2,7 @@
   "metadata": {
     "name": "Anime Hay",
     "author": "HyperMedia",
-    "version": 1,
+    "version": 2,
     "source": "https://animehay.me",
     "regexp": "(animehay).(me)",
     "description": "Xem anime trang AnimeHay",

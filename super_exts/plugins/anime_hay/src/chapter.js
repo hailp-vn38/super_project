@@ -19,9 +19,7 @@ async function chapter(url) {
     }
   }
 
-  return Response.success({
-    movies: result,
-  });
+  return Response.success(result);
 }
 
 // runFn(() =>
