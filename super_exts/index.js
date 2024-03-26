@@ -3,11 +3,11 @@ const fs = require("fs");
 const AdmZip = require("adm-zip");
 
 function zipExtensions() {
-  const extensionsPath = "./extensions";
+  const pluginsDir = "./plugins";
 
   try {
     const directories = fs
-      .readdirSync(extensionsPath, { withFileTypes: true })
+      .readdirSync(pluginsDir, { withFileTypes: true })
       .filter((item) => item.isDirectory());
 
     directories.forEach((extFolder) => {

@@ -1,0 +1,21 @@
+{
+  "metadata": {
+    "name": "Anime Hay",
+    "author": "HyperMedia",
+    "version": 1,
+    "source": "https://animehay.me",
+    "regexp": "(animehay).(me)",
+    "description": "Xem anime trang AnimeHay",
+    "locale": "vi_VN",
+    "type": "movie"
+  },
+  "script": {
+    "tabs": "src/tabs.js",
+    "home": "src/home.js",
+    "detail": "src/detail.js",
+    "chapters": "src/chapters.js",
+    "chapter": "src/chapter.js",
+    "search": "src/search.js",
+    "genre": "src/genre.js"
+  }
+}
