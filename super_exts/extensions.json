@@ -7,8 +7,8 @@
         "regexp": "(truyencv).(info)",
         "description": "Đọc truyện trên trang TruyệnCv",
         "type": "novel",
-        "path": "https://raw.githubusercontent.com/lamphuchai-dev/super_app/exts/supre_exts/plugins/truyencv/extension.zip",
-        "icon": "https://raw.githubusercontent.com/lamphuchai-dev/super_app/exts/supre_exts/plugins/truyencv/icon.png"
+        "path": "https://raw.githubusercontent.com/lamphuchai-dev/super_project/exts/super_exts/plugins/plugins/truyencv/extension.zip",
+        "icon": "https://raw.githubusercontent.com/lamphuchai-dev/super_project/exts/super_exts/plugins/plugins/truyencv/icon.png"
     },
     {
         "name": "Kkphim",
@@ -18,8 +18,8 @@
         "regexp": "(phimapi).(com)",
         "description": "Xem phim trên trang Kkphim",
         "type": "movie",
-        "path": "https://raw.githubusercontent.com/lamphuchai-dev/super_app/exts/supre_exts/plugins/kkphim/extension.zip",
-        "icon": "https://raw.githubusercontent.com/lamphuchai-dev/super_app/exts/supre_exts/plugins/kkphim/icon.png"
+        "path": "https://raw.githubusercontent.com/lamphuchai-dev/super_project/exts/super_exts/plugins/plugins/kkphim/extension.zip",
+        "icon": "https://raw.githubusercontent.com/lamphuchai-dev/super_project/exts/super_exts/plugins/plugins/kkphim/icon.png"
     },
     {
         "name": "Anime Hay",
@@ -30,7 +30,7 @@
         "description": "Xem anime trang AnimeHay",
         "locale": "vi_VN",
         "type": "movie",
-        "path": "https://raw.githubusercontent.com/lamphuchai-dev/super_app/exts/supre_exts/plugins/anime_hay/extension.zip",
-        "icon": "https://raw.githubusercontent.com/lamphuchai-dev/super_app/exts/supre_exts/plugins/anime_hay/icon.png"
+        "path": "https://raw.githubusercontent.com/lamphuchai-dev/super_project/exts/super_exts/plugins/plugins/anime_hay/extension.zip",
+        "icon": "https://raw.githubusercontent.com/lamphuchai-dev/super_project/exts/super_exts/plugins/plugins/anime_hay/icon.png"
     }
 ]

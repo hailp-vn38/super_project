@@ -32,8 +32,9 @@ function zipExtensions() {
 function updateINFO() {
   const data = [];
   var files = glob.sync("./plugins/*/*.json");
+
   const urlGit =
-    "https://raw.githubusercontent.com/lamphuchai-dev/super_app/exts/supre_exts";
+    "https://raw.githubusercontent.com/lamphuchai-dev/super_project/exts/super_exts/plugins";
   files.forEach((file) => {
     let raw_data = fs.readFileSync(file, { encoding: "utf8" });
     let plugin_detail = JSON.parse(raw_data);
