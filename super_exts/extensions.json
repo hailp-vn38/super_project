@@ -1,1 +1,36 @@
-[]
+[
+    {
+        "name": "Truyện Cv",
+        "author": "admin",
+        "version": 3,
+        "source": "https://truyencv.info",
+        "regexp": "(truyencv).(info)",
+        "description": "Đọc truyện trên trang TruyệnCv",
+        "type": "novel",
+        "path": "https://raw.githubusercontent.com/lamphuchai-dev/super_app/exts/supre_exts/plugins/truyencv/extension.zip",
+        "icon": "https://raw.githubusercontent.com/lamphuchai-dev/super_app/exts/supre_exts/plugins/truyencv/icon.png"
+    },
+    {
+        "name": "Kkphim",
+        "author": "admin",
+        "version": 1,
+        "source": "https://phimapi.com",
+        "regexp": "(phimapi).(com)",
+        "description": "Xem phim trên trang Kkphim",
+        "type": "movie",
+        "path": "https://raw.githubusercontent.com/lamphuchai-dev/super_app/exts/supre_exts/plugins/kkphim/extension.zip",
+        "icon": "https://raw.githubusercontent.com/lamphuchai-dev/super_app/exts/supre_exts/plugins/kkphim/icon.png"
+    },
+    {
+        "name": "Anime Hay",
+        "author": "HyperMedia",
+        "version": 1,
+        "source": "https://animehay.me",
+        "regexp": "(animehay).(me)",
+        "description": "Xem anime trang AnimeHay",
+        "locale": "vi_VN",
+        "type": "movie",
+        "path": "https://raw.githubusercontent.com/lamphuchai-dev/super_app/exts/supre_exts/plugins/anime_hay/extension.zip",
+        "icon": "https://raw.githubusercontent.com/lamphuchai-dev/super_app/exts/supre_exts/plugins/anime_hay/icon.png"
+    }
+]
