@@ -9,7 +9,15 @@ async function search(url, kw, page) {
   const result = [];
   for (const item of list) {
     var html = item.content;
-    var cover = await Extension.getAttributeText(html, "img", "src");
+
+    var cover = await Extension.getAttributeText(
+      html,
+      ".image img",
+      "data-original"
+    );
+    if (!cover) {
+      var cover = await Extension.getAttributeText(html, ".image img", "src");
+    }
     if (cover && cover.startsWith("//")) {
       cover = "https:" + cover;
     }
@@ -23,5 +31,4 @@ async function search(url, kw, page) {
 
   return Response.success(result);
 }
-
-// runFn(() => search("https://www.nettruyenbb.com","tu tien"));
+// runFn(() => search("https://www.nettruyenbb.com", "tu tiên"));
