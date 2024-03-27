@@ -10,7 +10,7 @@ import 'package:super_app/models/chapter.dart';
 import 'package:super_app/models/extension.dart';
 import 'package:super_app/models/track_read.dart';
 import 'package:super_app/services/database_service.dart';
-import 'package:super_app/views/reader/watch_movies/watch_movies.dart';
+import 'package:super_app/views/reader/modules/watch_movies/watch_movies.dart';
 
 import '../cubit/reader_cubit.dart';
 
