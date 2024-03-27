@@ -209,7 +209,7 @@ class _BookDetailState extends State<BookDetail> {
                                 onTap: () {
                                   // Navigator.pushNamed(
                                   //     context, RoutesName.genre,
-                                  //     arguments: GenreBookArg(
+                                  //     arguments: GenreArgs(
                                   //         genre: e,
                                   //         extension:
                                   //             _detailCubit.getExtension));

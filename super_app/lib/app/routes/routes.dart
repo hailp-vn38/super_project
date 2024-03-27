@@ -5,6 +5,7 @@ import 'package:super_app/models/extension.dart';
 import 'package:super_app/views/detail/detail.dart';
 import 'package:super_app/views/explore/explore.dart';
 import 'package:super_app/views/extensions/extensions.dart';
+import 'package:super_app/views/genre/genre.dart';
 import 'package:super_app/views/home/home.dart';
 import 'package:super_app/views/reader/reader.dart';
 import 'package:super_app/views/search/search.dart';
@@ -53,6 +54,15 @@ class Routes {
         return PageTransition(
             child: DetailView(
               bookUrl: args as String,
+            ),
+            type: PageTransitionType.rightToLeft);
+
+      case RoutesName.genre:
+        assert(args != null && args is GenreArgs, "args must be Book");
+        return PageTransition(
+            // settings: settings,
+            child: GenreView(
+              arg: args as GenreArgs,
             ),
             type: PageTransitionType.rightToLeft);
       default:

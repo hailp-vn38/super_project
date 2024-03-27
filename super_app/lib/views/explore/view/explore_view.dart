@@ -16,6 +16,7 @@ import 'package:super_app/di/components/service_locator.dart';
 import 'package:super_app/models/models.dart';
 import 'package:super_app/services/database_service.dart';
 import 'package:super_app/views/explore/cubit/explore_cubit.dart';
+import 'package:super_app/views/genre/genre.dart';
 import 'package:super_app/widgets/widgets.dart';
 
 part 'explore_page.dart';

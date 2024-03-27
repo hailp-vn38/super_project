@@ -49,9 +49,9 @@ class _ExtensionGenresTabState extends State<ExtensionGenresTab> {
             .map((genre) => GenreCard(
                   genre: genre,
                   onTap: () {
-                    // Navigator.pushNamed(context, RoutesName.genre,
-                    //     arguments: GenreBookArg(
-                    //         genre: genre, extension: widget.extension));
+                    Navigator.pushNamed(context, RoutesName.genre,
+                        arguments: GenreArgs(
+                            genre: genre, extension: widget.extension));
                   },
                 ))
             .toList(),
