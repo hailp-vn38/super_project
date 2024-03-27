@@ -11,6 +11,18 @@
         "icon": "https://raw.githubusercontent.com/lamphuchai-dev/super_project/exts/super_exts/plugins/truyencv/icon.png"
     },
     {
+        "name": "Net Truyện",
+        "author": "admin",
+        "version": 1,
+        "source": "https://www.nettruyenee.com",
+        "regexp": "(www.)?(nettruyenee).(com)",
+        "description": "Đọc truyện trên trang Net Truyện",
+        "locale": "vi_VN",
+        "type": "comic",
+        "path": "https://raw.githubusercontent.com/lamphuchai-dev/super_project/exts/super_exts/plugins/net_truyen/extension.zip",
+        "icon": "https://raw.githubusercontent.com/lamphuchai-dev/super_project/exts/super_exts/plugins/net_truyen/icon.png"
+    },
+    {
         "name": "Kkphim",
         "author": "admin",
         "version": 1,

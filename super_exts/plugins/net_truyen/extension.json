@@ -1,0 +1,21 @@
+{
+  "metadata": {
+    "name": "Net Truyện",
+    "author": "admin",
+    "version": 1,
+    "source": "https://www.nettruyenee.com",
+    "regexp": "(www.)?(nettruyenee).(com)",
+    "description": "Đọc truyện trên trang Net Truyện",
+    "locale": "vi_VN",
+    "type": "comic"
+  },
+  "script": {
+    "tabs": "src/tabs.js",
+    "home": "src/home.js",
+    "detail": "src/detail.js",
+    "chapters": "src/chapters.js",
+    "chapter": "src/chapter.js",
+    "search": "src/search.js",
+    "genre": "src/genre.js"
+  }
+}
