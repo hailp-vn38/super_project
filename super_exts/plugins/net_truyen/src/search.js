@@ -23,7 +23,7 @@ async function search(url, kw, page) {
     }
     result.push({
       name: await Extension.querySelector(html, "h3 a").text,
-      link: await Extension.getAttributeText(html, "h3 a", "href"),
+      url: await Extension.getAttributeText(html, "h3 a", "href"),
       description: await Extension.querySelector(html, ".comic-item li a").text,
       cover,
     });
