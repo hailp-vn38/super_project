@@ -30,6 +30,9 @@ class Chapter {
   List<String>? comic;
 
   String? movies;
+
+  int? scrollIndex;
+
   Chapter({
     this.id = Isar.autoIncrement,
     this.index,
@@ -41,35 +44,36 @@ class Chapter {
     this.novel,
     this.comic,
     this.movies,
+    this.scrollIndex,
   });
 
   final book = IsarLink<Book>();
 
-  Chapter copyWith({
-    Id? id,
-    int? index,
-    int? bookId,
-    String? name,
-    String? url,
-    String? dateUpload,
-    bool? isBookmarked,
-    bool? isRead,
-    String? novel,
-    List<String>? comic,
-    String? movies,
-  }) {
+  Chapter copyWith(
+      {Id? id,
+      int? index,
+      int? bookId,
+      String? name,
+      String? url,
+      String? dateUpload,
+      bool? isBookmarked,
+      bool? isRead,
+      String? novel,
+      List<String>? comic,
+      String? movies,
+      int? scrollIndex}) {
     return Chapter(
-      id: id ?? this.id,
-      index: index ?? this.index,
-      name: name ?? this.name,
-      url: url ?? this.url,
-      dateUpload: dateUpload ?? this.dateUpload,
-      isBookmarked: isBookmarked ?? this.isBookmarked,
-      isRead: isRead ?? this.isRead,
-      novel: novel ?? this.novel,
-      comic: comic ?? this.comic,
-      movies: movies ?? this.movies,
-    );
+        id: id ?? this.id,
+        index: index ?? this.index,
+        name: name ?? this.name,
+        url: url ?? this.url,
+        dateUpload: dateUpload ?? this.dateUpload,
+        isBookmarked: isBookmarked ?? this.isBookmarked,
+        isRead: isRead ?? this.isRead,
+        novel: novel ?? this.novel,
+        comic: comic ?? this.comic,
+        movies: movies ?? this.movies,
+        scrollIndex: scrollIndex ?? this.scrollIndex);
   }
 
   Map<String, dynamic> toMap() {
@@ -84,27 +88,29 @@ class Chapter {
       'novel': novel,
       'comic': comic,
       'movies': movies,
-      'book': book.value
+      'book': book.value,
+      'scrollIndex': scrollIndex
     };
   }
 
   factory Chapter.fromMap(Map<String, dynamic> map) {
     return Chapter(
-      id: map['id'],
-      index: map['index'],
-      name: map['name'] != null ? map['name'] as String : null,
-      url: map['url'] != null ? map['url'] as String : null,
-      dateUpload:
-          map['dateUpload'] != null ? map['dateUpload'] as String : null,
-      isBookmarked:
-          map['isBookmarked'] != null ? map['isBookmarked'] as bool : null,
-      isRead: map['isRead'] != null ? map['isRead'] as bool : null,
-      novel: map['novel'] != null ? map['novel'] as String : null,
-      comic: map['comic'],
-      movies: map['movies'] != null ? jsonEncode(map['movies']) : null,
-    );
+        id: map['id'],
+        index: map['index'],
+        name: map['name'] != null ? map['name'] as String : null,
+        url: map['url'] != null ? map['url'] as String : null,
+        dateUpload:
+            map['dateUpload'] != null ? map['dateUpload'] as String : null,
+        isBookmarked:
+            map['isBookmarked'] != null ? map['isBookmarked'] as bool : null,
+        isRead: map['isRead'] != null ? map['isRead'] as bool : null,
+        novel: map['novel'] != null ? map['novel'] as String : null,
+        comic: map['comic'],
+        movies: map['movies'] != null ? jsonEncode(map['movies']) : null,
+        scrollIndex: map['scrollIndex']);
   }
 
+  @ignore
   List<Movie>? get getMovies {
     if (movies == null) return null;
     if (jsonDecode(movies!)! is! List) return null;
@@ -133,11 +139,6 @@ class Chapter {
   }
 
   @override
-  String toString() {
-    return 'Chapter(id: $id, index: $index, name: $name, url: $url, dateUpload: $dateUpload, isBookmarked: $isBookmarked, isRead: $isRead, novel: $novel, comic: $comic, movies: $movies)';
-  }
-
-  @override
   bool operator ==(covariant Chapter other) {
     if (identical(this, other)) return true;
 
@@ -149,8 +150,9 @@ class Chapter {
         other.isBookmarked == isBookmarked &&
         other.isRead == isRead &&
         other.novel == novel &&
-        other.comic == comic &&
-        other.movies == movies;
+        listEquals(other.comic, comic) &&
+        other.movies == movies &&
+        other.scrollIndex == scrollIndex;
   }
 
   @override
@@ -164,7 +166,13 @@ class Chapter {
         isRead.hashCode ^
         novel.hashCode ^
         comic.hashCode ^
-        movies.hashCode;
+        movies.hashCode ^
+        scrollIndex.hashCode;
+  }
+
+  @override
+  String toString() {
+    return 'Chapter(id: $id, index: $index, name: $name, url: $url, dateUpload: $dateUpload, isBookmarked: $isBookmarked, isRead: $isRead, novel: $novel, comic: $comic, movies: $movies, scrollIndex: $scrollIndex)';
   }
 }
 

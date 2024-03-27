@@ -5,6 +5,7 @@ import 'package:js_runtime/js_runtime.dart';
 import 'package:js_runtime/utils/logger.dart';
 import 'package:super_app/app/extensions/string_extension.dart';
 import 'package:super_app/app/types.dart';
+import 'package:super_app/models/chapter.dart';
 import 'package:super_app/models/models.dart';
 import 'package:super_app/services/database_service.dart';
 
@@ -34,6 +35,7 @@ class ReaderCubit extends Cubit<ReaderState> {
 
   List<Chapter> get getChapters => state.chapters;
   TrackRead get getTrackRead => state.trackRead;
+  Chapter get getCurrentChapter => state.readCurrentChapter.data!;
 
   Extension? extension;
   Book? book;
@@ -166,5 +168,22 @@ class ReaderCubit extends Cubit<ReaderState> {
 
   void updateTrackRead(TrackRead trackRead) {
     emit(state.copyWith(trackRead: trackRead));
+    /*
+    // Kiểm tra id cua trackRead !=null
+      update thông tin vào database
+
+    */
+  }
+
+  void updateChapter(Chapter chapter) {
+    List<Chapter> chapters = getChapters;
+    chapters[chapter.index!] = chapter;
+    emit(state.copyWith(chapters: chapters));
+    _logger.info("${chapter.scrollIndex}", name: "updateChapter");
+    /*
+    // Kiểm tra id cua chapter !=null
+      update thông tin vào database
+
+    */
   }
 }

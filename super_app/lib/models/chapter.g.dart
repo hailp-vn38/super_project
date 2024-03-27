@@ -62,8 +62,13 @@ const ChapterSchema = CollectionSchema(
       name: r'novel',
       type: IsarType.string,
     ),
-    r'url': PropertySchema(
+    r'scrollIndex': PropertySchema(
       id: 9,
+      name: r'scrollIndex',
+      type: IsarType.long,
+    ),
+    r'url': PropertySchema(
+      id: 10,
       name: r'url',
       type: IsarType.string,
     )
@@ -155,7 +160,8 @@ void _chapterSerialize(
   writer.writeString(offsets[6], object.movies);
   writer.writeString(offsets[7], object.name);
   writer.writeString(offsets[8], object.novel);
-  writer.writeString(offsets[9], object.url);
+  writer.writeLong(offsets[9], object.scrollIndex);
+  writer.writeString(offsets[10], object.url);
 }
 
 Chapter _chapterDeserialize(
@@ -174,7 +180,8 @@ Chapter _chapterDeserialize(
     movies: reader.readStringOrNull(offsets[6]),
     name: reader.readStringOrNull(offsets[7]),
     novel: reader.readStringOrNull(offsets[8]),
-    url: reader.readStringOrNull(offsets[9]),
+    scrollIndex: reader.readLongOrNull(offsets[9]),
+    url: reader.readStringOrNull(offsets[10]),
   );
   return object;
 }
@@ -205,6 +212,8 @@ P _chapterDeserializeProp<P>(
     case 8:
       return (reader.readStringOrNull(offset)) as P;
     case 9:
+      return (reader.readLongOrNull(offset)) as P;
+    case 10:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1359,6 +1368,75 @@ extension ChapterQueryFilter
     });
   }
 
+  QueryBuilder<Chapter, Chapter, QAfterFilterCondition> scrollIndexIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'scrollIndex',
+      ));
+    });
+  }
+
+  QueryBuilder<Chapter, Chapter, QAfterFilterCondition> scrollIndexIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'scrollIndex',
+      ));
+    });
+  }
+
+  QueryBuilder<Chapter, Chapter, QAfterFilterCondition> scrollIndexEqualTo(
+      int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'scrollIndex',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Chapter, Chapter, QAfterFilterCondition> scrollIndexGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'scrollIndex',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Chapter, Chapter, QAfterFilterCondition> scrollIndexLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'scrollIndex',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Chapter, Chapter, QAfterFilterCondition> scrollIndexBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'scrollIndex',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<Chapter, Chapter, QAfterFilterCondition> urlIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -1622,6 +1700,18 @@ extension ChapterQuerySortBy on QueryBuilder<Chapter, Chapter, QSortBy> {
     });
   }
 
+  QueryBuilder<Chapter, Chapter, QAfterSortBy> sortByScrollIndex() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'scrollIndex', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Chapter, Chapter, QAfterSortBy> sortByScrollIndexDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'scrollIndex', Sort.desc);
+    });
+  }
+
   QueryBuilder<Chapter, Chapter, QAfterSortBy> sortByUrl() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'url', Sort.asc);
@@ -1745,6 +1835,18 @@ extension ChapterQuerySortThenBy
     });
   }
 
+  QueryBuilder<Chapter, Chapter, QAfterSortBy> thenByScrollIndex() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'scrollIndex', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Chapter, Chapter, QAfterSortBy> thenByScrollIndexDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'scrollIndex', Sort.desc);
+    });
+  }
+
   QueryBuilder<Chapter, Chapter, QAfterSortBy> thenByUrl() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'url', Sort.asc);
@@ -1818,6 +1920,12 @@ extension ChapterQueryWhereDistinct
     });
   }
 
+  QueryBuilder<Chapter, Chapter, QDistinct> distinctByScrollIndex() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'scrollIndex');
+    });
+  }
+
   QueryBuilder<Chapter, Chapter, QDistinct> distinctByUrl(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1885,6 +1993,12 @@ extension ChapterQueryProperty
   QueryBuilder<Chapter, String?, QQueryOperations> novelProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'novel');
+    });
+  }
+
+  QueryBuilder<Chapter, int?, QQueryOperations> scrollIndexProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'scrollIndex');
     });
   }
 

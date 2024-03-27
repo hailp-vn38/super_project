@@ -14,5 +14,24 @@ class ReadComicCubit extends Cubit<ReadComicState> {
 
   List<Chapter> get getChapters => readerCubit.args.chapters;
 
-  void onInit() {}
+  int get getInitialScrollIndex =>
+      readerCubit.getCurrentChapter.scrollIndex ?? 0;
+
+  void onInit() {
+    // print(readerCubit.getCurrentChapter.scrollIndex);
+  }
+
+  Map<String, String> get getHttpHeaders =>
+      {"Referer": readerCubit.extension!.source};
+
+  void onChangeScrollIndex(int index) {
+    final chapter = readerCubit.getCurrentChapter;
+    chapter.scrollIndex = index;
+    readerCubit.updateChapter(chapter);
+  }
+
+  void nextChapter() {
+    final index = readerCubit.getCurrentChapter.index!;
+    readerCubit.getDetailChapter(readerCubit.getChapters[index + 1]);
+  }
 }

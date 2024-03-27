@@ -318,8 +318,13 @@ class _BookDetailState extends State<BookDetail> {
                             ),
                             SliverAnimatedPaintExtent(
                               duration: const Duration(seconds: 3),
-                              child: SliverList.builder(
+                              child: SliverList.separated(
                                 itemCount: chaptersRes.data!.length,
+                                separatorBuilder: (context, index) => Divider(
+                                  height: 1,
+                                  endIndent: 12,
+                                  indent: 12,
+                                ),
                                 itemBuilder: (context, index) {
                                   final chapter = chaptersRes.data![index];
                                   return MouseRegion(
@@ -332,14 +337,15 @@ class _BookDetailState extends State<BookDetail> {
                                                 book: _book,
                                                 chapters: chaptersRes.data!,
                                                 track: TrackRead(
-                                                    readCurrentChapter: index),
+                                                  readCurrentChapter: index,
+                                                ),
                                                 extension:
                                                     _detailCubit.getExtension));
                                       },
                                       child: Container(
                                         width: double.infinity,
                                         padding: const EdgeInsets.symmetric(
-                                            horizontal: 16, vertical: 8),
+                                            horizontal: 16, vertical: 12),
                                         child: Text(
                                           chapter.name ?? "",
                                           style: textTheme.bodyMedium,
