@@ -62,8 +62,8 @@ async function detail(url) {
   });
 }
 
-runFn(() =>
-  detail(
-    "https://www.nettruyenee.com/truyen-tranh/ban-gai-toi-la-mot-dai-tieu-thu-xau-xa-sao-103973"
-  )
-);
+// runFn(() =>
+//   detail(
+//     "https://www.nettruyenee.com/truyen-tranh/ban-gai-toi-la-mot-dai-tieu-thu-xau-xa-sao-103973"
+//   )
+// );
