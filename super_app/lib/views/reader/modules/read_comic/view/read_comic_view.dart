@@ -1,6 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:super_app/app/types.dart';
+import 'package:super_app/models/chapter.dart';
+import 'package:super_app/views/reader/cubit/reader_cubit.dart';
+import 'package:super_app/widgets/widgets.dart';
 
 import '../cubit/read_comic_cubit.dart';
 
@@ -14,7 +20,9 @@ class ReadComicView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ReadComicCubit()..onInit(),
+      create: (context) => ReadComicCubit(
+        readerCubit: context.read<ReaderCubit>()
+      )..onInit(),
       child: const ReadComicPage(),
     );
   }

@@ -120,8 +120,8 @@ class Chapter {
     if (map["novel"] != null && map["novel"] is String) {
       novel = map["novel"];
     }
-    if (map["comic"] != null && map["comic"] is List<String>) {
-      comic = map["comic"];
+    if (map["comic"] != null && map["comic"] is List) {
+      comic = List.from(map["comic"]);
     }
     if (map["movies"] != null && map["movies"] is List) {
       movies = jsonEncode(map["movies"]);

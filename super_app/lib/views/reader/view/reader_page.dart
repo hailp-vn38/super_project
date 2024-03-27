@@ -20,7 +20,7 @@ class _ReaderPageState extends State<ReaderPage> {
     return switch (_readerCubit.args.book.type) {
       ExtensionType.movie => const WatchMoviesView(),
       ExtensionType.novel => const WatchMoviesView(),
-      ExtensionType.comic => const WatchMoviesView(),
+      ExtensionType.comic => const ReadComicView(),
       _ => const Scaffold(),
     };
   }

@@ -9,11 +9,10 @@ class ExploreEmptyExt extends StatelessWidget {
       appBar: AppBar(),
       body: Center(
         child: ElevatedButton(
-          child: const Text("Cài đặt nguồn"),
-          onPressed: () {
-            Navigator.pushNamed(context, RoutesName.extensions);
-          },
-        ),
+            child: const Text("Cài đặt nguồn"),
+            onPressed: () async {
+              Navigator.pushNamed(context, RoutesName.extensions);
+            }),
       ),
     );
   }

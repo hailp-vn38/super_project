@@ -98,7 +98,29 @@ class ReaderCubit extends Cubit<ReaderState> {
               StateRes(status: StatusType.loading, data: chapter)));
       chapter = await getChapterByType(
           chapter: chapter, type: extension!.metadata.type!);
-      if (chapter.getMovies == null || chapter.getMovies!.isEmpty) {
+
+      bool isError = false;
+      switch (book!.type!) {
+        case ExtensionType.comic:
+          if (chapter.comic == null) {
+            isError = true;
+          }
+          break;
+        case ExtensionType.movie:
+          if (chapter.movies == null) {
+            isError = true;
+          }
+
+          break;
+        case ExtensionType.novel:
+          if (chapter.novel == null) {
+            isError = true;
+          }
+          break;
+        default:
+          isError = false;
+      }
+      if (isError) {
         emit(state.copyWith(
             readCurrentChapter: StateRes(
                 status: StatusType.error,
