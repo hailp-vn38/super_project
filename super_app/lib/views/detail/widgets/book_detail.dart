@@ -320,7 +320,7 @@ class _BookDetailState extends State<BookDetail> {
                               duration: const Duration(seconds: 3),
                               child: SliverList.separated(
                                 itemCount: chaptersRes.data!.length,
-                                separatorBuilder: (context, index) => Divider(
+                                separatorBuilder: (context, index) =>const Divider(
                                   height: 1,
                                   endIndent: 12,
                                   indent: 12,

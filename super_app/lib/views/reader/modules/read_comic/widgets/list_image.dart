@@ -31,12 +31,17 @@ class _ListImageState extends State<ListImage> {
     _itemPositionsListener = ItemPositionsListener.create();
     _scrollOffsetListener = ScrollOffsetListener.create();
     _itemPositionsListener.itemPositions.addListener(() {
+      if (_itemPositionsListener.itemPositions.value.isEmpty) return;
       final index = _itemPositionsListener.itemPositions.value.last.index;
       if (_currentIndex != index) {
         _currentIndex = index;
         widget.onChangeIndexImage(_currentIndex);
       }
     });
+    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    //   _itemScrollController.scrollTo(
+    //       index: 10, duration: Duration(seconds: 15));
+    // });
     super.initState();
   }
 
