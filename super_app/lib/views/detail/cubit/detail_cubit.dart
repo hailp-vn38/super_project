@@ -34,10 +34,13 @@ class DetailCubit extends Cubit<DetailState> {
   Extension? get getExtension => _extension;
 
   void onInit() async {
+    DetailState detailState = state;
+
     try {
       final hostBook = bookUrl.getHostByUrl;
+
       if (hostBook == null) {
-        emit(state.copyWith(
+        emit(detailState.copyWith(
             bookState: bookState.copyWith(
                 status: StatusType.error, message: "Book url error")));
 
@@ -45,81 +48,35 @@ class DetailCubit extends Cubit<DetailState> {
       }
       _extension = await _databaseService.getExtensionBySource(hostBook);
       if (_extension == null) {
-        emit(state.copyWith(
+        emit(detailState.copyWith(
             bookState: bookState.copyWith(
                 status: StatusType.error, message: "Extension not found")));
         return;
       }
-      _getDetailBook().then((value) {
-        if (bookState.status == StatusType.loaded &&
-            chaptersState.status == StatusType.init) {
-          _getChapters();
-        }
-      });
+
+      detailState = detailState.copyWith(
+          bookState: const StateRes(status: StatusType.loading));
+      // emit loading detail book
+      emit(detailState);
+      _logger.info("", name: "onRefreshDetail");
+      final detail = await getDetailBook();
+      detailState = detailState.copyWith(
+          bookState: StateRes(status: StatusType.loaded, data: detail.book),
+          chaptersState: detail.chapters.isNotEmpty
+              ? StateRes(status: StatusType.loaded, data: detail.chapters)
+              : null,
+          genresState: detail.genres.isNotEmpty
+              ? StateRes(status: StatusType.loaded, data: detail.genres)
+              : null);
+      if (detail.chapters.isEmpty) {
+        _getChapters();
+      }
+      // emit data detail
+      emit(detailState);
     } catch (err) {
-      emit(state.copyWith(
+      emit(detailState.copyWith(
           bookState: bookState.copyWith(
               status: StatusType.error, message: "Extension not found")));
-    }
-  }
-
-  Future<void> _getDetailBook() async {
-    try {
-      emit(state.copyWith(
-          bookState: bookState.copyWith(status: StatusType.loading)));
-      final result = await _jsRuntime.getDetail<Map<String, dynamic>>(
-        url: bookUrl,
-        jsScript: _extension!.getDetailScript,
-      );
-      Book book = Book.fromMap({...result, "type": _extension!.metadata.type});
-      Uri bookUri = Uri.parse(book.url!);
-      if (!bookUri.isScheme("HTTP")) {
-        final uriExt = Uri.parse(_extension!.metadata.source!);
-        bookUri = bookUri.replace(scheme: uriExt.scheme, host: uriExt.host);
-
-        book.url = bookUri.toString();
-      }
-
-      DetailState stateCurrent = state;
-
-      stateCurrent = stateCurrent.copyWith(
-          bookState: bookState.copyWith(status: StatusType.loaded, data: book));
-      if (result["genres"] != null && result["genres"] is List) {
-        final genres =
-            List.from(result["genres"]).map((e) => Genre.fromMap(e)).toList();
-        stateCurrent = stateCurrent.copyWith(
-            genresState: StateRes(status: StatusType.loaded, data: genres));
-      }
-
-      if (result["chapters"] != null &&
-          result["chapters"] is List &&
-          result["chapters"].length > 0) {
-        List<Chapter> chapters = [];
-        for (var i = 0; i < result["chapters"].length; i++) {
-          final map = result["chapters"][i];
-          if (map is Map<String, dynamic>) {
-            chapters.add(Chapter.fromMap({...map, "index": i}));
-          }
-        }
-        // final chapters = List.from()
-        //     .map((e) => Chapter.fromMap(e))
-        //     .toList();
-        stateCurrent = stateCurrent.copyWith(
-            chaptersState: StateRes(status: StatusType.loaded, data: chapters));
-      }
-
-      final bookInBookmark = await _databaseService.getBookByUrl(book.url!);
-      // if (bookInBookmark != null) {
-      //   book = bookInBookmark.copyWith(
-      //     totalChapters: book.totalChapters,
-      //   );
-      // }
-      emit(stateCurrent);
-    } catch (error) {
-      _logger.error(error, name: "getDetailBook");
-      emit(state.copyWith(
-          bookState: bookState.copyWith(
-              status: StatusType.error, message: "Error get data book")));
     }
   }
 
@@ -153,5 +110,70 @@ class DetailCubit extends Cubit<DetailState> {
     emit(state.copyWith(
         chaptersState: chaptersState.copyWith(
             data: chaptersState.data!.reversed.toList())));
+  }
+
+  Future<void> onRefreshDetail() async {
+    try {
+      _logger.info("", name: "onRefreshDetail");
+      final detail = await getDetailBook();
+      DetailState state = this.state;
+      state = state.copyWith(
+          bookState: StateRes(status: StatusType.loaded, data: detail.book),
+          chaptersState: detail.chapters.isNotEmpty
+              ? StateRes(status: StatusType.loaded, data: detail.chapters)
+              : null,
+          genresState: detail.genres.isNotEmpty
+              ? StateRes(status: StatusType.loaded, data: detail.genres)
+              : null);
+      if (detail.chapters.isEmpty) {
+        _getChapters();
+      }
+      emit(state);
+    } catch (err) {
+      _logger.error(err, name: "onRefreshDetail");
+    }
+  }
+
+  Future<({Book book, List<Chapter> chapters, List<Genre> genres})>
+      getDetailBook() async {
+    try {
+      List<Chapter> chapters = [];
+      List<Genre> genres = [];
+      final result = await _jsRuntime.getDetail<Map<String, dynamic>>(
+        url: bookUrl,
+        jsScript: _extension!.getDetailScript,
+      );
+      Book book = Book.fromMap({...result, "type": _extension!.metadata.type});
+      Uri bookUri = Uri.parse(book.url!);
+      if (!bookUri.isScheme("HTTP")) {
+        final uriExt = Uri.parse(_extension!.metadata.source!);
+        bookUri = bookUri.replace(scheme: uriExt.scheme, host: uriExt.host);
+
+        book.url = bookUri.toString();
+      }
+
+      if (result["genres"] != null && result["genres"] is List) {
+        genres =
+            List.from(result["genres"]).map((e) => Genre.fromMap(e)).toList();
+      }
+
+      if (result["chapters"] != null &&
+          result["chapters"] is List &&
+          result["chapters"].length > 0) {
+        for (var i = 0; i < result["chapters"].length; i++) {
+          final map = result["chapters"][i];
+          if (map is Map<String, dynamic>) {
+            chapters.add(Chapter.fromMap({...map, "index": i}));
+          }
+        }
+      }
+      _logger.info(
+          "\nSTART\n Book : ${book.name}\n Chapters : ${chapters.length} \n Genres : ${genres.length}\nEND",
+          name: "getDetailBook");
+      return (book: book, chapters: chapters, genres: genres);
+    } catch (error) {
+      _logger.log(error, name: "getDetailBook");
+      rethrow;
+    }
   }
 }

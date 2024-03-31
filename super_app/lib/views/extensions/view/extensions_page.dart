@@ -106,7 +106,7 @@ class _ExtensionsInstallState extends State<ExtensionsInstall> {
                           children: state.data!
                               .map((meta) => ExtensionCard(
                                   key: ValueKey(meta.name),
-                                  installed: true,
+                                  status: StatusExtension.update,
                                   metadataExt: meta,
                                   onTap: () async {
                                     return true;
@@ -138,7 +138,7 @@ class _ExtensionsInstallState extends State<ExtensionsInstall> {
                           children: state.data!
                               .map((ext) => ExtensionCard(
                                   key: ValueKey(ext.id),
-                                  installed: true,
+                                  status: StatusExtension.installed,
                                   metadataExt: ext.metadata,
                                   onTap: () =>
                                       _extensionsCubit.onUninstallExt(ext)))
@@ -222,7 +222,7 @@ class _AllExtensionsState extends State<AllExtensions> {
                   child: Column(
                       children: state.data!
                           .map((metadata) => ExtensionCard(
-                              installed: false,
+                              status: StatusExtension.install,
                               metadataExt: metadata,
                               onTap: () =>
                                   _extensionsCubit.onInstallExt(metadata)))
@@ -238,14 +238,16 @@ class _AllExtensionsState extends State<AllExtensions> {
   }
 }
 
+enum StatusExtension { install, installed, update }
+
 class ExtensionCard extends StatefulWidget {
   const ExtensionCard(
       {super.key,
       required this.metadataExt,
-      required this.installed,
+      required this.status,
       required this.onTap});
   final Metadata metadataExt;
-  final bool installed;
+  final StatusExtension status;
   final Future<bool> Function() onTap;
 
   @override
@@ -353,17 +355,23 @@ class _ExtensionCardState extends State<ExtensionCard> {
   }
 
   Widget _tradingCardWidget(ColorScheme colorScheme) {
-    Widget icon = widget.installed
-        ? Icon(
-            Icons.delete_forever_rounded,
-            color: colorScheme.error,
-            size: 24,
-          )
-        : Icon(
-            Icons.download_rounded,
-            color: colorScheme.primary,
-            size: 24,
-          );
+    Map<StatusExtension, Widget> mapIcon = {
+      StatusExtension.install: Icon(
+        Icons.download_rounded,
+        color: colorScheme.primary,
+        size: 24,
+      ),
+      StatusExtension.installed: Icon(
+        Icons.delete_forever_rounded,
+        color: colorScheme.error,
+        size: 24,
+      ),
+      StatusExtension.update: Icon(
+        Icons.update,
+        color: colorScheme.error,
+        size: 24,
+      ),
+    };
     if (_loading) {
       return Container(
         height: 48,
@@ -371,11 +379,12 @@ class _ExtensionCardState extends State<ExtensionCard> {
         padding: const EdgeInsets.only(right: 8),
         child: LoadingWidget(
           radius: 10,
-          child: icon,
+          child: mapIcon[widget.status],
         ),
       );
     }
-    return IconButton(splashRadius: 20, onPressed: _onTap, icon: icon);
+    return IconButton(
+        splashRadius: 20, onPressed: _onTap, icon: mapIcon[widget.status]!);
   }
 }
 

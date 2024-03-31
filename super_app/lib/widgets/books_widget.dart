@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:js_runtime/js_runtime.dart';
@@ -126,6 +125,18 @@ class _BooksWidgetState extends State<BooksWidget> {
     });
   }
 
+  Future<void> _onRefresh() async {
+    try {
+      _page = 1;
+      final list = await widget.onFetchListBook!.call(widget.url, _page);
+      _listBook.clear();
+      _listBook.addAll(list);
+      setState(() {});
+    } catch (err) {
+      //
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
@@ -134,9 +145,7 @@ class _BooksWidgetState extends State<BooksWidget> {
       );
     }
     return RefreshIndicator(
-      onRefresh: () async {
-        _onLoading();
-      },
+      onRefresh: _onRefresh,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: CustomScrollView(

@@ -25,12 +25,16 @@ class ReadComicCubit extends Cubit<ReadComicState> {
 
   AnimationController? get getAnimationController => _controller;
 
+  ValueNotifier<double> scrollChapter = ValueNotifier<double>(0.0);
+
   void onInit() {
     // print(readerCubit.getCurrentChapter.scrollIndex);
   }
 
-  set setAnimationController(AnimationController controller) =>
-      _controller = controller;
+  set setAnimationController(AnimationController controller) {
+    _controller = controller;
+    scrollChapter.value = 0;
+  }
 
   Map<String, String> get getHttpHeaders =>
       {"Referer": readerCubit.extension!.source};
@@ -70,9 +74,21 @@ class ReadComicCubit extends Cubit<ReadComicState> {
     readerCubit.getDetailChapter(chapter);
   }
 
+  void perChapter() {
+    final index = readerCubit.getCurrentChapter.index!;
+    if (index == 0) return;
+    readerCubit.getDetailChapter(readerCubit.getChapters[index - 1]);
+  }
+
   void nextChapter() {
     final index = readerCubit.getCurrentChapter.index!;
+    if (index >= readerCubit.getChapters.length) return;
     readerCubit.getDetailChapter(readerCubit.getChapters[index + 1]);
+  }
+
+  void updateOffsetScroll({required double offset, required double maxOffset}) {
+    scrollChapter.value = (offset / maxOffset) * 100;
+    print(maxOffset);
   }
 
   @override

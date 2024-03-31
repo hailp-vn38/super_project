@@ -22,7 +22,7 @@ class _ReadComicPageState extends State<ReadComicPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: ChaptersBottomSheet(
+      drawer: ChaptersDrawer(
         onChangeChapter: (chapter) {
           _readComicCubit.onChangeChapter(chapter);
         },
@@ -54,6 +54,9 @@ class _ReadComicPageState extends State<ReadComicPage>
                         initialScrollIndex:
                             _readComicCubit.getInitialScrollIndex,
                         onChangeIndexImage: _readComicCubit.onChangeScrollIndex,
+                        onChangeOff: (offset, maxScroll) =>
+                            _readComicCubit.updateOffsetScroll(
+                                offset: offset, maxOffset: maxScroll),
                       ),
                     _ => const LoadingWidget()
                   };
@@ -75,6 +78,7 @@ class _ReadComicPageState extends State<ReadComicPage>
           )
         ],
       ),
+  
     );
   }
 }

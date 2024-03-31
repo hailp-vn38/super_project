@@ -19,7 +19,7 @@ class _ReaderPageState extends State<ReaderPage> {
   Widget build(BuildContext context) {
     return switch (_readerCubit.args.book.type) {
       ExtensionType.movie => const WatchMoviesView(),
-      ExtensionType.novel => const WatchMoviesView(),
+      ExtensionType.novel => const ReadNovelView(),
       ExtensionType.comic => const ReadComicView(),
       _ => const Scaffold(),
     };

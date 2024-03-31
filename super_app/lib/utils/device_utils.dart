@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/services.dart';
 import 'package:wakelock/wakelock.dart';
 
@@ -41,4 +43,6 @@ class DeviceUtils {
     return SystemChrome.setPreferredOrientations(
         [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
   }
+
+  static bool get isMobile => Platform.isAndroid || Platform.isIOS;
 }

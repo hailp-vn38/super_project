@@ -26,8 +26,10 @@ class BaseMenu extends StatelessWidget {
                     ),
                 child: Container(
                   // height: 120,
+
                   color: colorBackground,
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   child: SafeArea(
                       bottom: false,
                       child: Column(
@@ -136,7 +138,6 @@ class BaseMenu extends StatelessWidget {
                               ],
                             ),
                           ),
-                          Gaps.hGap8
                         ],
                       )),
                 ))),
@@ -160,7 +161,9 @@ class BaseMenu extends StatelessWidget {
                 children: [
                   ComicButton(
                       colorBackground: colorBackground,
-                      onTap: () {},
+                      onTap: () {
+                        readComicCubit.perChapter();
+                      },
                       icon: const Icon(
                         Icons.north_rounded,
                         size: 16,
@@ -168,45 +171,34 @@ class BaseMenu extends StatelessWidget {
                       )),
                   Gaps.hGap16,
                   Expanded(
-                      child: Container(
-                    decoration: BoxDecoration(
-                        color: colorBackground,
-                        borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(20),
-                            bottom: Radius.circular(20))),
-                    child: RotatedBox(
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: colorBackground,
+                          borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(20),
+                              bottom: Radius.circular(20))),
+                      child: RotatedBox(
                         quarterTurns: 1,
-                        child: Slider(
-                          min: 0,
-                          max: 100,
-                          value: 1,
-                          onChanged: (value) {
-                            // widget.watchComicCubit
-                            //     .onChangeSliderScroll(value);
+                        child: ValueListenableBuilder(
+                          valueListenable: readComicCubit.scrollChapter,
+                          builder: (context, value, child) {
+                            return Slider(
+                              min: 0,
+                              max: 100,
+                              value: value.clamp(0, 100),
+                              onChanged: (value) {},
+                            );
                           },
-                        )
-
-                        // child: ValueListenableBuilder(
-                        //   valueListenable:
-                        //       widget.watchComicCubit.progressWatchValue,
-                        //   builder: (context, value, child) {
-                        //     return Slider(
-                        //       min: 0,
-                        //       max: 100,
-                        //       value: value?.percent.clamp(0, 100) ?? 0,
-                        //       onChanged: (value) {
-                        //         widget.watchComicCubit
-                        //             .onChangeSliderScroll(value);
-                        //       },
-                        //     );
-                        //   },
-                        // ),
                         ),
-                  )),
+                      ),
+                    ),
+                  ),
                   Gaps.hGap16,
                   ComicButton(
                       colorBackground: colorBackground,
-                      onTap: () {},
+                      onTap: () {
+                        readComicCubit.nextChapter();
+                      },
                       icon: const Icon(
                         Icons.south_rounded,
                         size: 16,

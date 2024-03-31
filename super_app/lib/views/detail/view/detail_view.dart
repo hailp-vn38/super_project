@@ -17,6 +17,7 @@ import 'package:super_app/services/database_service.dart';
 import 'package:super_app/views/reader/reader.dart';
 import 'package:super_app/widgets/widgets.dart';
 
+import '../../genre/genre.dart';
 import '../cubit/detail_cubit.dart';
 
 part 'detail_page.dart';

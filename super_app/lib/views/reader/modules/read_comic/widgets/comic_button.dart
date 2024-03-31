@@ -14,15 +14,18 @@ class ComicButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: size.height,
-        width: size.width,
-        decoration: ShapeDecoration(
-            shape: const StadiumBorder(),
-            color: colorBackground ?? Colors.black87.withOpacity(0.7)),
-        child: icon,
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          height: size.height,
+          width: size.width,
+          decoration: ShapeDecoration(
+              shape: const StadiumBorder(),
+              color: colorBackground ?? Colors.black87.withOpacity(0.7)),
+          child: icon,
+        ),
       ),
     );
   }
