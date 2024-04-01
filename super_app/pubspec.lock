@@ -623,14 +623,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.7"
-  indexed_list_view:
-    dependency: "direct main"
-    description:
-      name: indexed_list_view
-      sha256: "19c080b6505ad3283f9e199f53122d4779159da88a3f9322a2c682aeccae53e0"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.2"
   intl:
     dependency: "direct main"
     description:
@@ -679,14 +671,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.7"
-  js_packer:
-    dependency: "direct main"
-    description:
-      name: js_packer
-      sha256: f45ffa90165a810d7134f0b96b54068e4aac9d80a8b181eafa3978ec6dbc66a3
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.5"
   js_runtime:
     dependency: "direct main"
     description:
@@ -1030,14 +1014,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.27.7"
-  scroll_to_index:
-    dependency: "direct main"
-    description:
-      name: scroll_to_index
-      sha256: b707546e7500d9f070d63e5acf74fd437ec7eeeb68d3412ef7b0afada0b4f176
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.1"
   scrollable_positioned_list:
     dependency: "direct main"
     description:
@@ -1046,14 +1022,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.8"
-  scrollable_positioned_list_extended:
-    dependency: "direct main"
-    description:
-      name: scrollable_positioned_list_extended
-      sha256: "15ff6fabf2edd67fbb82efcaaa8c1893bd8c267c1bcc0bd5822790e1e64cf879"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.3.9"
   shared_preferences:
     dependency: transitive
     description:

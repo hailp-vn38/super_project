@@ -52,11 +52,9 @@ dependencies:
   fluttertoast: ^8.2.4
   get_it: ^7.6.7
   hive_flutter: ^1.1.0
-  indexed_list_view: ^3.0.2
   intl: ^0.18.1
   isar: ^3.1.0+1
   isar_flutter_libs: ^3.1.0+1
-  js_packer: ^0.0.5
   js_runtime:
     path: ./packages/js_runtime
   json_annotation: ^4.8.1
@@ -67,9 +65,7 @@ dependencies:
   pull_to_refresh: ^2.0.0
   receive_sharing_intent: ^1.6.7
   rxdart: ^0.27.7
-  scroll_to_index: ^3.0.1
   scrollable_positioned_list: ^0.3.8
-  scrollable_positioned_list_extended: ^0.3.9
   sliver_tools: ^0.2.12
   string_validator: ^1.0.2
   text_scroll: ^0.2.0
@@ -85,6 +81,8 @@ dev_dependencies:
     sdk: flutter
   isar_generator: ^3.1.0+1
   json_serializable: ^6.7.1
+
+dependency_overrides:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

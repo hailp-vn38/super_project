@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:super_app/app/routes/routes_name.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'package:super_app/views/home/home.dart';
 import 'app/routes/routes.dart';
 
 class App extends StatelessWidget {
@@ -51,8 +52,9 @@ class App extends StatelessWidget {
       locale: context.locale,
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
-      onGenerateRoute: Routes.onGenerateRoute,
-      initialRoute: RoutesName.init,
+      // onGenerateRoute: Routes.onGenerateRoute,
+      // initialRoute: RoutesName.init,
+      home: HomeView(),
     );
   }
 }
