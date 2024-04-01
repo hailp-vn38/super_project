@@ -3,8 +3,8 @@
     "name": "Net Truyện",
     "author": "admin",
     "version": 1,
-    "source": "https://www.nettruyenup.vn",
-    "regexp": "(www.)?(nettruyenup).(vn)",
+    "source": "https://www.nettruyenhh.com",
+    "regexp": "(www.)?(nettruyenhh).(com)",
     "description": "Đọc truyện trên trang Net Truyện",
     "locale": "vi_VN",
     "type": "comic"
