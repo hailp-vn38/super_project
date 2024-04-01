@@ -73,7 +73,7 @@ class ReaderCubit extends Cubit<ReaderState> {
       {required Chapter chapter, required ExtensionType type}) async {
     if (chapter.comic != null ||
         chapter.movies != null ||
-        chapter.comic != null) {
+        chapter.novel != null) {
       return chapter;
     }
 
@@ -98,6 +98,7 @@ class ReaderCubit extends Cubit<ReaderState> {
           loadExtensionErr: false,
           readCurrentChapter:
               StateRes(status: StatusType.loading, data: chapter)));
+      // print(chapter.novel);
       chapter = await getChapterByType(
           chapter: chapter, type: extension!.metadata.type!);
 
@@ -134,6 +135,8 @@ class ReaderCubit extends Cubit<ReaderState> {
           status: StatusType.loaded,
           data: chapter,
         )));
+
+        updateChapter(chapter);
       }
     } catch (err) {
       emit(state.copyWith(
@@ -179,7 +182,7 @@ class ReaderCubit extends Cubit<ReaderState> {
     List<Chapter> chapters = getChapters;
     chapters[chapter.index!] = chapter;
     emit(state.copyWith(chapters: chapters));
-    _logger.info("${chapter.scrollIndex}", name: "updateChapter");
+    _logger.info("index:${chapter.index}", name: "updateChapter");
     /*
     // Kiểm tra id cua chapter !=null
       update thông tin vào database

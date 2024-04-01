@@ -32,31 +32,28 @@ class _ReadComicPageState extends State<ReadComicPage>
           Positioned.fill(
             child: GestureDetector(
               onTap: _readComicCubit.onTapScreen,
-              // onPanDown: (_) => _readComicCubit.onTouchScreen(),
               onPanCancel: () {
                 _readComicCubit.onTouchScreen();
               },
               child: BlocConsumer<ReaderCubit, ReaderState>(
                 listener: (context, state) {
                   if (state.readCurrentChapter.status == StatusType.loaded) {
-                    // itemScrollController.jumpTo(index: 5);
+                    // _readComicCubit.setSliderScroll(
+                    //     state.readCurrentChapter.data!.scrollIndex ?? 0);
                   }
                 },
                 buildWhen: (previous, current) =>
                     previous.readCurrentChapter != current.readCurrentChapter,
                 builder: (context, readerState) {
                   return switch (readerState.readCurrentChapter.status) {
-                    StatusType.loaded => ListImage(
+                    StatusType.loaded => ListComicImage(
                         key: ValueKey(
                             readerState.readCurrentChapter.data!.index),
                         images: readerState.readCurrentChapter.data!.comic!,
                         headers: _readComicCubit.getHttpHeaders,
                         initialScrollIndex:
                             _readComicCubit.getInitialScrollIndex,
-                        onChangeIndexImage: _readComicCubit.onChangeScrollIndex,
-                        onChangeOff: (offset, maxScroll) =>
-                            _readComicCubit.updateOffsetScroll(
-                                offset: offset, maxOffset: maxScroll),
+                        controller: _readComicCubit.listComicImageController,
                       ),
                     _ => const LoadingWidget()
                   };
@@ -78,7 +75,6 @@ class _ReadComicPageState extends State<ReadComicPage>
           )
         ],
       ),
-  
     );
   }
 }

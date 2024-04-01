@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:super_app/models/models.dart';
 import 'package:super_app/views/reader/cubit/reader_cubit.dart';
+
+import '../read_comic.dart';
 
 part 'read_comic_state.dart';
 
@@ -25,15 +29,15 @@ class ReadComicCubit extends Cubit<ReadComicState> {
 
   AnimationController? get getAnimationController => _controller;
 
-  ValueNotifier<double> scrollChapter = ValueNotifier<double>(0.0);
+  ListComicImageController listComicImageController =
+      ListComicImageController();
 
   void onInit() {
-    // print(readerCubit.getCurrentChapter.scrollIndex);
+    listComicImageController.onChangeIndex = onChangeScrollIndex;
   }
 
   set setAnimationController(AnimationController controller) {
     _controller = controller;
-    scrollChapter.value = 0;
   }
 
   Map<String, String> get getHttpHeaders =>
@@ -78,17 +82,18 @@ class ReadComicCubit extends Cubit<ReadComicState> {
     final index = readerCubit.getCurrentChapter.index!;
     if (index == 0) return;
     readerCubit.getDetailChapter(readerCubit.getChapters[index - 1]);
+    if (_isShowMenu) {
+      _onChangeIsShowMenu(false);
+    }
   }
 
   void nextChapter() {
     final index = readerCubit.getCurrentChapter.index!;
     if (index >= readerCubit.getChapters.length) return;
     readerCubit.getDetailChapter(readerCubit.getChapters[index + 1]);
-  }
-
-  void updateOffsetScroll({required double offset, required double maxOffset}) {
-    scrollChapter.value = (offset / maxOffset) * 100;
-    print(maxOffset);
+    if (_isShowMenu) {
+      _onChangeIsShowMenu(false);
+    }
   }
 
   @override

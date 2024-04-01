@@ -26,6 +26,7 @@ class _ReadNovelPageState extends State<ReadNovelPage>
   Widget build(BuildContext context) {
     final textTheme = context.appTextTheme;
     return Scaffold(
+      drawer: const ChaptersDrawer(),
       body: Stack(
         children: [
           Positioned.fill(
@@ -49,15 +50,15 @@ class _ReadNovelPageState extends State<ReadNovelPage>
                           style: textTheme.bodyMedium!
                               .copyWith(fontSize: 18, fontFamily: "Lora"),
                           child: ListContent(
+                              key: ValueKey(
+                                  readerState.readCurrentChapter.data!.index!),
+                              controller: _readNovelCubit.controller,
+                              initialScrollIndex: readerState
+                                      .readCurrentChapter.data!.scrollIndex ??
+                                  0,
                               content: _readNovelCubit.removeTrashContent(
-                                  readerState.readCurrentChapter.data!.novel!))
-
-                          // SingleChildScrollView(
-                          //   padding: const EdgeInsets.symmetric(horizontal: 8),
-                          //   child: Text(_readNovelCubit.removeTrashContent(
-                          //       readerState.readCurrentChapter.data!.novel!)),
-                          // ),
-                          ),
+                                  readerState
+                                      .readCurrentChapter.data!.novel!))),
                       _ => const LoadingWidget()
                     };
                   },
@@ -70,12 +71,11 @@ class _ReadNovelPageState extends State<ReadNovelPage>
               return state.menu;
             },
             builder: (context, menu) {
-              print(menu);
               return switch (menu) {
                 MenuType.base => BaseMenu(
                     readNovelCubit: _readNovelCubit,
                   ),
-                MenuType.media => SizedBox(),
+                MenuType.media => const SizedBox(),
               };
             },
           )

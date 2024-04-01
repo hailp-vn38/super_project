@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:super_app/models/models.dart';
 import 'package:super_app/views/reader/cubit/reader_cubit.dart';
 
+import '../view/read_novel_view.dart';
+
 part 'read_novel_state.dart';
 
 class ReadNovelCubit extends Cubit<ReadNovelState> {
@@ -24,15 +26,15 @@ class ReadNovelCubit extends Cubit<ReadNovelState> {
 
   AnimationController? get getAnimationController => _controller;
 
-  ValueNotifier<double> scrollChapter = ValueNotifier<double>(0.0);
+  ListContentController controller = ListContentController();
 
   void onInit() {
     // print(readerCubit.getCurrentChapter.scrollIndex);
+    controller.onChangeIndex = onChangeScrollIndex;
   }
 
   set setAnimationController(AnimationController controller) {
     _controller = controller;
-    scrollChapter.value = 0;
   }
 
   void onTapScreen() {
@@ -62,5 +64,46 @@ class ReadNovelCubit extends Cubit<ReadNovelState> {
   String removeTrashContent(String value) {
     value = value.replaceAll('\n\n', '\n');
     return value;
+  }
+
+  void perChapter() {
+    final index = readerCubit.getCurrentChapter.index!;
+    if (index == 0) return;
+    readerCubit.updateChapter(readerCubit.getCurrentChapter);
+
+    readerCubit.getDetailChapter(readerCubit.getChapters[index - 1]);
+
+    if (_isShowMenu) {
+      _onChangeIsShowMenu(false);
+    }
+  }
+
+  void nextChapter() {
+    final index = readerCubit.getCurrentChapter.index!;
+    if (index >= readerCubit.getChapters.length) return;
+    readerCubit.updateChapter(readerCubit.getCurrentChapter);
+    readerCubit.getDetailChapter(readerCubit.getChapters[index + 1]);
+    if (_isShowMenu) {
+      _onChangeIsShowMenu(false);
+    }
+  }
+
+  void onChangeScrollIndex(int index) {
+    final chapter = readerCubit.getCurrentChapter;
+    chapter.scrollIndex = index;
+  }
+
+  void onChangeChapter(Chapter chapter) {
+    readerCubit.updateChapter(readerCubit.getCurrentChapter);
+    readerCubit.getDetailChapter(chapter);
+    if (_isShowMenu) {
+      _onChangeIsShowMenu(false);
+    }
+  }
+
+  void hideMenu() {
+    if (_isShowMenu) {
+      _onChangeIsShowMenu(false);
+    }
   }
 }

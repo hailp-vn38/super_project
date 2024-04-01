@@ -179,13 +179,35 @@ class BaseMenu extends StatelessWidget {
                               bottom: Radius.circular(20))),
                       child: RotatedBox(
                         quarterTurns: 1,
-                        child: ValueListenableBuilder(
-                          valueListenable: readComicCubit.scrollChapter,
-                          builder: (context, value, child) {
+                        child: BlocSelector<ReaderCubit, ReaderState,
+                            StateRes<Chapter>>(
+                          selector: (state) {
+                            return state.readCurrentChapter;
+                          },
+                          builder: (context, readCurrentChapter) {
+                            if (readCurrentChapter.status ==
+                                StatusType.loaded) {
+                              return ValueListenableBuilder(
+                                valueListenable: readComicCubit
+                                    .listComicImageController.scrollIndex,
+                                builder: (context, value, child) {
+                                  return Slider(
+                                    min: 0,
+                                    max: readCurrentChapter.data!.comic!.length
+                                        .toDouble(),
+                                    value: value.toDouble(),
+                                    onChanged: (value) {
+                                      readComicCubit.listComicImageController
+                                          .onSliderChangeValue(value.toInt());
+                                    },
+                                  );
+                                },
+                              );
+                            }
                             return Slider(
                               min: 0,
                               max: 100,
-                              value: value.clamp(0, 100),
+                              value: 0,
                               onChanged: (value) {},
                             );
                           },

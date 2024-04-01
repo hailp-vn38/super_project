@@ -1,19 +1,17 @@
-part of '../view/read_comic_view.dart';
+part of '../view/read_novel_view.dart';
 
 class ChaptersDrawer extends StatefulWidget {
-  const ChaptersDrawer({super.key, required this.onChangeChapter});
-  final ValueChanged<Chapter> onChangeChapter;
+  const ChaptersDrawer({super.key});
 
   @override
   State<ChaptersDrawer> createState() => _ChaptersDrawerState();
 }
 
 class _ChaptersDrawerState extends State<ChaptersDrawer> {
-  late ReadComicCubit _readComicCubit;
-
+  late ReadNovelCubit _readNovelCubit;
   @override
   void initState() {
-    _readComicCubit = context.read<ReadComicCubit>();
+    _readNovelCubit = context.read<ReadNovelCubit>();
     super.initState();
   }
 
@@ -21,7 +19,7 @@ class _ChaptersDrawerState extends State<ChaptersDrawer> {
   Widget build(BuildContext context) {
     final textTheme = context.appTextTheme;
     final colorScheme = context.colorScheme;
-    final book = _readComicCubit.getBook;
+    final book = _readNovelCubit.getBook;
     return Drawer(
       width: 280,
       child: ColoredBox(
@@ -84,24 +82,24 @@ class _ChaptersDrawerState extends State<ChaptersDrawer> {
               ),
               Expanded(
                   child: ScrollablePositionedList.separated(
-                itemCount: _readComicCubit.getChapters.length,
+                itemCount: _readNovelCubit.getChapters.length,
                 initialScrollIndex:
-                    _readComicCubit.readerCubit.getCurrentChapter.index ?? 0,
+                    _readNovelCubit.readerCubit.getCurrentChapter.index ?? 0,
                 separatorBuilder: (context, index) => const Divider(
                   height: 1,
                   endIndent: 12,
                   indent: 12,
                 ),
                 itemBuilder: (context, index) {
-                  final chapter = _readComicCubit.getChapters[index];
+                  final chapter = _readNovelCubit.getChapters[index];
                   final isCurrent =
-                      _readComicCubit.readerCubit.getCurrentChapter.index ==
+                      _readNovelCubit.readerCubit.getCurrentChapter.index ==
                           index;
                   return MouseRegion(
                     cursor: SystemMouseCursors.click,
                     child: GestureDetector(
                       onTap: () {
-                        widget.onChangeChapter(chapter);
+                        _readNovelCubit.onChangeChapter(chapter);
                         Scaffold.of(context).closeDrawer();
                       },
                       child: Container(
