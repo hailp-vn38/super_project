@@ -18,6 +18,10 @@ class _ReadNovelPageState extends State<ReadNovelPage>
     super.initState();
   }
 
+  List<String> tmp(String value) {
+    return value.split("/n");
+  }
+
   @override
   Widget build(BuildContext context) {
     final textTheme = context.appTextTheme;
@@ -44,12 +48,16 @@ class _ReadNovelPageState extends State<ReadNovelPage>
                       StatusType.loaded => DefaultTextStyle(
                           style: textTheme.bodyMedium!
                               .copyWith(fontSize: 18, fontFamily: "Lora"),
-                          child: SingleChildScrollView(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            child: Text(_readNovelCubit.removeTrashContent(
-                                readerState.readCurrentChapter.data!.novel!)),
+                          child: ListContent(
+                              content: _readNovelCubit.removeTrashContent(
+                                  readerState.readCurrentChapter.data!.novel!))
+
+                          // SingleChildScrollView(
+                          //   padding: const EdgeInsets.symmetric(horizontal: 8),
+                          //   child: Text(_readNovelCubit.removeTrashContent(
+                          //       readerState.readCurrentChapter.data!.novel!)),
+                          // ),
                           ),
-                        ),
                       _ => const LoadingWidget()
                     };
                   },

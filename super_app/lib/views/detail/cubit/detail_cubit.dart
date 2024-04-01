@@ -1,7 +1,14 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:js_runtime/js_runtime.dart';
 import 'package:js_runtime/utils/logger.dart';
+
 import 'package:super_app/app/extensions/string_extension.dart';
 import 'package:super_app/app/types.dart';
 import 'package:super_app/models/models.dart';
@@ -33,6 +40,9 @@ class DetailCubit extends Cubit<DetailState> {
 
   Extension? get getExtension => _extension;
 
+  Completer<({Book book, List<Chapter> chapters, List<Genre> genres})>?
+      detailCompleter;
+
   void onInit() async {
     DetailState detailState = state;
 
@@ -59,20 +69,21 @@ class DetailCubit extends Cubit<DetailState> {
       // emit loading detail book
       emit(detailState);
       _logger.info("", name: "onRefreshDetail");
-      final detail = await getDetailBook();
-      detailState = detailState.copyWith(
-          bookState: StateRes(status: StatusType.loaded, data: detail.book),
-          chaptersState: detail.chapters.isNotEmpty
-              ? StateRes(status: StatusType.loaded, data: detail.chapters)
-              : null,
-          genresState: detail.genres.isNotEmpty
-              ? StateRes(status: StatusType.loaded, data: detail.genres)
-              : null);
-      if (detail.chapters.isEmpty) {
-        _getChapters();
-      }
-      // emit data detail
-      emit(detailState);
+      getDetailBook().then((detail) {
+        detailState = detailState.copyWith(
+            bookState: StateRes(status: StatusType.loaded, data: detail.book),
+            chaptersState: detail.chapters.isNotEmpty
+                ? StateRes(status: StatusType.loaded, data: detail.chapters)
+                : null,
+            genresState: detail.genres.isNotEmpty
+                ? StateRes(status: StatusType.loaded, data: detail.genres)
+                : null);
+        if (detail.chapters.isEmpty) {
+          _getChapters();
+        }
+        // emit data detail
+        emit(detailState);
+      });
     } catch (err) {
       emit(detailState.copyWith(
           bookState: bookState.copyWith(
