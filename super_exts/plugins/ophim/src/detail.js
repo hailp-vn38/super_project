@@ -25,6 +25,14 @@ async function detail(book_url) {
     }
   }
 
+  var genres = [];
+  for (const item of detail.category) {
+    genres.push({
+      title: item.name,
+      url: "/v1/api/the-loai/" + item.slug,
+    });
+  }
+
   return Response.success({
     name: detail.name,
     cover: res.data.seoOnPage.seoSchema.image,
@@ -33,6 +41,7 @@ async function detail(book_url) {
     description: detail.content,
     url: book_url,
     chapters,
+    genres,
   });
 }
 
