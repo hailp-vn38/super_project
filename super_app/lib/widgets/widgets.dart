@@ -5,3 +5,4 @@ export './icon_extension.dart';
 export './genre_card_widget.dart';
 export './image_widget.dart';
 export './empty_widget.dart';
+export './platform_widget.dart';

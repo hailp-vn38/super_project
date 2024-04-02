@@ -10,6 +10,7 @@ import 'package:super_app/views/home/home.dart';
 import 'package:super_app/views/reader/reader.dart';
 import 'package:super_app/views/search/search.dart';
 import 'package:super_app/views/splash/splash.dart';
+import 'package:super_app/views/tabs/tabs.dart';
 
 class Routes {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -18,6 +19,9 @@ class Routes {
       case RoutesName.init:
         return PageTransition(
             child: const SplashView(), type: PageTransitionType.rightToLeft);
+      case RoutesName.tabs:
+        return PageTransition(
+            child: const TabsView(), type: PageTransitionType.fade);
 
       case RoutesName.home:
         return PageTransition(

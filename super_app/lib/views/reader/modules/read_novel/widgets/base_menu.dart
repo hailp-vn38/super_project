@@ -49,7 +49,8 @@ class BaseMenu extends StatelessWidget {
                           ],
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(left: 8, right: 8),
+                          padding: const EdgeInsets.only(
+                              left: 8, right: 8, bottom: 4),
                           child: TextScroll(
                             readNovelCubit.getBook.url ?? "",
                             mode: TextScrollMode.endless,
@@ -90,9 +91,16 @@ class BaseMenu extends StatelessWidget {
                     Gaps.hGap12,
                     Align(
                       alignment: Alignment.center,
-                      child: Text(
-                          readNovelCubit.readerCubit.getCurrentChapter.name ??
-                              ""),
+                      child: BlocSelector<ReaderCubit, ReaderState,
+                          StateRes<Chapter>>(
+                        selector: (state) {
+                          return state.readCurrentChapter;
+                        },
+                        builder: (context, state) {
+                          if (state.data == null) return const SizedBox();
+                          return Text(state.data!.name ?? "");
+                        },
+                      ),
                     ),
                     Row(
                       children: [

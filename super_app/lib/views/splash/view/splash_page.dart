@@ -21,7 +21,7 @@ class _SplashPageState extends State<SplashPage> {
         listener: (context, state) {
           if (state is AppReady) {
             Navigator.pushNamedAndRemoveUntil(
-                context, RoutesName.explore, (route) => false);
+                context, RoutesName.tabs, (route) => false);
           }
         },
         builder: (context, state) {

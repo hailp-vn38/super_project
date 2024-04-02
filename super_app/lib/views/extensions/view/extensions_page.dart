@@ -302,6 +302,7 @@ class _ExtensionCardState extends State<ExtensionCard> {
               alignment: Alignment.center,
               child: ImageWidget(
                 image: widget.metadataExt.icon,
+                loading: true,
               ),
             ),
             Gaps.wGap8,

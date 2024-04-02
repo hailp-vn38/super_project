@@ -63,7 +63,7 @@ class BaseMenu extends StatelessWidget {
                               ),
                               Gaps.wGap12,
                               ComicButton(
-                                onTap: () {},
+                                onTap: readComicCubit.startAutoScroll,
                                 colorBackground: colorBackground,
                                 icon: const Icon(
                                   Icons.swipe_down_alt_rounded,

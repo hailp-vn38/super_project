@@ -29,6 +29,7 @@ class App extends StatelessWidget {
         swapLegacyOnMaterial3: true,
         // To use the Playground font, add GoogleFonts package and uncomment
         // fontFamily: GoogleFonts.notoSans().fontFamily,
+        fontFamily: "Lora",
       ),
       darkTheme: FlexThemeData.dark(
         scheme: FlexScheme.deepPurple,
@@ -45,16 +46,16 @@ class App extends StatelessWidget {
         useMaterial3: true,
         swapLegacyOnMaterial3: true,
         // To use the Playground font, add GoogleFonts package and uncomment
-        // fontFamily: GoogleFonts.notoSans().fontFamily,
+        fontFamily: "Lora",
       ),
       themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: false,
       locale: context.locale,
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
-      // onGenerateRoute: Routes.onGenerateRoute,
-      // initialRoute: RoutesName.init,
-      home: HomeView(),
+      onGenerateRoute: Routes.onGenerateRoute,
+      initialRoute: RoutesName.init,
+      // home: HomeView(),
     );
   }
 }

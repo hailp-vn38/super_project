@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:js_runtime/js_runtime.dart';
+import 'package:super_app/app/constants/gaps.dart';
 import 'package:super_app/app/extensions/context_extension.dart';
 import 'package:super_app/app/extensions/string_extension.dart';
 import 'package:super_app/models/models.dart';
@@ -234,6 +235,7 @@ class BookItem extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: Column(
                   children: [
+                    Gaps.hGap4,
                     Expanded(
                       child: Text(
                         book.name!.toTitleCase(),
@@ -252,7 +254,7 @@ class BookItem extends StatelessWidget {
                       overflow: TextOverflow.visible,
                     ),
                     const SizedBox(
-                      height: 4,
+                      height: 8,
                     ),
                   ],
                 ),

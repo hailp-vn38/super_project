@@ -63,6 +63,8 @@ class ReadNovelCubit extends Cubit<ReadNovelState> {
 
   String removeTrashContent(String value) {
     value = value.replaceAll('\n\n', '\n');
+    value = value.replaceAll('\n ', '\n\t\t\t\t\t\t\t');
+
     return value;
   }
 

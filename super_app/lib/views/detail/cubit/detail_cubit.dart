@@ -83,6 +83,11 @@ class DetailCubit extends Cubit<DetailState> {
         }
         // emit data detail
         emit(detailState);
+      }).catchError((err) {
+        emit(detailState.copyWith(
+            bookState: const StateRes(
+          status: StatusType.error,
+        )));
       });
     } catch (err) {
       emit(detailState.copyWith(
@@ -147,44 +152,69 @@ class DetailCubit extends Cubit<DetailState> {
 
   Future<({Book book, List<Chapter> chapters, List<Genre> genres})>
       getDetailBook() async {
-    try {
-      List<Chapter> chapters = [];
-      List<Genre> genres = [];
-      final result = await _jsRuntime.getDetail<Map<String, dynamic>>(
-        url: bookUrl,
-        jsScript: _extension!.getDetailScript,
-      );
-      Book book = Book.fromMap({...result, "type": _extension!.metadata.type});
-      Uri bookUri = Uri.parse(book.url!);
-      if (!bookUri.isScheme("HTTP")) {
-        final uriExt = Uri.parse(_extension!.metadata.source!);
-        bookUri = bookUri.replace(scheme: uriExt.scheme, host: uriExt.host);
+    final jsCore = await rootBundle.loadString("assets/js/extension.js");
+    return compute(computeFunGetDetail,
+        JsRuntimePrams(jsCore: jsCore, url: bookUrl, extension: _extension!));
+  }
 
-        book.url = bookUri.toString();
-      }
+  String get titleChaptersByType {
+    return switch (_extension!.metadata.type!) {
+      ExtensionType.comic => "comic",
+      ExtensionType.novel => "novel",
+      ExtensionType.movie => "movie",
+    };
+  }
+}
 
-      if (result["genres"] != null && result["genres"] is List) {
-        genres =
-            List.from(result["genres"]).map((e) => Genre.fromMap(e)).toList();
-      }
+class JsRuntimePrams {
+  final String jsCore;
+  final String url;
+  final Extension extension;
+  JsRuntimePrams(
+      {required this.jsCore, required this.url, required this.extension});
+}
 
-      if (result["chapters"] != null &&
-          result["chapters"] is List &&
-          result["chapters"].length > 0) {
-        for (var i = 0; i < result["chapters"].length; i++) {
-          final map = result["chapters"][i];
-          if (map is Map<String, dynamic>) {
-            chapters.add(Chapter.fromMap({...map, "index": i}));
-          }
+Future<({Book book, List<Chapter> chapters, List<Genre> genres})>
+    computeFunGetDetail(JsRuntimePrams prams) async {
+  try {
+    final jsRuntime = JsRuntime();
+    final isReady = await jsRuntime.initRuntimeTst(jsExtension: prams.jsCore);
+
+    if (!isReady) return Future.error(Exception("jsRuntime init Error"));
+    List<Chapter> chapters = [];
+    List<Genre> genres = [];
+    final result = await jsRuntime.getDetail<Map<String, dynamic>>(
+      url: prams.url,
+      jsScript: prams.extension.getDetailScript,
+    );
+    Book book =
+        Book.fromMap({...result, "type": prams.extension.metadata.type});
+    Uri bookUri = Uri.parse(book.url!);
+    // Kiểm tra xem book url đã có url hợp kệ hay chưa
+    if (!bookUri.isScheme("HTTP")) {
+      final uriExt = Uri.parse(prams.extension.metadata.source!);
+      bookUri = bookUri.replace(scheme: uriExt.scheme, host: uriExt.host);
+
+      book.url = bookUri.toString();
+    }
+    if (result["genres"] != null && result["genres"] is List) {
+      genres =
+          List.from(result["genres"]).map((e) => Genre.fromMap(e)).toList();
+    }
+
+    if (result["chapters"] != null &&
+        result["chapters"] is List &&
+        result["chapters"].length > 0) {
+      for (var i = 0; i < result["chapters"].length; i++) {
+        final map = result["chapters"][i];
+        if (map is Map<String, dynamic>) {
+          chapters.add(Chapter.fromMap({...map, "index": i}));
         }
       }
-      _logger.info(
-          "\nSTART\n Book : ${book.name}\n Chapters : ${chapters.length} \n Genres : ${genres.length}\nEND",
-          name: "getDetailBook");
-      return (book: book, chapters: chapters, genres: genres);
-    } catch (error) {
-      _logger.log(error, name: "getDetailBook");
-      rethrow;
     }
+
+    return (book: book, chapters: chapters, genres: genres);
+  } catch (err) {
+    return Future.error(Exception("jsRuntime init Error"));
   }
 }

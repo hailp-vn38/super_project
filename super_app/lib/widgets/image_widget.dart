@@ -62,6 +62,7 @@ class _ImageWidgetState extends State<ImageWidget> {
       ImageType.network => CachedNetworkImage(
           imageUrl: _image!,
           placeholder: (context, url) => _loadingWidget(),
+          errorWidget: (context, url, error) => _loadingWidget(),
           fit: BoxFit.cover,
           httpHeaders: widget.httpHeaders,
         ),

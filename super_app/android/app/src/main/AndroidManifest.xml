@@ -2,7 +2,7 @@
 	<uses-permission android:name="android.permission.INTERNET"/>
 	<uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
     <application
-        android:label="super_app"
+        android:label="SupterApp"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

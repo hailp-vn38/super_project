@@ -296,7 +296,7 @@ class _BookDetailState extends State<BookDetail> {
                                       Gaps.wGap16,
                                       Expanded(
                                           child: Text(
-                                        "${chaptersRes.data!.length} chương",
+                                        "${chaptersRes.data!.length} ${_detailCubit.titleChaptersByType}",
                                         style: textTheme.titleMedium,
                                       )),
                                       IconButton(

@@ -19,6 +19,8 @@ class ListComicImageController {
     scrollIndex.value = index;
   }
 
+  set setScrollIndex(int index) => scrollIndex.value = index;
+
   void _onChangeIndex(int index) {
     onChangeIndex?.call(index);
     scrollIndex.value = index;
@@ -27,6 +29,10 @@ class ListComicImageController {
   void onSliderChangeValue(int index) {
     if (index == scrollIndex.value) return;
     jumpTo(index);
+  }
+
+  void enableAutoScroll() {
+    _state?._enableAutoScroll(const Duration(seconds: 40));
   }
 }
 
@@ -49,9 +55,12 @@ class ListComicImage extends StatefulWidget {
 }
 
 class _ListComicImageState extends State<ListComicImage> {
+  // final ItemScrollController _itemScrollController = ItemScrollController();
+  // final ScrollOffsetController _scrollOffsetController =
+  //     ScrollOffsetController();
+  // final ItemPositionsListener _itemPositionsListener =
+  //     ItemPositionsListener.create();
   final ItemScrollController _itemScrollController = ItemScrollController();
-  final ScrollOffsetController _scrollOffsetController =
-      ScrollOffsetController();
   final ItemPositionsListener _itemPositionsListener =
       ItemPositionsListener.create();
 
@@ -75,6 +84,10 @@ class _ListComicImageState extends State<ListComicImage> {
     _itemScrollController.jumpTo(index: index);
   }
 
+  void _enableAutoScroll(Duration duration) {
+    _itemScrollController.scrollToMax(duration: duration);
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScrollablePositionedList.builder(
@@ -82,17 +95,73 @@ class _ListComicImageState extends State<ListComicImage> {
       initialScrollIndex: widget.initialScrollIndex,
       itemBuilder: (context, index) {
         final url = widget.images[index];
-        return ImageWidget(
-          image: url,
-          httpHeaders: widget.headers,
-          loading: true,
-        );
+        return KeepAliveWidget(
+            key: ValueKey(index),
+            child: ImageWidget(
+              image: url,
+              httpHeaders: widget.headers,
+              loading: true,
+            ));
       },
       itemScrollController: _itemScrollController,
-      scrollOffsetController: _scrollOffsetController,
+      // scrollOffsetController: _scrollOffsetController,
       itemPositionsListener: _itemPositionsListener,
     );
   }
+}
 
+class ListScrollController {
+  _ListScrollState? _state;
 
+  ValueChanged<double>? onChangeOffset;
+
+  void _bing(_ListScrollState state) {
+    _state = state;
+  }
+}
+
+class ListScroll extends StatefulWidget {
+  const ListScroll(
+      {super.key,
+      required this.controller,
+      required this.initialScrollOffset,
+      required this.children});
+  final ListScrollController controller;
+  final double? initialScrollOffset;
+  final List<Widget> children;
+
+  @override
+  State<ListScroll> createState() => _ListScrollState();
+}
+
+class _ListScrollState extends State<ListScroll> {
+  late ScrollController _scrollController;
+  late ListScrollController _controller;
+
+  @override
+  void initState() {
+    _controller = widget.controller;
+    _controller._bing(this);
+    _scrollController = ScrollController(
+        initialScrollOffset: widget.initialScrollOffset ?? 0.0);
+    _scrollController.addListener(() {
+      _controller.onChangeOffset?.call(_scrollController.offset);
+    });
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      controller: _scrollController,
+      children: widget.children,
+    );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 }

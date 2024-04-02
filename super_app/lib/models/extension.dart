@@ -196,24 +196,26 @@ class Metadata {
   String? path;
   String? icon;
   String? tag;
-  Metadata(
-      {this.name,
-      this.author,
-      this.version,
-      this.source,
-      this.regexp,
-      this.description,
-      this.locale,
-      this.language,
-      this.type,
-      this.path,
-      this.icon,
-      this.tag});
+  bool? browser;
+  Metadata({
+    this.name,
+    this.author,
+    this.version,
+    this.source,
+    this.regexp,
+    this.description,
+    this.locale,
+    this.language,
+    this.type,
+    this.path,
+    this.icon,
+    this.tag,
+    this.browser,
+  });
 
   Metadata copyWith({
     String? name,
     String? author,
-    String? slug,
     int? version,
     String? source,
     String? regexp,
@@ -224,20 +226,23 @@ class Metadata {
     String? path,
     String? icon,
     String? tag,
+    bool? browser,
   }) {
     return Metadata(
-        name: name ?? this.name,
-        author: author ?? this.author,
-        version: version ?? this.version,
-        source: source ?? this.source,
-        regexp: regexp ?? this.regexp,
-        description: description ?? this.description,
-        locale: locale ?? this.locale,
-        language: language ?? this.language,
-        type: type ?? this.type,
-        path: path ?? this.path,
-        icon: icon ?? this.icon,
-        tag: tag ?? this.tag);
+      name: name ?? this.name,
+      author: author ?? this.author,
+      version: version ?? this.version,
+      source: source ?? this.source,
+      regexp: regexp ?? this.regexp,
+      description: description ?? this.description,
+      locale: locale ?? this.locale,
+      language: language ?? this.language,
+      type: type ?? this.type,
+      path: path ?? this.path,
+      icon: icon ?? this.icon,
+      tag: tag ?? this.tag,
+      browser: browser ?? this.browser,
+    );
   }
 
   Map<String, dynamic> toMap() {
@@ -254,26 +259,29 @@ class Metadata {
       'path': path,
       'icon': icon,
       'tag': tag,
+      'browser': browser,
     };
   }
 
   factory Metadata.fromMap(Map<String, dynamic> map) {
     return Metadata(
-      name: map['name'] ?? "",
-      author: map['author'] ?? "",
-      version: map['version'] as int,
-      source: map['source'] ?? "",
-      regexp: map['regexp'] ?? "",
-      description: map['description'] ?? "",
-      locale: map['locale'] ?? "",
-      language: map['language'] ?? "",
+      name: map['name'] != null ? map['name'] as String : null,
+      author: map['author'] != null ? map['author'] as String : null,
+      version: map['version'] != null ? map['version'] as int : null,
+      source: map['source'] != null ? map['source'] as String : null,
+      regexp: map['regexp'] != null ? map['regexp'] as String : null,
+      description:
+          map['description'] != null ? map['description'] as String : null,
+      locale: map['locale'] != null ? map['locale'] as String : null,
+      language: map['language'] != null ? map['language'] as String : null,
       type: ExtensionType.values.firstWhere(
         (type) => type.name == map["type"],
         orElse: () => ExtensionType.novel,
       ),
-      path: map['path'] ?? "",
-      icon: map['icon'] ?? "",
-      tag: map['tag'],
+      path: map['path'] != null ? map['path'] as String : null,
+      icon: map['icon'] != null ? map['icon'] as String : null,
+      tag: map['tag'] != null ? map['tag'] as String : null,
+      browser: map['browser'] != null ? map['browser'] as bool : null,
     );
   }
 
@@ -281,6 +289,11 @@ class Metadata {
 
   factory Metadata.fromJson(String source) =>
       Metadata.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() {
+    return 'Metadata(name: $name, author: $author, version: $version, source: $source, regexp: $regexp, description: $description, locale: $locale, language: $language, type: $type, path: $path, icon: $icon, tag: $tag, browser: $browser)';
+  }
 
   @override
   bool operator ==(covariant Metadata other) {
@@ -297,7 +310,8 @@ class Metadata {
         other.type == type &&
         other.path == path &&
         other.icon == icon &&
-        other.tag == tag;
+        other.tag == tag &&
+        other.browser == browser;
   }
 
   @override
@@ -313,11 +327,7 @@ class Metadata {
         type.hashCode ^
         path.hashCode ^
         icon.hashCode ^
-        tag.hashCode;
-  }
-
-  @override
-  String toString() {
-    return 'Metadata(name: $name, author: $author, version: $version, source: $source, regexp: $regexp, description: $description, locale: $locale, language: $language, type: $type, path: $path, icon: $icon, tag: $tag)';
+        tag.hashCode ^
+        browser.hashCode;
   }
 }

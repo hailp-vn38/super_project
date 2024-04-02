@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:dio_client/index.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_js/flutter_js.dart';
 import 'package:js_runtime/js_runtime.dart';
 import 'package:xpath_selector_html_parser/xpath_selector_html_parser.dart';
@@ -34,7 +35,7 @@ class JsRuntime {
     if (dirCookie != null) {
       _dioClient.enableCookie(dir: dirCookie);
     }
-    _runtime = getJavascriptRuntime();
+    _runtime = getJavascriptRuntime(xhr: false);
     _runtime.onMessage('request', (dynamic args) async {
       _logger.log("request args ::: $args");
       try {
@@ -252,228 +253,233 @@ class JsRuntime {
 
   Future<bool> initRuntimeTst(
       {required String jsExtension, String? dirCookie}) async {
-    // if (dirCookie != null) {
-    //   _dioClient.enableCookie(dir: dirCookie);
-    // }
-    _runtime = getJavascriptRuntime();
-    // _runtime.onMessage('request', (dynamic args) async {
-    //   _logger.log("request args ::: $args");
-    //   try {
-    //     final dataResponse = await _dioClient.request<String>(
-    //       args[0],
-    //       data: args[1]['formData'] != null
-    //           ? FormData.fromMap(args[1]['formData'])
-    //           : args[1]['data'],
-    //       queryParameters: args[1]['queryParameters'] ?? {},
-    //       options: Options(
-    //         headers: args[1]['headers'] ?? {},
-    //         method: args[1]['method'] ?? 'get',
-    //       ),
-    //     );
-    //     return dataResponse;
-    //   } catch (error) {
-    //     return null;
-    //   }
-    // });
+    if (dirCookie != null) {
+      _dioClient.enableCookie(dir: dirCookie);
+    }
+    _runtime = getJavascriptRuntime(xhr: false);
+    _runtime.onMessage('request', (dynamic args) async {
+      _logger.log("request args ::: $args");
+      try {
+        final dataResponse = await _dioClient.request<String>(
+          args[0],
+          data: args[1]['formData'] != null
+              ? FormData.fromMap(args[1]['formData'])
+              : args[1]['data'],
+          queryParameters: args[1]['queryParameters'] ?? {},
+          options: Options(
+            headers: args[1]['headers'] ?? {},
+            method: args[1]['method'] ?? 'get',
+          ),
+        );
+        return dataResponse;
+      } catch (error) {
+        return null;
+      }
+    });
 
-    // _runtime.onMessage('log', (dynamic args) {
-    //   _logger.log(args, name: "LOG");
-    //   _streamController.add(List<String>.from(args));
-    // });
+    _runtime.onMessage('log', (dynamic args) {
+      _logger.log(args, name: "LOG");
+      _streamController.add(List<String>.from(args));
+    });
 
-    // _runtime.onMessage('querySelector', (dynamic args) {
-    //   try {
-    //     final content = args[0];
-    //     final selector = args[1];
-    //     final fun = args[2];
+    _runtime.onMessage('querySelector', (dynamic args) {
+      try {
+        final content = args[0];
+        final selector = args[1];
+        final fun = args[2];
 
-    //     final doc = parse(content).querySelector(selector);
-    //     switch (fun) {
-    //       case 'text':
-    //         return doc?.text ?? '';
-    //       case 'outerHTML':
-    //         return doc?.outerHtml ?? '';
-    //       case 'innerHTML':
-    //         return doc?.innerHtml ?? '';
-    //       default:
-    //         return doc?.outerHtml ?? '';
-    //     }
-    //   } catch (error) {
-    //     rethrow;
-    //   }
-    // });
+        final doc = parse(content).querySelector(selector);
+        switch (fun) {
+          case 'text':
+            return doc?.text ?? '';
+          case 'outerHTML':
+            return doc?.outerHtml ?? '';
+          case 'innerHTML':
+            return doc?.innerHtml ?? '';
+          default:
+            return doc?.outerHtml ?? '';
+        }
+      } catch (error) {
+        rethrow;
+      }
+    });
 
-    // _runtime.onMessage('querySelectorAll', (dynamic args) async {
-    //   try {
-    //     final content = args[0];
-    //     final selector = args[1];
-    //     final doc = parse(content).querySelectorAll(selector);
-    //     if (doc.isEmpty) return [];
-    //     final elements = jsonEncode(doc.map((e) {
-    //       return e.outerHtml;
-    //     }).toList());
-    //     return elements;
-    //   } catch (error) {
-    //     rethrow;
-    //   }
-    // });
+    _runtime.onMessage('querySelectorAll', (dynamic args) async {
+      try {
+        final content = args[0];
+        final selector = args[1];
+        final doc = parse(content).querySelectorAll(selector);
+        if (doc.isEmpty) return [];
+        final elements = jsonEncode(doc.map((e) {
+          return e.outerHtml;
+        }).toList());
+        return elements;
+      } catch (error) {
+        rethrow;
+      }
+    });
 
-    // _runtime.onMessage('getElementById', (dynamic args) async {
-    //   final content = args[0];
-    //   final id = args[1];
-    //   final fun = args[2];
-    //   final doc = parse(content).getElementById(id);
-    //   switch (fun) {
-    //     case 'text':
-    //       return doc?.text ?? '';
-    //     case 'outerHTML':
-    //       return doc?.outerHtml ?? '';
-    //     case 'innerHTML':
-    //       return doc?.innerHtml ?? '';
-    //     default:
-    //       return doc?.outerHtml ?? '';
-    //   }
-    // });
+    _runtime.onMessage('getElementById', (dynamic args) async {
+      final content = args[0];
+      final id = args[1];
+      final fun = args[2];
+      final doc = parse(content).getElementById(id);
+      switch (fun) {
+        case 'text':
+          return doc?.text ?? '';
+        case 'outerHTML':
+          return doc?.outerHtml ?? '';
+        case 'innerHTML':
+          return doc?.innerHtml ?? '';
+        default:
+          return doc?.outerHtml ?? '';
+      }
+    });
 
-    // _runtime.onMessage('getElementsByClassName', (dynamic args) async {
-    //   final content = args[0];
-    //   final className = args[1];
-    //   final doc = parse(content).getElementsByClassName(className);
-    //   if (doc.isEmpty) return [];
-    //   final elements = jsonEncode(doc.map((e) {
-    //     return e.outerHtml;
-    //   }).toList());
+    _runtime.onMessage('getElementsByClassName', (dynamic args) async {
+      final content = args[0];
+      final className = args[1];
+      final doc = parse(content).getElementsByClassName(className);
+      if (doc.isEmpty) return [];
+      final elements = jsonEncode(doc.map((e) {
+        return e.outerHtml;
+      }).toList());
 
-    //   return elements;
-    // });
+      return elements;
+    });
 
-    // _runtime.onMessage('queryXPath', (args) {
-    //   final content = args[0];
-    //   final selector = args[1];
-    //   final fun = args[2];
+    _runtime.onMessage('queryXPath', (args) {
+      final content = args[0];
+      final selector = args[1];
+      final fun = args[2];
 
-    //   final xpath = HtmlXPath.html(content);
-    //   final result = xpath.queryXPath(selector);
+      final xpath = HtmlXPath.html(content);
+      final result = xpath.queryXPath(selector);
 
-    //   switch (fun) {
-    //     case 'attr':
-    //       return result.attr ?? '';
-    //     case 'attrs':
-    //       return jsonEncode(result.attrs);
-    //     case 'text':
-    //       return result.node?.text;
-    //     case 'allHTML':
-    //       return result.nodes
-    //           .map((e) => (e.node as Element).outerHtml)
-    //           .toList();
-    //     case 'outerHTML':
-    //       return (result.node?.node as Element).outerHtml;
-    //     default:
-    //       return result.node?.text;
-    //   }
-    // });
+      switch (fun) {
+        case 'attr':
+          return result.attr ?? '';
+        case 'attrs':
+          return jsonEncode(result.attrs);
+        case 'text':
+          return result.node?.text;
+        case 'allHTML':
+          return result.nodes
+              .map((e) => (e.node as Element).outerHtml)
+              .toList();
+        case 'outerHTML':
+          return (result.node?.node as Element).outerHtml;
+        default:
+          return result.node?.text;
+      }
+    });
 
-    // _runtime.onMessage('removeSelector', (dynamic args) {
-    //   final content = args[0];
-    //   final selector = args[1];
-    //   final doc = parse(content);
-    //   doc.querySelectorAll(selector).forEach((element) {
-    //     element.remove();
-    //   });
-    //   return doc.outerHtml;
-    // });
+    _runtime.onMessage('removeSelector', (dynamic args) {
+      final content = args[0];
+      final selector = args[1];
+      final doc = parse(content);
+      doc.querySelectorAll(selector).forEach((element) {
+        element.remove();
+      });
+      return doc.outerHtml;
+    });
 
-    // _runtime.onMessage('getAttributeText', (args) {
-    //   final content = args[0];
-    //   final selector = args[1];
-    //   final attr = args[2];
-    //   final doc = parse(content).querySelector(selector);
-    //   return doc?.attributes[attr];
-    // });
+    _runtime.onMessage('getAttributeText', (args) {
+      final content = args[0];
+      final selector = args[1];
+      final attr = args[2];
+      final doc = parse(content).querySelector(selector);
+      return doc?.attributes[attr];
+    });
 
-    // _runtime.onMessage('base64', (args) {
-    //   try {
-    //     final content = args[0];
-    //     final type = args[1];
-    //     switch (type) {
-    //       case "decode":
-    //         return utf8.decode(base64.decode(content));
-    //       case "encode":
-    //         return base64.encode(utf8.encode(content));
-    //       default:
-    //         return null;
-    //     }
-    //   } catch (error) {
-    //     return null;
-    //   }
-    // });
+    _runtime.onMessage('base64', (args) {
+      try {
+        final content = args[0];
+        final type = args[1];
+        switch (type) {
+          case "decode":
+            return utf8.decode(base64.decode(content));
+          case "encode":
+            return base64.encode(utf8.encode(content));
+          default:
+            return null;
+        }
+      } catch (error) {
+        return null;
+      }
+    });
 
-    // _runtime.onMessage('launchFetchBlock', (args) async {
-    //   final url = args[0];
-    //   final regex = args[1];
-    //   final timeout = args[2];
-    //   return await _browserHeadless.launchFetchBlock(
-    //       url: url, regex: regex, timeout: timeout ?? 20000);
-    // });
+    _runtime.onMessage('launchFetchBlock', (args) async {
+      final url = args[0];
+      final regex = args[1];
+      final timeout = args[2];
+      return await _browserHeadless.launchFetchBlock(
+          url: url, regex: regex, timeout: timeout ?? 20000);
+    });
 
-    // _runtime.onMessage('launchXhrBlock', (args) async {
-    //   final url = args[0];
-    //   final regex = args[1];
-    //   final timeout = args[2];
-    //   return await _browserHeadless.launchXhrBlock(
-    //       url: url, regex: regex, timeout: timeout ?? 20000);
-    // });
+    _runtime.onMessage('launchXhrBlock', (args) async {
+      final url = args[0];
+      final regex = args[1];
+      final timeout = args[2];
+      return await _browserHeadless.launchXhrBlock(
+          url: url, regex: regex, timeout: timeout ?? 20000);
+    });
 
-    // _runtime.onMessage('launch', (args) async {
-    //   final url = args[0];
-    //   final timeout = args[1];
-    //   return await _browserHeadless.launch(url: url, timeout: timeout ?? 20000);
-    // });
+    _runtime.onMessage('launch', (args) async {
+      final url = args[0];
+      final timeout = args[1];
+      return await _browserHeadless.launch(url: url, timeout: timeout ?? 20000);
+    });
 
-    // _runtime.onMessage('callJs', (args) async {
-    //   final source = args[0];
-    //   final timeout = args[1];
-    //   return await _browserHeadless.callJs(
-    //       source: source, timer: timeout ?? 20000);
-    // });
+    _runtime.onMessage('callJs', (args) async {
+      final source = args[0];
+      final timeout = args[1];
+      return await _browserHeadless.callJs(
+          source: source, timer: timeout ?? 20000);
+    });
 
-    // _runtime.onMessage('waitUrl', (args) async {
-    //   final url = args[0];
-    //   final timeout = args[1];
-    //   return await _browserHeadless.waitUrl(
-    //       url: url, timeout: timeout ?? 20000);
-    // });
+    _runtime.onMessage('waitUrl', (args) async {
+      final url = args[0];
+      final timeout = args[1];
+      return await _browserHeadless.waitUrl(
+          url: url, timeout: timeout ?? 20000);
+    });
 
-    // _runtime.onMessage('waitUrlAjaxResponse', (args) async {
-    //   final url = args[0];
-    //   final timeout = args[1];
-    //   return await _browserHeadless.waitUrlAjaxResponse(
-    //       url: url, timeout: timeout ?? 20000);
-    // });
-    // _runtime.onMessage('getHtml', (args) async {
-    //   return await _browserHeadless.getHtml();
-    // });
-    // _runtime.onMessage('loadUrl', (args) async {
-    //   return await _browserHeadless.launch(url: args[0]);
-    // });
+    _runtime.onMessage('waitUrlAjaxResponse', (args) async {
+      final url = args[0];
+      final timeout = args[1];
+      return await _browserHeadless.waitUrlAjaxResponse(
+          url: url, timeout: timeout ?? 20000);
+    });
+    _runtime.onMessage('getHtml', (args) async {
+      return await _browserHeadless.getHtml();
+    });
+    _runtime.onMessage('loadUrl', (args) async {
+      return await _browserHeadless.launch(url: args[0]);
+    });
 
-    // _runtime.onMessage('setUserAgent', (args) {
-    //   _browserHeadless.setUserAgent(args[0]);
-    //   return true;
-    // });
+    _runtime.onMessage('setUserAgent', (args) {
+      _browserHeadless.setUserAgent(args[0]);
+      return true;
+    });
 
-    // _runtime.onMessage('disposeBrowser', (args) async {
-    //   return await _browserHeadless.dispose();
-    // });
+    _runtime.onMessage('disposeBrowser', (args) async {
+      return await _browserHeadless.dispose();
+    });
 
-    // final result = _runtime.evaluate(jsExtension);
-    // _logger.log("init jsRuntime : ${!result.isError}");
-    // return !result.isError;
-    return true;
+    final result = _runtime.evaluate(jsExtension);
+    _logger.log("init jsRuntime : ${!result.isError}");
+
+    return !result.isError;
   }
 
   void clearBrowser() async {
     await _browserHeadless.clear();
+  }
+
+  Future<String?> browserToUrl(String url, {int? timeout}) {
+    final brow = BrowserHeadless();
+   return brow.launch(url: url, timeout: timeout ?? 20000);
   }
 
   Future<T> _runExtension<T>(Future<T> Function() fun) async {

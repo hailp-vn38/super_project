@@ -81,6 +81,8 @@ class ReadComicCubit extends Cubit<ReadComicState> {
   void perChapter() {
     final index = readerCubit.getCurrentChapter.index!;
     if (index == 0) return;
+    listComicImageController.setScrollIndex = 0;
+
     readerCubit.getDetailChapter(readerCubit.getChapters[index - 1]);
     if (_isShowMenu) {
       _onChangeIsShowMenu(false);
@@ -90,10 +92,16 @@ class ReadComicCubit extends Cubit<ReadComicState> {
   void nextChapter() {
     final index = readerCubit.getCurrentChapter.index!;
     if (index >= readerCubit.getChapters.length) return;
+    listComicImageController.setScrollIndex = 0;
     readerCubit.getDetailChapter(readerCubit.getChapters[index + 1]);
     if (_isShowMenu) {
       _onChangeIsShowMenu(false);
     }
+  }
+
+  void startAutoScroll() {
+    listComicImageController.enableAutoScroll();
+    _onChangeIsShowMenu(false);
   }
 
   @override
