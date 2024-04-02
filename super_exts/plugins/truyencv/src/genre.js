@@ -5,7 +5,6 @@ async function genre(url) {
     res,
     "nav.navigation li.nav-item:nth-child(7) li.sub-menu_item"
   );
-  console.log(listEl);
   let result = [];
   for (const element of listEl) {
     var title = await Extension.querySelector(element.content, "a").text;

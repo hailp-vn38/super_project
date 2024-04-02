@@ -11,6 +11,17 @@
         "icon": "https://raw.githubusercontent.com/lamphuchai-dev/super_project/exts/super_exts/plugins/truyencv/icon.png"
     },
     {
+        "name": "OPhim",
+        "author": "admin",
+        "version": 1,
+        "source": "https://ophim1.com",
+        "regexp": "(ophim1).(com)",
+        "description": "Xem phim trên trang OPhim",
+        "type": "movie",
+        "path": "https://raw.githubusercontent.com/lamphuchai-dev/super_project/exts/super_exts/plugins/ophim/extension.zip",
+        "icon": "https://raw.githubusercontent.com/lamphuchai-dev/super_project/exts/super_exts/plugins/ophim/icon.png"
+    },
+    {
         "name": "Net Truyện",
         "author": "admin",
         "version": 1,

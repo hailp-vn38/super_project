@@ -1,0 +1,20 @@
+{
+  "metadata": {
+    "name": "OPhim",
+    "author": "admin",
+    "version": 1,
+    "source": "https://ophim1.com",
+    "regexp": "(ophim1).(com)",
+    "description": "Xem phim trên trang OPhim",
+    "type": "movie"
+  },
+  "script": {
+    "tabs": "src/tabs.js",
+    "home": "src/home.js",
+    "detail": "src/detail.js",
+    "chapters": "src/chapters.js",
+    "chapter": "src/chapter.js",
+    "search": "src/search.js",
+    "genre": "src/genre.js"
+  }
+}

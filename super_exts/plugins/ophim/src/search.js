@@ -1,6 +1,6 @@
 async function search(url, kw, page) {
   const res = await Extension.request(url + "/v1/api/tim-kiem", {
-    queryParameters: { keyword: kw, limit: 100 },
+    queryParameters: { keyword: kw },
   });
   if (!res) return Response.error("Có lỗi khi tải nội dung");
 
@@ -11,12 +11,12 @@ async function search(url, kw, page) {
   for (const item of res.data.items) {
     result.push({
       name: item.name,
-      url: "/phim/" + item.slug,
-      description: `Năm ${item.year}`,
-      cover: res.data.APP_DOMAIN_CDN_IMAGE + "/" + item.poster_url,
+      url: "/v1/api/phim/" + item.slug,
+      description: `$item.year`,
+      cover: res.data.APP_DOMAIN_CDN_IMAGE + "/" + item.thumb_url,
     });
   }
   return Response.success(result);
 }
 
-// runFn(() => search("https://phimapi.com", "usa"));
+// runFn(() => search("https://ophim1.com", "hậu duệ mặt trời"));
