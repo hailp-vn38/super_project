@@ -12,7 +12,7 @@ async function search(url, kw, page) {
     result.push({
       name: item.name,
       url: "/v1/api/phim/" + item.slug,
-      description: `$item.year`,
+      description: `Năm ${item.year}`,
       cover: res.data.APP_DOMAIN_CDN_IMAGE + "/" + item.thumb_url,
     });
   }
