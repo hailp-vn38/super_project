@@ -31,7 +31,7 @@ class Chapter {
 
   String? movies;
 
-  int? scrollIndex;
+  double? offset;
 
   Chapter({
     this.id = Isar.autoIncrement,
@@ -44,7 +44,7 @@ class Chapter {
     this.novel,
     this.comic,
     this.movies,
-    this.scrollIndex,
+    this.offset,
   });
 
   final book = IsarLink<Book>();
@@ -61,7 +61,7 @@ class Chapter {
       String? novel,
       List<String>? comic,
       String? movies,
-      int? scrollIndex}) {
+      double? offset}) {
     return Chapter(
         id: id ?? this.id,
         index: index ?? this.index,
@@ -73,7 +73,7 @@ class Chapter {
         novel: novel ?? this.novel,
         comic: comic ?? this.comic,
         movies: movies ?? this.movies,
-        scrollIndex: scrollIndex ?? this.scrollIndex);
+        offset: offset ?? this.offset);
   }
 
   Map<String, dynamic> toMap() {
@@ -89,7 +89,7 @@ class Chapter {
       'comic': comic,
       'movies': movies,
       'book': book.value,
-      'scrollIndex': scrollIndex
+      'offset': offset
     };
   }
 
@@ -107,7 +107,7 @@ class Chapter {
         novel: map['novel'] != null ? map['novel'] as String : null,
         comic: map['comic'],
         movies: map['movies'] != null ? jsonEncode(map['movies']) : null,
-        scrollIndex: map['scrollIndex']);
+        offset: map['offset']);
   }
 
   @ignore
@@ -152,7 +152,7 @@ class Chapter {
         other.novel == novel &&
         listEquals(other.comic, comic) &&
         other.movies == movies &&
-        other.scrollIndex == scrollIndex;
+        other.offset == offset;
   }
 
   @override
@@ -167,12 +167,12 @@ class Chapter {
         novel.hashCode ^
         comic.hashCode ^
         movies.hashCode ^
-        scrollIndex.hashCode;
+        offset.hashCode;
   }
 
   @override
   String toString() {
-    return 'Chapter(id: $id, index: $index, name: $name, url: $url, dateUpload: $dateUpload, isBookmarked: $isBookmarked, isRead: $isRead, novel: $novel, comic: $comic, movies: $movies, scrollIndex: $scrollIndex)';
+    return 'Chapter(id: $id, index: $index, name: $name, url: $url, dateUpload: $dateUpload, isBookmarked: $isBookmarked, isRead: $isRead, novel: $novel, comic: $comic, movies: $movies, offset: $offset)';
   }
 }
 

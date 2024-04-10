@@ -18,11 +18,13 @@ class BooksWidget extends StatefulWidget {
       required this.url,
       this.onTap,
       this.onLongTap,
-      this.initialData});
+      this.initialData,
+      this.isLoad = true});
   final List<Book>? initialData;
   final OnFetchListBook? onFetchListBook;
   final ValueChanged<Book>? onTap;
   final ValueChanged<Book>? onLongTap;
+  final bool isLoad;
   final String url;
 
   @override
@@ -40,30 +42,24 @@ class _BooksWidgetState extends State<BooksWidget> {
   @override
   void initState() {
     _scrollController = ScrollController();
-    _scrollController.addListener(() {
-      if ((_scrollController.offset >
-              _scrollController.position.maxScrollExtent - 200) &&
-          !_isLoadMore) {
-        _onLoadMore();
+    if (widget.isLoad) {
+      _scrollController.addListener(() {
+        if ((_scrollController.offset >
+                _scrollController.position.maxScrollExtent - 200) &&
+            !_isLoadMore) {
+          _onLoadMore();
+        }
+      });
+      if (widget.initialData != null) {
+        _listBook.addAll(widget.initialData!);
+        _isLoading = false;
+      } else {
+        _onLoading();
       }
-      // if (_listBook.isNotEmpty &&
-      //     context.height > _scrollController.position.maxScrollExtent &&
-      //     !_isLoadMore) {
-      //   _onLoadMore();
-      // }
-    });
-
-    // if (!widget.useFetch) {
-    //   _listBook = widget.initialBooks ?? [];
-    // } else {
-    //   _onLoading();
-    // }
-    if (widget.initialData != null) {
-      _listBook.addAll(widget.initialData!);
-      _isLoading = false;
     } else {
-      _onLoading();
+      _listBook.addAll(widget.initialData ?? []);
     }
+
     super.initState();
   }
 
@@ -159,12 +155,13 @@ class _BooksWidgetState extends State<BooksWidget> {
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: getCrossAxisCount(),
                   crossAxisSpacing: 8,
-                  childAspectRatio: 2 / 3.4,
+                  childAspectRatio: 2 / 3.62,
                   mainAxisSpacing: 8),
               delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
                   final book = _listBook[index];
                   return BookItem(
+                    key: ValueKey(book.id),
                     book: book,
                     onTap: () => widget.onTap?.call(book),
                     onLongTap: () => widget.onLongTap?.call(book),
@@ -197,6 +194,18 @@ class _BooksWidgetState extends State<BooksWidget> {
     }
     return width ~/ 150;
   }
+
+  @override
+  void didUpdateWidget(covariant BooksWidget oldWidget) {
+    if (widget.initialData != null &&
+        widget.initialData!.length != (oldWidget.initialData ?? []).length) {
+      setState(() {
+        _listBook.clear();
+        _listBook.addAll(widget.initialData!);
+      });
+    }
+    super.didUpdateWidget(oldWidget);
+  }
 }
 
 class BookItem extends StatelessWidget {
@@ -222,7 +231,7 @@ class BookItem extends StatelessWidget {
             mainAxisSize: MainAxisSize.max,
             children: [
               AspectRatio(
-                aspectRatio: 2 / 2.6,
+                aspectRatio: 2 / 2.7,
                 child: ImageWidget(
                   image: book.cover!,
                 ),
@@ -238,7 +247,7 @@ class BookItem extends StatelessWidget {
                     Gaps.hGap4,
                     Expanded(
                       child: Text(
-                        book.name!.toTitleCase(),
+                        book.name!.toTitleCase,
                         style: context.appTextTheme.labelMedium
                             ?.copyWith(height: 1.2),
                         maxLines: 2,

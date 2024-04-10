@@ -5,14 +5,30 @@ class ExploreEmptyExt extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = context.appTextTheme;
     return Scaffold(
-      appBar: AppBar(),
-      body: Center(
-        child: ElevatedButton(
-            child: const Text("Cài đặt nguồn"),
-            onPressed: () async {
-              Navigator.pushNamed(context, RoutesName.extensions);
-            }),
+      appBar: AppBar(
+        title: Text(
+          "explore.title".tr(),
+          style: textTheme.titleMedium,
+        ),
+      ),
+      body: SizedBox(
+        width: double.infinity,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.extension_off_rounded,
+              size: 50,
+            ),
+            Gaps.hGap16,
+            Text(
+              "Nguồn chưa được cài đặt",
+              style: textTheme.titleMedium,
+            )
+          ],
+        ),
       ),
     );
   }

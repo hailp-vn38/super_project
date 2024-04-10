@@ -24,6 +24,11 @@ class _PlayMovieWebViewState extends State<PlayMovieWebView> {
   bool _loading = false;
 
   bool _isFullScreen = false;
+  @override
+  void initState() {
+    debugPrint("Play url : ${widget.url}");
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,11 +40,11 @@ class _PlayMovieWebViewState extends State<PlayMovieWebView> {
               key: _webViewKey,
               initialUrlRequest: URLRequest(url: WebUri(widget.url)),
               initialSettings: InAppWebViewSettings(
-                supportZoom: false,
-                mediaPlaybackRequiresUserGesture: false,
-                iframeAllowFullscreen: true,
-                allowsInlineMediaPlayback: false,
-              ),
+                  supportZoom: false,
+                  mediaPlaybackRequiresUserGesture: false,
+                  iframeAllowFullscreen: true,
+                  allowsInlineMediaPlayback: false,
+                  allowsPictureInPictureMediaPlayback: false),
               onWebViewCreated: (controller) {
                 _webViewController = controller;
                 setState(() {
@@ -66,12 +71,12 @@ class _PlayMovieWebViewState extends State<PlayMovieWebView> {
                 var isPortrait =
                     MediaQuery.of(context).orientation == Orientation.portrait;
                 if (isPortrait) {
-                  DeviceUtils.setRotationDevice();
+                  DeviceUtils.setOrientationLandscape();
                 }
               },
               onExitFullscreen: (controller) {
                 if (_isFullScreen) {
-                  DeviceUtils.setPreferredOrientations();
+                  DeviceUtils.setOrientationPortrait();
                 }
               },
             ),

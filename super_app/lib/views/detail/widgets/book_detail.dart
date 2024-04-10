@@ -28,6 +28,7 @@ class _BookDetailState extends State<BookDetail> {
   @override
   Widget build(BuildContext context) {
     final textTheme = context.appTextTheme;
+    final colorScheme = context.colorScheme;
     final expandedBarHeight =
         (context.height * 0.3) < 250 ? 250.0 : (context.height * 0.3);
     const paddingAppBar = 16.0;
@@ -101,13 +102,17 @@ class _BookDetailState extends State<BookDetail> {
                         StatusType.loaded => _book.id != null
                             ? IconButton(
                                 onPressed: () {},
-                                icon: const Icon(
-                                  Icons.bookmark,
-                                  // color: colorScheme.primary,
+                                icon: Icon(
+                                  Icons.bookmark_added_rounded,
+                                  color: colorScheme.primary,
                                 ))
                             : IconButton(
-                                onPressed: () {
-                                  // _detailCubit.addBookmark();
+                                onPressed: () async {
+                                  final result =
+                                      await _detailCubit.addLibrary();
+                                  if (result) {
+                                    setState(() {});
+                                  }
                                 },
                                 icon: const Icon(Icons.bookmark_add_rounded)),
                         _ => const SizedBox()
@@ -359,8 +364,13 @@ class _BookDetailState extends State<BookDetail> {
                                                   book: _book,
                                                   chapters: chaptersRes.data!,
                                                   track: TrackRead(
-                                                    readCurrentChapter: index,
-                                                  ),
+                                                      indexChapter:
+                                                          chapter.index,
+                                                      currentChapterName:
+                                                          chapter.name,
+                                                      chapterId: chapter.id,
+                                                      offset: 0.0,
+                                                      percent: 0),
                                                   extension: _detailCubit
                                                       .getExtension));
                                         },

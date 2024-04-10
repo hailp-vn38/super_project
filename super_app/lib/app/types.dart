@@ -4,7 +4,7 @@ enum StatusType { none, init, loading, loaded, error }
 
 enum MediaStatus { init, start, pause, complete, stop, error }
 
-enum ExtensionType { comic, novel, movie }
+enum ExtensionType { comic, novel, movie, all }
 
 enum SortChapterType { newChapter, lastChapter }
 

@@ -25,11 +25,9 @@ class BaseMenu extends StatelessWidget {
                       child: child,
                     ),
                 child: Container(
-                  // height: 120,
-
                   color: colorBackground,
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   child: SafeArea(
                       bottom: false,
                       child: Column(
@@ -63,7 +61,7 @@ class BaseMenu extends StatelessWidget {
                               ),
                               Gaps.wGap12,
                               ComicButton(
-                                onTap: readComicCubit.startAutoScroll,
+                                onTap: readComicCubit.enableAutoScroll,
                                 colorBackground: colorBackground,
                                 icon: const Icon(
                                   Icons.swipe_down_alt_rounded,
@@ -92,51 +90,27 @@ class BaseMenu extends StatelessWidget {
                             ],
                           ),
                           Gaps.hGap4,
-                          GestureDetector(
-                            onTap: () {
-                              // showModalBottomSheet(
-                              //   context: context,
-                              //   isScrollControlled: true,
-                              //   elevation: 0,
-                              //   enableDrag: true,
-                              //   clipBehavior: Clip.hardEdge,
-                              //   backgroundColor: Colors.transparent,
-                              //   builder: (context) => ChaptersBottomSheet(),
-                              // );
-                              Scaffold.of(context).openDrawer();
-                            },
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  readComicCubit.getBook.name ?? "",
-                                  maxLines: 2,
-                                  style: textTheme.bodyMedium,
-                                ),
-                                Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.menu,
-                                      color: Colors.white,
-                                    ),
-                                    Gaps.wGap4,
-                                    Flexible(child:
-                                        BlocBuilder<ReaderCubit, ReaderState>(
-                                      builder: (context, state) {
-                                        return Text(
-                                          state.readCurrentChapter.data!.name ??
-                                              "",
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: textTheme.bodyMedium,
-                                        );
-                                      },
-                                    )),
-                                  ],
-                                ),
-                              ],
-                            ),
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                readComicCubit.getBook.name ?? "",
+                                maxLines: 2,
+                                style: textTheme.titleMedium,
+                              ),
+                              Gaps.hGap4,
+                              BlocBuilder<ReaderCubit, ReaderState>(
+                                builder: (context, state) {
+                                  return Text(
+                                    state.readCurrentChapter.data!.name ?? "",
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: textTheme.bodySmall,
+                                  );
+                                },
+                              )
+                            ],
                           ),
                         ],
                       )),
@@ -189,17 +163,15 @@ class BaseMenu extends StatelessWidget {
                                 StatusType.loaded) {
                               return ValueListenableBuilder(
                                 valueListenable: readComicCubit
-                                    .listComicImageController.scrollIndex,
+                                    .listScrollController.scrollPosition,
                                 builder: (context, value, child) {
                                   return Slider(
                                     min: 0,
-                                    max: readCurrentChapter.data!.comic!.length
-                                        .toDouble(),
-                                    value: value.toDouble(),
-                                    onChanged: (value) {
-                                      readComicCubit.listComicImageController
-                                          .onSliderChangeValue(value.toInt());
-                                    },
+                                    max: value.maxScrollExtent,
+                                    value: value.offset
+                                        .clamp(0, value.maxScrollExtent),
+                                    onChanged: readComicCubit
+                                        .listScrollController.jumpToScroll,
                                   );
                                 },
                               );
@@ -215,7 +187,18 @@ class BaseMenu extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Gaps.hGap16,
+                  Gaps.hGap12,
+                  ComicButton(
+                      colorBackground: colorBackground,
+                      onTap: () {
+                        Scaffold.of(context).openDrawer();
+                      },
+                      icon: const Icon(
+                        Icons.menu,
+                        size: 16,
+                        color: Colors.white,
+                      )),
+                  Gaps.hGap8,
                   ComicButton(
                       colorBackground: colorBackground,
                       onTap: () {

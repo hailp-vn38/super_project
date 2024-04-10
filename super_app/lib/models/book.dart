@@ -33,7 +33,6 @@ class Book {
 
   final genres = IsarLinks<Genre>();
 
-  @Backlink(to: 'book')
   final trackRead = IsarLink<TrackRead>();
 
   Book(

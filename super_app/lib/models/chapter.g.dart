@@ -62,10 +62,10 @@ const ChapterSchema = CollectionSchema(
       name: r'novel',
       type: IsarType.string,
     ),
-    r'scrollIndex': PropertySchema(
+    r'offset': PropertySchema(
       id: 9,
-      name: r'scrollIndex',
-      type: IsarType.long,
+      name: r'offset',
+      type: IsarType.double,
     ),
     r'url': PropertySchema(
       id: 10,
@@ -160,7 +160,7 @@ void _chapterSerialize(
   writer.writeString(offsets[6], object.movies);
   writer.writeString(offsets[7], object.name);
   writer.writeString(offsets[8], object.novel);
-  writer.writeLong(offsets[9], object.scrollIndex);
+  writer.writeDouble(offsets[9], object.offset);
   writer.writeString(offsets[10], object.url);
 }
 
@@ -180,7 +180,7 @@ Chapter _chapterDeserialize(
     movies: reader.readStringOrNull(offsets[6]),
     name: reader.readStringOrNull(offsets[7]),
     novel: reader.readStringOrNull(offsets[8]),
-    scrollIndex: reader.readLongOrNull(offsets[9]),
+    offset: reader.readDoubleOrNull(offsets[9]),
     url: reader.readStringOrNull(offsets[10]),
   );
   return object;
@@ -212,7 +212,7 @@ P _chapterDeserializeProp<P>(
     case 8:
       return (reader.readStringOrNull(offset)) as P;
     case 9:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 10:
       return (reader.readStringOrNull(offset)) as P;
     default:
@@ -1368,71 +1368,80 @@ extension ChapterQueryFilter
     });
   }
 
-  QueryBuilder<Chapter, Chapter, QAfterFilterCondition> scrollIndexIsNull() {
+  QueryBuilder<Chapter, Chapter, QAfterFilterCondition> offsetIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'scrollIndex',
+        property: r'offset',
       ));
     });
   }
 
-  QueryBuilder<Chapter, Chapter, QAfterFilterCondition> scrollIndexIsNotNull() {
+  QueryBuilder<Chapter, Chapter, QAfterFilterCondition> offsetIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'scrollIndex',
+        property: r'offset',
       ));
     });
   }
 
-  QueryBuilder<Chapter, Chapter, QAfterFilterCondition> scrollIndexEqualTo(
-      int? value) {
+  QueryBuilder<Chapter, Chapter, QAfterFilterCondition> offsetEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'scrollIndex',
+        property: r'offset',
         value: value,
+        epsilon: epsilon,
       ));
     });
   }
 
-  QueryBuilder<Chapter, Chapter, QAfterFilterCondition> scrollIndexGreaterThan(
-    int? value, {
+  QueryBuilder<Chapter, Chapter, QAfterFilterCondition> offsetGreaterThan(
+    double? value, {
     bool include = false,
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'scrollIndex',
+        property: r'offset',
         value: value,
+        epsilon: epsilon,
       ));
     });
   }
 
-  QueryBuilder<Chapter, Chapter, QAfterFilterCondition> scrollIndexLessThan(
-    int? value, {
+  QueryBuilder<Chapter, Chapter, QAfterFilterCondition> offsetLessThan(
+    double? value, {
     bool include = false,
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'scrollIndex',
+        property: r'offset',
         value: value,
+        epsilon: epsilon,
       ));
     });
   }
 
-  QueryBuilder<Chapter, Chapter, QAfterFilterCondition> scrollIndexBetween(
-    int? lower,
-    int? upper, {
+  QueryBuilder<Chapter, Chapter, QAfterFilterCondition> offsetBetween(
+    double? lower,
+    double? upper, {
     bool includeLower = true,
     bool includeUpper = true,
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'scrollIndex',
+        property: r'offset',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+        epsilon: epsilon,
       ));
     });
   }
@@ -1700,15 +1709,15 @@ extension ChapterQuerySortBy on QueryBuilder<Chapter, Chapter, QSortBy> {
     });
   }
 
-  QueryBuilder<Chapter, Chapter, QAfterSortBy> sortByScrollIndex() {
+  QueryBuilder<Chapter, Chapter, QAfterSortBy> sortByOffset() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'scrollIndex', Sort.asc);
+      return query.addSortBy(r'offset', Sort.asc);
     });
   }
 
-  QueryBuilder<Chapter, Chapter, QAfterSortBy> sortByScrollIndexDesc() {
+  QueryBuilder<Chapter, Chapter, QAfterSortBy> sortByOffsetDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'scrollIndex', Sort.desc);
+      return query.addSortBy(r'offset', Sort.desc);
     });
   }
 
@@ -1835,15 +1844,15 @@ extension ChapterQuerySortThenBy
     });
   }
 
-  QueryBuilder<Chapter, Chapter, QAfterSortBy> thenByScrollIndex() {
+  QueryBuilder<Chapter, Chapter, QAfterSortBy> thenByOffset() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'scrollIndex', Sort.asc);
+      return query.addSortBy(r'offset', Sort.asc);
     });
   }
 
-  QueryBuilder<Chapter, Chapter, QAfterSortBy> thenByScrollIndexDesc() {
+  QueryBuilder<Chapter, Chapter, QAfterSortBy> thenByOffsetDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'scrollIndex', Sort.desc);
+      return query.addSortBy(r'offset', Sort.desc);
     });
   }
 
@@ -1920,9 +1929,9 @@ extension ChapterQueryWhereDistinct
     });
   }
 
-  QueryBuilder<Chapter, Chapter, QDistinct> distinctByScrollIndex() {
+  QueryBuilder<Chapter, Chapter, QDistinct> distinctByOffset() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'scrollIndex');
+      return query.addDistinctBy(r'offset');
     });
   }
 
@@ -1996,9 +2005,9 @@ extension ChapterQueryProperty
     });
   }
 
-  QueryBuilder<Chapter, int?, QQueryOperations> scrollIndexProperty() {
+  QueryBuilder<Chapter, double?, QQueryOperations> offsetProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'scrollIndex');
+      return query.addPropertyName(r'offset');
     });
   }
 

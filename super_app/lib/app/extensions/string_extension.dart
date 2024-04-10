@@ -9,7 +9,7 @@ extension AppString on String {
     }
   }
 
-  String toTitleCase() => replaceAll(RegExp(' +'), ' ')
+  String get toTitleCase => replaceAll(RegExp(' +'), ' ')
       .split(' ')
       .map((str) => str.toCapitalized)
       .join(' ');

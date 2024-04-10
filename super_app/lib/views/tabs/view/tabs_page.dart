@@ -18,13 +18,17 @@ class _TabsPageState extends State<TabsPage> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = context.colorScheme;
-    const tabs = [LibraryView(), ExploreView(), SettingsView()];
     return BlocSelector<TabsCubit, TabsState, int>(
       selector: (state) => state.currentIndex,
       builder: (context, currentIndex) {
         return PlatformWidget(
             mobileWidget: Scaffold(
-              body: IndexedStack(index: currentIndex, children: tabs),
+              body: IndexedStack(index: currentIndex, children: const [
+                LibraryView(),
+                ExploreView(),
+                ExtensionsView(),
+                SettingsView()
+              ]),
               bottomNavigationBar: Container(
                 decoration: BoxDecoration(
                     border:
@@ -36,18 +40,23 @@ class _TabsPageState extends State<TabsPage> {
                   backgroundColor: context.colorScheme.background,
                   destinations: <NavigationDestination>[
                     NavigationDestination(
-                      selectedIcon: const Icon(Icons.library_books_rounded),
-                      icon: const Icon(Icons.library_books_outlined),
+                      selectedIcon: const Icon(Icons.home_rounded),
+                      icon: const Icon(Icons.home_rounded),
                       label: 'library.title'.tr(),
                     ),
                     NavigationDestination(
                       selectedIcon: const Icon(Icons.widgets_rounded),
-                      icon: const Icon(Icons.widgets_outlined),
+                      icon: const Icon(Icons.widgets_rounded),
                       label: "explore.title".tr(),
                     ),
                     NavigationDestination(
+                      selectedIcon: const Icon(Icons.extension_rounded),
+                      icon: const Icon(Icons.extension_rounded),
+                      label: "extension.title".tr(),
+                    ),
+                    NavigationDestination(
                       selectedIcon: const Icon(Icons.settings_rounded),
-                      icon: const Icon(Icons.settings_outlined),
+                      icon: const Icon(Icons.settings_rounded),
                       label: "settings.title".tr(),
                     ),
                   ],
@@ -63,22 +72,29 @@ class _TabsPageState extends State<TabsPage> {
                   labelType: NavigationRailLabelType.all,
                   destinations: [
                     NavigationRailDestination(
-                      selectedIcon: const Icon(Icons.library_books_rounded),
-                      icon: const Icon(Icons.library_books_outlined),
+                      selectedIcon: const Icon(Icons.home_rounded),
+                      icon: const Icon(Icons.home_rounded),
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 4),
                       label: Text('library.title'.tr()),
                     ),
                     NavigationRailDestination(
                       selectedIcon: const Icon(Icons.widgets_rounded),
-                      icon: const Icon(Icons.widgets_outlined),
+                      icon: const Icon(Icons.widgets_rounded),
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 4),
                       label: Text("explore.title".tr()),
                     ),
                     NavigationRailDestination(
+                      selectedIcon: const Icon(Icons.extension_rounded),
+                      icon: const Icon(Icons.extension_rounded),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 4),
+                      label: Text("extension.title".tr()),
+                    ),
+                    NavigationRailDestination(
                       selectedIcon: const Icon(Icons.settings_rounded),
-                      icon: const Icon(Icons.settings_outlined),
+                      icon: const Icon(Icons.settings_rounded),
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 4),
                       label: Text("settings.title".tr()),
@@ -86,7 +102,12 @@ class _TabsPageState extends State<TabsPage> {
                   ],
                 ),
                 Expanded(
-                    child: IndexedStack(index: currentIndex, children: tabs))
+                    child: IndexedStack(index: currentIndex, children: const [
+                  LibraryView(),
+                  ExploreView(),
+                  ExtensionsView(),
+                  SettingsView(),
+                ]))
               ]),
             ));
       },

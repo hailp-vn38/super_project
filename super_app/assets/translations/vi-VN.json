@@ -24,7 +24,6 @@
   "explore": {
     "title": "Khám phá"
   },
-  "extension": {},
   "home": {
     "title": "Trang chu"
   },
@@ -70,6 +69,16 @@
     "save_image_to_library": "Lưu ảnh vào thư viện"
   },
   "settings": {
-    "title": "Cài đặt"
+    "title": "Cài đặt",
+    "language": "Ngôn ngữ",
+    "en": "Tiếng anh",
+    "vi": "Tiếng việt",
+    "theme": "Chủ đề",
+    "system": "Hệ thống",
+    "light": "Sáng",
+    "dark": "Tối"
+  },
+  "extension": {
+    "title": "Nguồn"
   }
 }

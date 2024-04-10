@@ -16,21 +16,20 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(centerTitle: true, title: const Text("Splash")),
       body: BlocConsumer<SplashCubit, SplashState>(
         listener: (context, state) {
-          if (state is AppReady) {
-            Navigator.pushNamedAndRemoveUntil(
-                context, RoutesName.tabs, (route) => false);
-          }
+          if (state.status != StatusType.loaded) return;
+          Navigator.pushNamedAndRemoveUntil(
+              context, RoutesName.tabs, (route) => false);
         },
-        builder: (context, state) {
-          if (state is AppReady) {
-            return const Text("ok");
-          }
-          return const Center(
-            child: Text("Loading ..."),
-          );
+        buildWhen: (previous, current) => previous.status != current.status,
+        builder: (context, state) => switch (state.status) {
+          StatusType.error => const Center(
+              child: Text("Err"),
+            ),
+          _ => const Center(
+              child: LoadingWidget(),
+            )
         },
       ),
     );

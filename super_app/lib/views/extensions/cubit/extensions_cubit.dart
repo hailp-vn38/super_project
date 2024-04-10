@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:dio_client/index.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:js_runtime/utils/logger.dart';
 import 'package:super_app/app/constants/constants.dart';
@@ -22,8 +24,14 @@ class ExtensionsCubit extends Cubit<ExtensionsState> {
 
   final _logger = Logger("ExtensionsCubit");
 
+  int indexTab = 0;
+
   void onInit() {
     checkUpdateExtensions();
+  }
+
+  void onChangeIndexTab(int index) {
+    indexTab = index;
   }
 
   Future<void> getCurrentExtensions() async {
@@ -86,6 +94,13 @@ class ExtensionsCubit extends Cubit<ExtensionsState> {
     return true;
   }
 
+  Future<bool> onUninstallExtByMetadata(Metadata metadata) async {
+    final ext = state.extensions.data!
+        .firstWhereOrNull((ext) => ext.metadata.name == metadata.name);
+    if (ext == null) return false;
+    return onUninstallExt(ext);
+  }
+
   Future<bool> onInstallExt(Metadata metadata) async {
     final bytes = await DioClient().get(metadata.path!,
         options: Options(responseType: ResponseType.bytes));
@@ -116,6 +131,7 @@ class ExtensionsCubit extends Cubit<ExtensionsState> {
             ext.metadata.version! != mapData[ext.metadata.name]!.version!) {
           listUpdate.add(mapData[ext.metadata.name]!);
         }
+        // listUpdate.add(mapData[ext.metadata.name]!);
       }
       _logger.info("Update = ${listUpdate.length}",
           name: "checkUpdateExtensions");
@@ -129,5 +145,23 @@ class ExtensionsCubit extends Cubit<ExtensionsState> {
 
       _logger.error(err, name: "checkUpdateExtensions");
     }
+  }
+
+  Future<bool> onUpdateExt(Metadata metadata) async {
+    final bytes = await DioClient().get(metadata.path!,
+        options: Options(responseType: ResponseType.bytes));
+
+    final ext = state.extensions.data!
+        .firstWhereOrNull((ext) => ext.metadata.name == metadata.name);
+    if (ext == null) return false;
+    final installed = await _databaseService.updateExtensionByUrl(
+        bytes, metadata.path!, ext.id!);
+    if (!installed) return false;
+    final data = state.extsUpdate.data!
+        .where((el) => el.name != ext.metadata.name)
+        .toList();
+    emit(state.copyWith(
+        extsUpdate: StateRes(status: StatusType.loaded, data: data)));
+    return true;
   }
 }

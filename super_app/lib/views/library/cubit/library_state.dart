@@ -1,9 +1,18 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'library_cubit.dart';
 
-abstract class LibraryState extends Equatable {
-  const LibraryState();
-  @override
-  List<Object> get props => [];
-}
+class LibraryState extends Equatable {
+  const LibraryState({required this.stateBooks, required this.type});
 
-class LibraryInitial extends LibraryState {}
+  final StateRes<List<Book>> stateBooks;
+  final ExtensionType type;
+
+  @override
+  List<Object> get props => [stateBooks, type];
+
+  LibraryState copyWith(
+      {StateRes<List<Book>>? stateBooks, ExtensionType? type}) {
+    return LibraryState(
+        stateBooks: stateBooks ?? this.stateBooks, type: type ?? this.type);
+  }
+}

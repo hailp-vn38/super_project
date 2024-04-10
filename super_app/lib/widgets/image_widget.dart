@@ -5,9 +5,9 @@ import 'dart:typed_data';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:string_validator/string_validator.dart';
 import 'package:super_app/app/extensions/context_extension.dart';
+import 'package:super_app/widgets/widgets.dart';
 
 import '../app/constants/assets.dart';
 
@@ -79,9 +79,12 @@ class _ImageWidgetState extends State<ImageWidget> {
       return SizedBox(
         width: context.width,
         height: 300,
-        child: const SpinKitFadingCircle(
-          color: Colors.grey,
+        child: const LoadingWidget(
+          radius: 10,
         ),
+        // child: const SpinKitFadingCircle(
+        //   color: Colors.grey,
+        // ),
       );
     }
     return Image.asset(

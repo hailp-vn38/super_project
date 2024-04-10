@@ -7,60 +7,78 @@ class ExtensionsPage extends StatefulWidget {
   State<ExtensionsPage> createState() => _ExtensionsPageState();
 }
 
-class _ExtensionsPageState extends State<ExtensionsPage> {
+class _ExtensionsPageState extends State<ExtensionsPage>
+    with SingleTickerProviderStateMixin {
   late ExtensionsCubit _extensionsCubit;
+
+  late TabController _tabController;
   @override
   void initState() {
     _extensionsCubit = context.read<ExtensionsCubit>();
+    _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(() {
+      _extensionsCubit.onChangeIndexTab(_tabController.index);
+    });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final textTheme = context.appTextTheme;
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          centerTitle: false,
-          title: Row(
-            children: [
-              Expanded(
-                  child: TabBar(
-                      dividerColor: Colors.transparent,
-                      // splashBorderRadius: BorderRadius.circular(40),
-                      indicatorSize: TabBarIndicatorSize.label,
-                      unselectedLabelColor: Colors.grey,
-                      labelPadding: EdgeInsets.zero,
-                      labelStyle: textTheme.titleMedium,
-                      unselectedLabelStyle: textTheme.titleMedium,
-                      // labelColor: textTheme.titleMedium?.color,
-                      tabs: const [
-                    Tab(
-                      text: "Cập nhật",
-                    ),
-                    Tab(
-                      text: "Tất cả nguồn",
-                    )
-                  ])),
-              Gaps.wGap8,
-              IconButton(
-                  onPressed: () {}, icon: const Icon(Icons.search_rounded))
-            ],
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: false,
+        title: Row(
+          children: [
+            Expanded(
+                child: TabBar(
+              controller: _tabController,
+              dividerColor: Colors.transparent,
+              indicatorSize: TabBarIndicatorSize.label,
+              unselectedLabelColor: Colors.grey,
+              labelPadding: EdgeInsets.zero,
+              labelStyle: textTheme.titleMedium,
+              unselectedLabelStyle: textTheme.titleMedium,
+              splashBorderRadius: const BorderRadius.all(Radius.circular(8)),
+              tabs: const [
+                Tab(
+                  text: "Cập nhật",
+                ),
+                Tab(
+                  text: "Tất cả nguồn",
+                )
+              ],
+            )),
+            Gaps.wGap8,
+            IconButton(
+                onPressed: () {
+                  List<Metadata> list = [];
+                  if (_tabController.index == 0) {
+                    list = (_extensionsCubit.state.extensions.data ?? [])
+                        .map((e) => e.metadata)
+                        .toList();
+                  } else {
+                    list = _extensionsCubit.state.allExtension.data ?? [];
+                  }
+                  showSearch(
+                      context: context,
+                      delegate: SearchWidget(
+                          installed: _tabController.index == 0,
+                          list: list,
+                          onTapInstall: _extensionsCubit.onInstallExt,
+                          onTapUninstall:
+                              _extensionsCubit.onUninstallExtByMetadata));
+                },
+                icon: const Icon(Icons.search_rounded))
+          ],
         ),
-        body: const Padding(
-          padding: EdgeInsets.only(top: 4),
-          child: TabBarView(children: [
-            KeepAliveWidget(child: ExtensionsInstall()),
-            KeepAliveWidget(child: AllExtensions()),
-
-            // KeepAliveWidget(
-            //     child: ExtensionsAllTab(
-            //   extensionsCubit: _extensionsCubit,
-            // ))
-          ]),
-        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.only(top: 4),
+        child: TabBarView(controller: _tabController, children: const [
+          KeepAliveWidget(child: ExtensionsInstall()),
+          KeepAliveWidget(child: AllExtensions()),
+        ]),
       ),
     );
   }
@@ -86,63 +104,82 @@ class _ExtensionsInstallState extends State<ExtensionsInstall> {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = context.appTextTheme;
+    final colorScheme = context.colorScheme;
     return CustomScrollView(slivers: [
       MultiSliver(children: [
-        const SliverPinnedHeader(child: Text("Cập nhật")),
         BlocSelector<ExtensionsCubit, ExtensionsState,
             StateRes<List<Metadata>>>(
           selector: (state) => state.extsUpdate,
           builder: (context, state) {
             return switch (state.status) {
-              StatusType.loading => const LoadingWidget(),
-              StatusType.loaded => state.data!.isEmpty
-                  ? Container(
-                      child: Text("K co"),
-                    )
-                  : SingleChildScrollView(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: Dimens.horizontalPadding),
-                      child: Column(
-                          children: state.data!
-                              .map((meta) => ExtensionCard(
-                                  key: ValueKey(meta.name),
-                                  status: StatusExtension.update,
-                                  metadataExt: meta,
-                                  onTap: () async {
-                                    return true;
-                                  }))
-                              .toList()),
-                    ),
-              StatusType.error => const Center(
-                  child: Text("ERROR"),
+              StatusType.loading => Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  child: Row(
+                    children: [
+                      Expanded(
+                          child: Text(
+                        "Đang tìm kiểm bản cập nhật",
+                        style: textTheme.titleMedium,
+                      )),
+                      LoadingWidget(
+                        radius: 8,
+                        child: Icon(
+                          Icons.extension_rounded,
+                          size: 16,
+                          color: colorScheme.primary,
+                        ),
+                      ),
+                      Gaps.wGap4
+                    ],
+                  ),
                 ),
-              _ => const SizedBox(),
-            };
-          },
-        ),
-        const SliverPinnedHeader(child: Text("Đã cài đặt")),
-        BlocSelector<ExtensionsCubit, ExtensionsState,
-            StateRes<List<Extension>>>(
-          selector: (state) => state.extensions,
-          builder: (context, state) {
-            return switch (state.status) {
-              StatusType.loading => const LoadingWidget(),
               StatusType.loaded => state.data!.isEmpty
                   ? Container(
-                      child: Text("k co"),
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Row(
+                        children: [
+                          Expanded(
+                              child: Text(
+                            "Không tìm thấy bản cập nhật",
+                            style: textTheme.bodyMedium,
+                          )),
+                          IconButton(
+                              onPressed: () {
+                                _extensionsCubit.checkUpdateExtensions();
+                              },
+                              icon: const Icon(Icons.refresh_rounded))
+                        ],
+                      ),
                     )
-                  : SingleChildScrollView(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: Dimens.horizontalPadding),
-                      child: Column(
-                          children: state.data!
-                              .map((ext) => ExtensionCard(
-                                  key: ValueKey(ext.id),
-                                  status: StatusExtension.installed,
-                                  metadataExt: ext.metadata,
-                                  onTap: () =>
-                                      _extensionsCubit.onUninstallExt(ext)))
-                              .toList()),
+                  : MultiSliver(
+                      children: [
+                        SliverPinnedHeader(
+                            child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: ColoredBox(
+                            color: colorScheme.background,
+                            child: Text(
+                              "Cập nhật (${state.data?.length ?? 0})",
+                              style: textTheme.titleMedium,
+                            ),
+                          ),
+                        )),
+                        SingleChildScrollView(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: Dimens.horizontalPadding),
+                          child: Column(
+                              children: state.data!
+                                  .map((meta) => ExtensionCard(
+                                      key: ValueKey(meta.name),
+                                      status: StatusExtension.update,
+                                      metadataExt: meta,
+                                      onTap: () =>
+                                          _extensionsCubit.onUpdateExt(meta)))
+                                  .toList()),
+                        ),
+                      ],
                     ),
               StatusType.error => const Center(
                   child: Text("ERROR"),
@@ -152,37 +189,72 @@ class _ExtensionsInstallState extends State<ExtensionsInstall> {
           },
         )
       ]),
+      const SliverPadding(padding: EdgeInsets.only(top: 8)),
+      MultiSliver(
+        children: [
+          SliverPinnedHeader(
+              child: BlocSelector<ExtensionsCubit, ExtensionsState,
+                  StateRes<List<Extension>>>(
+            selector: (state) {
+              return state.extensions;
+            },
+            builder: (context, state) {
+              int? length = state.data?.length;
+              if (state.status == StatusType.loaded) {}
+              return Container(
+                color: colorScheme.background,
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                child: Text(
+                  "Đã cài đặt (${length ?? 0})",
+                  style: textTheme.titleMedium,
+                ),
+              );
+            },
+          )),
+          BlocSelector<ExtensionsCubit, ExtensionsState,
+              StateRes<List<Extension>>>(
+            selector: (state) => state.extensions,
+            builder: (context, state) {
+              return switch (state.status) {
+                StatusType.loading => const LoadingWidget(),
+                StatusType.loaded => state.data!.isEmpty
+                    ? SizedBox(
+                        height: context.height * 0.5,
+                        child: const Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.extension_off_rounded,
+                              size: 50,
+                            ),
+                            Gaps.hGap8,
+                            Text("Không có dữ liệu")
+                          ],
+                        ),
+                      )
+                    : SingleChildScrollView(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: Dimens.horizontalPadding),
+                        child: Column(
+                            children: state.data!
+                                .map((ext) => ExtensionCard(
+                                    key: ValueKey(ext.id),
+                                    status: StatusExtension.installed,
+                                    metadataExt: ext.metadata,
+                                    onTap: () =>
+                                        _extensionsCubit.onUninstallExt(ext)))
+                                .toList()),
+                      ),
+                StatusType.error => const Center(
+                    child: Text("ERROR"),
+                  ),
+                _ => const SizedBox(),
+              };
+            },
+          )
+        ],
+      )
     ]);
-    // return BlocSelector<ExtensionsCubit, ExtensionsState,
-    //     StateRes<List<Extension>>>(
-    //   selector: (state) => state.extensions,
-    //   builder: (context, state) {
-    //     return switch (state.status) {
-    //       StatusType.loading => const LoadingWidget(),
-    //       StatusType.loaded => state.data!.isEmpty
-    //           ? const EmptyWidget(
-    //               svgType: SvgType.extension,
-    //             )
-    //           : SingleChildScrollView(
-    //               padding: const EdgeInsets.symmetric(
-    //                   horizontal: Dimens.horizontalPadding),
-    //               child: Column(
-    //                   children: state.data!
-    //                       .map((ext) => ExtensionCard(
-    //                           key: ValueKey(ext.id),
-    //                           installed: true,
-    //                           metadataExt: ext.metadata,
-    //                           onTap: () =>
-    //                               _extensionsCubit.onUninstallExt(ext)))
-    //                       .toList()),
-    //             ),
-    //       StatusType.error => const Center(
-    //           child: Text("ERROR"),
-    //         ),
-    //       _ => const SizedBox(),
-    //     };
-    //   },
-    // );
   }
 }
 
@@ -213,8 +285,19 @@ class _AllExtensionsState extends State<AllExtensions> {
         return switch (state.status) {
           StatusType.loading => const LoadingWidget(),
           StatusType.loaded => state.data!.isEmpty
-              ? const EmptyWidget(
-                  svgType: SvgType.extension,
+              ? SizedBox(
+                  height: context.height * 0.5,
+                  child: const Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.extension_off_rounded,
+                        size: 50,
+                      ),
+                      Gaps.hGap8,
+                      Text("Không có dữ liệu")
+                    ],
+                  ),
                 )
               : SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(
@@ -285,71 +368,64 @@ class _ExtensionCardState extends State<ExtensionCard> {
         //           metadata: widget.metadataExt,
         //         ));
       },
-      child: Container(
-        width: double.infinity,
-        margin: const EdgeInsets.only(bottom: 10),
-        padding: const EdgeInsets.symmetric(vertical: 6),
-        decoration: BoxDecoration(
-            color: colorScheme.primaryContainer.withOpacity(0.5),
-            border: Border.all(color: colorScheme.primaryContainer),
-            borderRadius: BorderRadius.circular(Dimens.radius)),
-        child: Row(
-          children: [
-            Gaps.wGap8,
-            Container(
-              width: 40,
-              height: 40,
-              alignment: Alignment.center,
-              child: ImageWidget(
-                image: widget.metadataExt.icon,
-                loading: true,
+      child: Card(
+        margin: const EdgeInsets.only(top: 8),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+          child: Row(
+            children: [
+              Gaps.wGap8,
+              Container(
+                width: 40,
+                height: 40,
+                alignment: Alignment.center,
+                child: ImageWidget(
+                  key: ValueKey(widget.metadataExt.name),
+                  image: widget.metadataExt.icon,
+                  loading: true,
+                ),
               ),
-            ),
-            Gaps.wGap8,
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.metadataExt.name!,
-                    style: textTheme.titleMedium,
-                  ),
-                  Text(
-                    uri.host,
-                    style: textTheme.bodySmall,
-                    maxLines: 2,
-                  ),
-                  Gaps.hGap4,
-                  Row(
-                    children: [
-                      TagExtension(
-                        text: "V${widget.metadataExt.version}",
-                        color: Colors.orange,
-                      ),
-                      // Gaps.wGap8,
-                      // TagExtension(
-                      //   text: widget.metadataExt.locale!.split("_").last,
-                      //   color: Colors.teal,
-                      // ),
-                      Gaps.wGap8,
-                      TagExtension(
-                        text: widget.metadataExt.type!.name.toTitleCase(),
-                        color: colorScheme.primary,
-                      ),
-                      Gaps.wGap8,
-                      if (widget.metadataExt.tag != null)
+              Gaps.wGap8,
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.metadataExt.name!,
+                      style: textTheme.titleMedium,
+                    ),
+                    Text(
+                      uri.host,
+                      style: textTheme.bodySmall,
+                      maxLines: 2,
+                    ),
+                    Gaps.hGap4,
+                    Row(
+                      children: [
                         TagExtension(
-                          text: widget.metadataExt.tag!,
-                          color: colorScheme.error,
+                          text: "V${widget.metadataExt.version}",
+                          color: Colors.orange,
                         ),
-                    ],
-                  )
-                ],
+                        Gaps.wGap8,
+                        TagExtension(
+                          text: widget.metadataExt.type!.name.toTitleCase,
+                          color: colorScheme.primary,
+                        ),
+                        Gaps.wGap8,
+                        if (widget.metadataExt.tag != null)
+                          TagExtension(
+                            text: widget.metadataExt.tag!,
+                            color: colorScheme.error,
+                          ),
+                      ],
+                    )
+                  ],
+                ),
               ),
-            ),
-            _tradingCardWidget(colorScheme),
-          ],
+              _tradingCardWidget(colorScheme),
+            ],
+          ),
         ),
       ),
     );
@@ -368,8 +444,8 @@ class _ExtensionCardState extends State<ExtensionCard> {
         size: 24,
       ),
       StatusExtension.update: Icon(
-        Icons.update,
-        color: colorScheme.error,
+        Icons.download_rounded,
+        color: colorScheme.primary,
         size: 24,
       ),
     };

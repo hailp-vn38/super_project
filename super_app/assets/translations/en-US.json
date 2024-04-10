@@ -18,8 +18,11 @@
     "tap_to_next_chapter": "Tap to Next Chapter",
     "hold_image_to_zoom": "Hold Image to Zoom"
   },
-  "discovery": {
-    "title": "Discovery"
+  "library": {
+    "title": "Library"
+  },
+  "explore": {
+    "title": "Explore"
   },
   "search": {
     "noSearchResults": "No results found for the keyword {}"
@@ -60,6 +63,16 @@
     "save_image_to_library": "Save image to library"
   },
   "settings": {
-    "title": "Settings"
+    "title": "Cài đặt",
+    "language": "Language",
+    "en": "English",
+    "vi": "Vietnamese",
+    "theme": "ThemeMode",
+    "system": "System",
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "extension": {
+    "title": "Extension"
   }
 }

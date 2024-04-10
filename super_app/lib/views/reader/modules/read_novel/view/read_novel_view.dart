@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:super_app/app/constants/gaps.dart';
 import 'package:super_app/app/extensions/context_extension.dart';
+import 'package:super_app/app/mixins/state.dart';
 import 'package:super_app/app/types.dart';
 import 'package:super_app/models/models.dart';
 import 'package:super_app/utils/device_utils.dart';

@@ -17,6 +17,9 @@ import '../cubit/extensions_cubit.dart';
 
 part 'extensions_page.dart';
 part '../widgets/widgets.dart';
+part '../widgets/search.dart';
+
+
 
 class ExtensionsView extends StatelessWidget {
   const ExtensionsView({super.key});

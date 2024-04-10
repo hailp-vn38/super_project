@@ -6,6 +6,7 @@ import 'package:super_app/app/constants/gaps.dart';
 import 'package:super_app/app/extensions/context_extension.dart';
 import 'package:super_app/utils/device_utils.dart';
 import 'package:super_app/views/explore/view/explore_view.dart';
+import 'package:super_app/views/extensions/extensions.dart';
 import 'package:super_app/views/library/library.dart';
 import 'package:super_app/views/settings/settings.dart';
 import 'package:super_app/widgets/widgets.dart';

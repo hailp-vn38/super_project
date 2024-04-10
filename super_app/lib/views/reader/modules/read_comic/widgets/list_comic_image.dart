@@ -1,122 +1,144 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 // ignore_for_file: library_private_types_in_public_api
 
 part of '../view/read_comic_view.dart';
 
-class ListComicImageController {
-  _ListComicImageState? _state;
+enum AutoScrollStatus { play, pause, stop }
 
-  ValueChanged<int>? onChangeIndex;
-
-  ValueNotifier<int> scrollIndex = ValueNotifier(0);
-
-  int get getCurrentIndex => scrollIndex.value;
-  void _bind(_ListComicImageState? state) {
-    _state = state;
-  }
-
-  void jumpTo(int index) {
-    _state?._jumpTo(index);
-    scrollIndex.value = index;
-  }
-
-  set setScrollIndex(int index) => scrollIndex.value = index;
-
-  void _onChangeIndex(int index) {
-    onChangeIndex?.call(index);
-    scrollIndex.value = index;
-  }
-
-  void onSliderChangeValue(int index) {
-    if (index == scrollIndex.value) return;
-    jumpTo(index);
-  }
-
-  void enableAutoScroll() {
-    _state?._enableAutoScroll(const Duration(seconds: 40));
-  }
-}
-
-class ListComicImage extends StatefulWidget {
-  const ListComicImage({
-    super.key,
-    required this.controller,
-    required this.images,
-    required this.headers,
-    required this.initialScrollIndex,
+class ScrollPosition {
+  final double offset;
+  final double maxScrollExtent;
+  final double height;
+  const ScrollPosition({
+    required this.offset,
+    required this.maxScrollExtent,
+    required this.height,
   });
-  final ListComicImageController controller;
 
-  final List<String> images;
-  final int initialScrollIndex;
-  final Map<String, String> headers;
-
-  @override
-  State<ListComicImage> createState() => _ListComicImageState();
-}
-
-class _ListComicImageState extends State<ListComicImage> {
-  // final ItemScrollController _itemScrollController = ItemScrollController();
-  // final ScrollOffsetController _scrollOffsetController =
-  //     ScrollOffsetController();
-  // final ItemPositionsListener _itemPositionsListener =
-  //     ItemPositionsListener.create();
-  final ItemScrollController _itemScrollController = ItemScrollController();
-  final ItemPositionsListener _itemPositionsListener =
-      ItemPositionsListener.create();
-
-  int _currentIndex = 0;
-
-  @override
-  void initState() {
-    widget.controller._bind(this);
-    _itemPositionsListener.itemPositions.addListener(() {
-      if (_itemPositionsListener.itemPositions.value.isEmpty) return;
-      final index = _itemPositionsListener.itemPositions.value.last.index;
-      if (_currentIndex != index) {
-        _currentIndex = index;
-        widget.controller._onChangeIndex(_currentIndex);
-      }
-    });
-    super.initState();
-  }
-
-  void _jumpTo(int index) {
-    _itemScrollController.jumpTo(index: index);
-  }
-
-  void _enableAutoScroll(Duration duration) {
-    _itemScrollController.scrollToMax(duration: duration);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ScrollablePositionedList.builder(
-      itemCount: widget.images.length,
-      initialScrollIndex: widget.initialScrollIndex,
-      itemBuilder: (context, index) {
-        final url = widget.images[index];
-        return KeepAliveWidget(
-            key: ValueKey(index),
-            child: ImageWidget(
-              image: url,
-              httpHeaders: widget.headers,
-              loading: true,
-            ));
-      },
-      itemScrollController: _itemScrollController,
-      // scrollOffsetController: _scrollOffsetController,
-      itemPositionsListener: _itemPositionsListener,
+  ScrollPosition copyWith({
+    double? offset,
+    double? maxScrollExtent,
+    double? height,
+  }) {
+    return ScrollPosition(
+      offset: offset ?? this.offset,
+      maxScrollExtent: maxScrollExtent ?? this.maxScrollExtent,
+      height: height ?? this.height,
     );
   }
+
+  @override
+  String toString() =>
+      'ScrollPosition(offset: $offset, maxScrollExtent: $maxScrollExtent, height: $height)';
 }
 
 class ListScrollController {
+  final int defaultDurationAutoScroll;
+
+  ListScrollController({required this.defaultDurationAutoScroll}) {
+    durationAutoScroll = ValueNotifier(defaultDurationAutoScroll);
+  }
+  // final _logger = Logger("ListScrollController");
+
   _ListScrollState? _state;
 
-  ValueChanged<double>? onChangeOffset;
+  ValueChanged<({double offset, double maxScrollExtent, double height})>?
+      onScroll;
+  VoidCallback? onScrollMax;
+
+  late ValueNotifier<int> durationAutoScroll;
+
+  ValueNotifier<AutoScrollStatus> autoScrollStatus =
+      ValueNotifier(AutoScrollStatus.stop);
+
+  ValueNotifier<ScrollPosition> scrollPosition = ValueNotifier(
+      const ScrollPosition(height: 0.0, maxScrollExtent: 0.0, offset: 0.0));
+
+  bool isAutoScroll = false;
 
   void _bing(_ListScrollState state) {
     _state = state;
+  }
+
+  void _addListener() {
+    _state?._scrollController.addListener(() {
+      final maxScroll = _state!._scrollController.position.maxScrollExtent;
+      final offset = _state!._scrollController.offset;
+      scrollPosition.value = ScrollPosition(
+          offset: offset,
+          maxScrollExtent: _state!._scrollController.position.maxScrollExtent,
+          height: _state!.context.height);
+      if (scrollPosition.value.maxScrollExtent != maxScroll) {
+        scrollPosition.value =
+            scrollPosition.value.copyWith(maxScrollExtent: maxScroll);
+        if (isAutoScroll) {
+          updateAutoScroll();
+        }
+      }
+      if (isAutoScroll && offset == maxScroll) {
+        onScrollMax?.call();
+      }
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      scrollPosition.value = scrollPosition.value.copyWith(
+          offset: _state?._scrollController.initialScrollOffset,
+          maxScrollExtent: _state?._scrollController.position.maxScrollExtent,
+          height: _state?.context.height);
+      if (isAutoScroll) {
+        Future.delayed(const Duration(seconds: 2)).then((value) {
+          updateAutoScroll();
+        });
+      }
+    });
+  }
+
+  void enableAutoScroll() {
+    isAutoScroll = true;
+    _state?._autoScroll(Duration(seconds: durationAutoScroll.value));
+    _state?._setState();
+    autoScrollStatus.value = AutoScrollStatus.play;
+  }
+
+  void stopAutoScroll() {
+    isAutoScroll = false;
+    _state?._stopScroll();
+    _state?._setState();
+    autoScrollStatus.value = AutoScrollStatus.stop;
+  }
+
+  void jumpToScroll(double value) {
+    _state?._jumpTo(value);
+  }
+
+  void setDurationAutoScroll(int value) {
+    durationAutoScroll.value = value;
+    _state?._autoScroll(Duration(seconds: value));
+  }
+
+  void updateAutoScroll() {
+    if (!isAutoScroll) return;
+    _state?._autoScroll(Duration(seconds: durationAutoScroll.value));
+  }
+
+  void _updateHeight() {
+    scrollPosition.value =
+        scrollPosition.value.copyWith(height: _state?.context.height);
+  }
+
+  void pauseAutoScroll() {
+    _state?._stopScroll();
+    autoScrollStatus.value = AutoScrollStatus.pause;
+    isAutoScroll = false;
+    _state?._setState();
+  }
+
+  void unpauseAutoScroll() {
+    enableAutoScroll();
+  }
+
+  void dispose() {
+    durationAutoScroll.dispose();
   }
 }
 
@@ -124,7 +146,7 @@ class ListScroll extends StatefulWidget {
   const ListScroll(
       {super.key,
       required this.controller,
-      required this.initialScrollOffset,
+      this.initialScrollOffset,
       required this.children});
   final ListScrollController controller;
   final double? initialScrollOffset;
@@ -134,7 +156,7 @@ class ListScroll extends StatefulWidget {
   State<ListScroll> createState() => _ListScrollState();
 }
 
-class _ListScrollState extends State<ListScroll> {
+class _ListScrollState extends State<ListScroll> with WidgetsBindingObserver {
   late ScrollController _scrollController;
   late ListScrollController _controller;
 
@@ -144,24 +166,63 @@ class _ListScrollState extends State<ListScroll> {
     _controller._bing(this);
     _scrollController = ScrollController(
         initialScrollOffset: widget.initialScrollOffset ?? 0.0);
-    _scrollController.addListener(() {
-      _controller.onChangeOffset?.call(_scrollController.offset);
-    });
+    print("init ${widget.initialScrollOffset}");
+    _controller._addListener();
+
+    WidgetsBinding.instance.addObserver(this);
 
     super.initState();
   }
 
+  void _stopScroll() {
+    _scrollController.position.hold(() {});
+  }
+
+  void _autoScroll(Duration duration) {
+    _scrollController.animateTo(_scrollController.position.maxScrollExtent,
+        duration: duration, curve: Curves.linear);
+  }
+
+  void _setState() {
+    setState(() {});
+  }
+
+  void _jumpTo(double value) {
+    _scrollController.jumpTo(value);
+  }
+
+  @override
+  void didChangeMetrics() {
+    if (_controller.scrollPosition.value.height != context.height) {
+      _controller.updateAutoScroll();
+      _controller._updateHeight();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      controller: _scrollController,
-      children: widget.children,
-    );
+    return LayoutBuilder(builder: (context, constraints) {
+      return SizedBox(
+        height: constraints.maxHeight,
+        width: constraints.maxWidth,
+        child: SingleChildScrollView(
+          physics: _controller.isAutoScroll
+              ? const NeverScrollableScrollPhysics()
+              : null,
+          controller: _scrollController,
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: widget.children,
+          ),
+        ),
+      );
+    });
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 }

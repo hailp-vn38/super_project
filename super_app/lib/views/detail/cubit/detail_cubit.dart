@@ -1,9 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:js_runtime/js_runtime.dart';
@@ -68,7 +68,7 @@ class DetailCubit extends Cubit<DetailState> {
           bookState: const StateRes(status: StatusType.loading));
       // emit loading detail book
       emit(detailState);
-      _logger.info("", name: "onRefreshDetail");
+      _logger.info("", name: "init");
       getDetailBook().then((detail) {
         detailState = detailState.copyWith(
             bookState: StateRes(status: StatusType.loaded, data: detail.book),
@@ -162,7 +162,44 @@ class DetailCubit extends Cubit<DetailState> {
       ExtensionType.comic => "comic",
       ExtensionType.novel => "novel",
       ExtensionType.movie => "movie",
+      ExtensionType.all => "all",
     };
+  }
+
+  Future<bool> addLibrary() async {
+    try {
+      Book book = bookState.data!;
+      book.chapters.addAll(chaptersState.data ?? []);
+      book.genres.addAll(state.genresState.data ?? []);
+      final chapter = chaptersState.data!.first;
+      book.trackRead.value = TrackRead(
+        indexChapter: chapter.index,
+        currentChapterName: chapter.name,
+        offset: 0.0,
+        percent: 0,
+      );
+      book.updateAt = DateTime.now();
+      final bookLibrary = await _databaseService.insertBook(book);
+      if (bookLibrary == null) return false;
+
+      final chapters = bookLibrary.chapters
+          .toList()
+          .sorted((a, b) => a.index!.compareTo(b.index!));
+      _databaseService.updateTrackRead(
+          bookLibrary.trackRead.value!.copyWith(chapterId: chapters.first.id));
+
+      emit(DetailState(
+          bookState: StateRes(status: StatusType.loaded, data: bookLibrary),
+          chaptersState: StateRes(status: StatusType.loaded, data: chapters),
+          genresState: StateRes(
+              status: StatusType.loaded, data: bookLibrary.genres.toList())));
+      _logger.error("add success bookId : ${bookLibrary.id}",
+          name: "addLibrary");
+      return true;
+    } catch (err) {
+      _logger.error(err, name: "addLibrary");
+      return false;
+    }
   }
 }
 

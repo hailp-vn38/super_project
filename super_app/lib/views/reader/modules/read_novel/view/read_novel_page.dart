@@ -53,9 +53,7 @@ class _ReadNovelPageState extends State<ReadNovelPage>
                               key: ValueKey(
                                   readerState.readCurrentChapter.data!.index!),
                               controller: _readNovelCubit.controller,
-                              initialScrollIndex: readerState
-                                      .readCurrentChapter.data!.scrollIndex ??
-                                  0,
+                              initialScrollIndex: 0,
                               content: _readNovelCubit.removeTrashContent(
                                   readerState
                                       .readCurrentChapter.data!.novel!))),

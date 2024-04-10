@@ -52,40 +52,42 @@ class ExtensionsBottomSheet extends StatelessWidget {
                             pinned: true,
                             title: Padding(
                               padding: const EdgeInsets.only(bottom: 10),
-                              child: Column(children: [
-                                GestureDetector(
-                                  onTap: () => Navigator.pop(context),
-                                  child: Container(
-                                    width: 40,
-                                    padding: const EdgeInsets.only(top: 8),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          color: Colors.grey,
-                                          borderRadius:
-                                              BorderRadius.circular(8)),
-                                      height: 6,
-                                    ),
-                                  ),
-                                ),
-                                Gaps.hGap4,
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                              child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Text("Nguồn đã có",
-                                        style: textTheme.titleMedium),
-                                  ],
-                                ),
-                              ]),
+                                    GestureDetector(
+                                      onTap: () => Navigator.pop(context),
+                                      child: Container(
+                                        width: 40,
+                                        padding: const EdgeInsets.only(top: 8),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: Colors.grey,
+                                              borderRadius:
+                                                  BorderRadius.circular(8)),
+                                          height: 6,
+                                        ),
+                                      ),
+                                    ),
+                                    // Gaps.hGap4,
+                                    // Row(
+                                    //   mainAxisAlignment: MainAxisAlignment.center,
+                                    //   children: [
+                                    //     Text("Nguồn đã có",
+                                    //         style: textTheme.titleMedium),
+                                    //   ],
+                                    // ),
+                                  ]),
                             ),
-                            actions: [
-                              IconButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                    Navigator.pushNamed(
-                                        context, RoutesName.extensions);
-                                  },
-                                  icon: const Icon(Icons.more_vert))
-                            ],
+                            // actions: [
+                            //   IconButton(
+                            //       onPressed: () {
+                            //         Navigator.pop(context);
+                            //         Navigator.pushNamed(
+                            //             context, RoutesName.extensions);
+                            //       },
+                            //       icon: const Icon(Icons.more_vert))
+                            // ],
                           )
                         ];
                       },
@@ -218,7 +220,7 @@ class ExtensionCard extends StatelessWidget {
                       bottomLeft: Radius.circular(8),
                     )),
                 child: Text(
-                  extension.metadata.type!.name.toTitleCase(),
+                  extension.metadata.type!.name.toTitleCase,
                   style: textTheme.labelSmall?.copyWith(fontSize: 8),
                 ),
               )),

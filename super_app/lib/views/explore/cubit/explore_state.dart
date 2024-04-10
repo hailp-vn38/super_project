@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+
 part of 'explore_cubit.dart';
 
 abstract class ExploreState extends Equatable {
@@ -38,15 +40,14 @@ class ExploreError extends ExploreState {
 class ItemTabExplore {
   final String title;
   final String url;
-  ItemTabExplore({
-    required this.title,
-    required this.url,
-  });
+  final int? index;
+  ItemTabExplore({required this.title, required this.url, this.index});
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'title': title,
       'url': url,
+      'index': index,
     };
   }
 
@@ -54,11 +55,23 @@ class ItemTabExplore {
     return ItemTabExplore(
       title: map['title'] as String,
       url: map['url'] as String,
+      index: map['index'] != null ? map['index'] as int : null,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory ItemTabExplore.fromJson(String source) =>
-      ItemTabExplore.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory ItemTabExplore.fromJson(String source) => ItemTabExplore.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  ItemTabExplore copyWith({
+    String? title,
+    String? url,
+    int? index,
+  }) {
+    return ItemTabExplore(
+      title: title ?? this.title,
+      url: url ?? this.url,
+      index: index ?? this.index,
+    );
+  }
 }

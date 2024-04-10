@@ -21,6 +21,7 @@ class _ReadComicPageState extends State<ReadComicPage>
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = context.appTextTheme;
     return Scaffold(
       drawer: ChaptersDrawer(
         onChangeChapter: (chapter) {
@@ -46,14 +47,21 @@ class _ReadComicPageState extends State<ReadComicPage>
                     previous.readCurrentChapter != current.readCurrentChapter,
                 builder: (context, readerState) {
                   return switch (readerState.readCurrentChapter.status) {
-                    StatusType.loaded => ListComicImage(
+                    StatusType.loaded => ListScroll(
                         key: ValueKey(
                             readerState.readCurrentChapter.data!.index),
-                        images: readerState.readCurrentChapter.data!.comic!,
-                        headers: _readComicCubit.getHttpHeaders,
-                        initialScrollIndex:
-                            _readComicCubit.getInitialScrollIndex,
-                        controller: _readComicCubit.listComicImageController,
+                        controller: _readComicCubit.listScrollController,
+                        initialScrollOffset:
+                            readerState.readCurrentChapter.data!.offset,
+                        children: readerState.readCurrentChapter.data!.comic!
+                            .map((e) => KeepAliveWidget(
+                                  child: ImageWidget(
+                                    image: e,
+                                    httpHeaders: _readComicCubit.getHttpHeaders,
+                                    loading: true,
+                                  ),
+                                ))
+                            .toList(),
                       ),
                     _ => const LoadingWidget()
                   };
@@ -78,3 +86,37 @@ class _ReadComicPageState extends State<ReadComicPage>
     );
   }
 }
+
+// class PhotoTmp extends StatelessWidget {
+//   const PhotoTmp({super.key, required this.images, required this.headers});
+//   final List<String> images;
+//   final Map<String, String>? headers;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//         child: PhotoViewGallery.builder(
+//       scrollPhysics: const BouncingScrollPhysics(),
+//       builder: (BuildContext context, int index) {
+//         return PhotoViewGalleryPageOptions(
+//           imageProvider: NetworkImage(images[index], headers: headers),
+//           initialScale: PhotoViewComputedScale.contained * 0.8,
+//           // heroAttributes: PhotoViewHeroAttributes(tag: galleryItems[index].id),
+//         );
+//       },
+//       allowImplicitScrolling: true,
+//       itemCount: images.length,
+//       scrollDirection: Axis.vertical,
+//       loadingBuilder: (context, event) => Center(
+//         child: Container(
+//           width: 20.0,
+//           height: 20.0,
+//           child: CircularProgressIndicator(),
+//         ),
+//       ),
+//       // backgroundDecoration: widget.backgroundDecoration,
+//       // pageController: widget.pageController,
+//       // onPageChanged: onPageChanged,
+//     ));
+//   }
+// }

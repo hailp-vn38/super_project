@@ -1,11 +1,8 @@
 part of 'splash_cubit.dart';
 
-abstract class SplashState extends Equatable {
-  const SplashState();
+class SplashState extends Equatable {
+  const SplashState({required this.status});
+  final StatusType status;
   @override
-  List<Object> get props => [];
+  List<Object> get props => [status];
 }
-
-class SplashInitial extends SplashState {}
-
-class AppReady extends SplashState {}

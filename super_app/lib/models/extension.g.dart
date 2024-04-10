@@ -1805,64 +1805,69 @@ const MetadataSchema = Schema(
       name: r'author',
       type: IsarType.string,
     ),
-    r'description': PropertySchema(
+    r'browser': PropertySchema(
       id: 1,
+      name: r'browser',
+      type: IsarType.bool,
+    ),
+    r'description': PropertySchema(
+      id: 2,
       name: r'description',
       type: IsarType.string,
     ),
     r'hashCode': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'hashCode',
       type: IsarType.long,
     ),
     r'icon': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'icon',
       type: IsarType.string,
     ),
     r'language': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'language',
       type: IsarType.string,
     ),
     r'locale': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'locale',
       type: IsarType.string,
     ),
     r'name': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'name',
       type: IsarType.string,
     ),
     r'path': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'path',
       type: IsarType.string,
     ),
     r'regexp': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'regexp',
       type: IsarType.string,
     ),
     r'source': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'source',
       type: IsarType.string,
     ),
     r'tag': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'tag',
       type: IsarType.string,
     ),
     r'type': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'type',
       type: IsarType.string,
       enumMap: _MetadatatypeEnumValueMap,
     ),
     r'version': PropertySchema(
-      id: 12,
+      id: 13,
       name: r'version',
       type: IsarType.long,
     )
@@ -1955,18 +1960,19 @@ void _metadataSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeString(offsets[0], object.author);
-  writer.writeString(offsets[1], object.description);
-  writer.writeLong(offsets[2], object.hashCode);
-  writer.writeString(offsets[3], object.icon);
-  writer.writeString(offsets[4], object.language);
-  writer.writeString(offsets[5], object.locale);
-  writer.writeString(offsets[6], object.name);
-  writer.writeString(offsets[7], object.path);
-  writer.writeString(offsets[8], object.regexp);
-  writer.writeString(offsets[9], object.source);
-  writer.writeString(offsets[10], object.tag);
-  writer.writeString(offsets[11], object.type?.name);
-  writer.writeLong(offsets[12], object.version);
+  writer.writeBool(offsets[1], object.browser);
+  writer.writeString(offsets[2], object.description);
+  writer.writeLong(offsets[3], object.hashCode);
+  writer.writeString(offsets[4], object.icon);
+  writer.writeString(offsets[5], object.language);
+  writer.writeString(offsets[6], object.locale);
+  writer.writeString(offsets[7], object.name);
+  writer.writeString(offsets[8], object.path);
+  writer.writeString(offsets[9], object.regexp);
+  writer.writeString(offsets[10], object.source);
+  writer.writeString(offsets[11], object.tag);
+  writer.writeString(offsets[12], object.type?.name);
+  writer.writeLong(offsets[13], object.version);
 }
 
 Metadata _metadataDeserialize(
@@ -1977,17 +1983,18 @@ Metadata _metadataDeserialize(
 ) {
   final object = Metadata(
     author: reader.readStringOrNull(offsets[0]),
-    description: reader.readStringOrNull(offsets[1]),
-    icon: reader.readStringOrNull(offsets[3]),
-    language: reader.readStringOrNull(offsets[4]),
-    locale: reader.readStringOrNull(offsets[5]),
-    name: reader.readStringOrNull(offsets[6]),
-    path: reader.readStringOrNull(offsets[7]),
-    regexp: reader.readStringOrNull(offsets[8]),
-    source: reader.readStringOrNull(offsets[9]),
-    tag: reader.readStringOrNull(offsets[10]),
-    type: _MetadatatypeValueEnumMap[reader.readStringOrNull(offsets[11])],
-    version: reader.readLongOrNull(offsets[12]),
+    browser: reader.readBoolOrNull(offsets[1]),
+    description: reader.readStringOrNull(offsets[2]),
+    icon: reader.readStringOrNull(offsets[4]),
+    language: reader.readStringOrNull(offsets[5]),
+    locale: reader.readStringOrNull(offsets[6]),
+    name: reader.readStringOrNull(offsets[7]),
+    path: reader.readStringOrNull(offsets[8]),
+    regexp: reader.readStringOrNull(offsets[9]),
+    source: reader.readStringOrNull(offsets[10]),
+    tag: reader.readStringOrNull(offsets[11]),
+    type: _MetadatatypeValueEnumMap[reader.readStringOrNull(offsets[12])],
+    version: reader.readLongOrNull(offsets[13]),
   );
   return object;
 }
@@ -2002,11 +2009,11 @@ P _metadataDeserializeProp<P>(
     case 0:
       return (reader.readStringOrNull(offset)) as P;
     case 1:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readBoolOrNull(offset)) as P;
     case 2:
-      return (reader.readLong(offset)) as P;
-    case 3:
       return (reader.readStringOrNull(offset)) as P;
+    case 3:
+      return (reader.readLong(offset)) as P;
     case 4:
       return (reader.readStringOrNull(offset)) as P;
     case 5:
@@ -2022,8 +2029,10 @@ P _metadataDeserializeProp<P>(
     case 10:
       return (reader.readStringOrNull(offset)) as P;
     case 11:
-      return (_MetadatatypeValueEnumMap[reader.readStringOrNull(offset)]) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 12:
+      return (_MetadatatypeValueEnumMap[reader.readStringOrNull(offset)]) as P;
+    case 13:
       return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -2185,6 +2194,32 @@ extension MetadataQueryFilter
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'author',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Metadata, Metadata, QAfterFilterCondition> browserIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'browser',
+      ));
+    });
+  }
+
+  QueryBuilder<Metadata, Metadata, QAfterFilterCondition> browserIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'browser',
+      ));
+    });
+  }
+
+  QueryBuilder<Metadata, Metadata, QAfterFilterCondition> browserEqualTo(
+      bool? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'browser',
+        value: value,
       ));
     });
   }

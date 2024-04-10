@@ -28,4 +28,6 @@ Future<void> setupLocator() async {
       () => DownloadService(
           isar: getIt<DBStore>().isar, jsRuntime: getIt<JsRuntime>()),
       dependsOn: [DBStore, JsRuntime]);
+
+  await getIt.allReady();
 }

@@ -95,11 +95,10 @@ const BookSchema = CollectionSchema(
       single: false,
     ),
     r'trackRead': LinkSchema(
-      id: 1471226088817353667,
+      id: -1482623198702243173,
       name: r'trackRead',
       target: r'TrackRead',
       single: true,
-      linkName: r'book',
     )
   },
   embeddedSchemas: {},

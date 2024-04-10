@@ -36,15 +36,13 @@ Future<void> main() async {
   if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
     await InAppWebViewController.setWebContentsDebuggingEnabled(false);
   }
-  // await InAppWebViewController.setWebContentsDebuggingEnabled(false);
   await EasyLocalization.ensureInitialized();
 
   await setupLocator();
   // Bloc.observer = const AppBlocObserver();
   if (Platform.isMacOS || Platform.isWindows) {
     await _configureMacosWindowUtils();
-  }
-
+  } else {}
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       systemNavigationBarColor: Colors.transparent,

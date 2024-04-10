@@ -39,10 +39,7 @@ class DeviceUtils {
     return SystemChrome.setPreferredOrientations([]);
   }
 
-  static Future<void> setRotationDevice() {
-    return SystemChrome.setPreferredOrientations(
-        [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
-  }
+
 
   static bool get isMobile => Platform.isAndroid || Platform.isIOS;
 }

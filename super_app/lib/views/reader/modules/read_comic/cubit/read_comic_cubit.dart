@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:js_runtime/utils/logger.dart';
 import 'package:super_app/models/models.dart';
 import 'package:super_app/views/reader/cubit/reader_cubit.dart';
 
@@ -14,14 +15,13 @@ class ReadComicCubit extends Cubit<ReadComicState> {
   ReadComicCubit({required this.readerCubit})
       : super(const ReadComicState(menu: MenuComic.base));
 
+  final _logger = Logger("ReadComicCubit");
+
   final ReaderCubit readerCubit;
 
   Book get getBook => readerCubit.args.book;
 
   List<Chapter> get getChapters => readerCubit.args.chapters;
-
-  int get getInitialScrollIndex =>
-      readerCubit.getCurrentChapter.scrollIndex ?? 0;
 
   bool _currentOnTouchScreen = false;
 
@@ -29,11 +29,26 @@ class ReadComicCubit extends Cubit<ReadComicState> {
 
   AnimationController? get getAnimationController => _controller;
 
-  ListComicImageController listComicImageController =
-      ListComicImageController();
+  ListScrollController listScrollController =
+      ListScrollController(defaultDurationAutoScroll: 40);
 
   void onInit() {
-    listComicImageController.onChangeIndex = onChangeScrollIndex;
+    listScrollController.onScrollMax = () async {
+      final isNext = nextChapter();
+      if (!isNext) {
+        _logger.info("close autoScroll");
+        closeAutoScroll();
+      }
+    };
+    listScrollController.scrollPosition.addListener(() {
+      final scrollPosition = listScrollController.scrollPosition.value;
+
+      readerCubit.updateScrollReader(
+          offset: scrollPosition.offset,
+          percent:
+              ((scrollPosition.offset / scrollPosition.maxScrollExtent) * 100)
+                  .toInt());
+    });
   }
 
   set setAnimationController(AnimationController controller) {
@@ -67,12 +82,6 @@ class ReadComicCubit extends Cubit<ReadComicState> {
     }
   }
 
-  void onChangeScrollIndex(int index) {
-    final chapter = readerCubit.getCurrentChapter;
-    chapter.scrollIndex = index;
-    readerCubit.updateChapter(chapter);
-  }
-
   void onChangeChapter(Chapter chapter) {
     _onChangeIsShowMenu(false);
     readerCubit.getDetailChapter(chapter);
@@ -81,7 +90,7 @@ class ReadComicCubit extends Cubit<ReadComicState> {
   void perChapter() {
     final index = readerCubit.getCurrentChapter.index!;
     if (index == 0) return;
-    listComicImageController.setScrollIndex = 0;
+    // listComicImageController.setScrollIndex = 0;
 
     readerCubit.getDetailChapter(readerCubit.getChapters[index - 1]);
     if (_isShowMenu) {
@@ -89,24 +98,32 @@ class ReadComicCubit extends Cubit<ReadComicState> {
     }
   }
 
-  void nextChapter() {
+  bool nextChapter() {
     final index = readerCubit.getCurrentChapter.index!;
-    if (index >= readerCubit.getChapters.length) return;
-    listComicImageController.setScrollIndex = 0;
+    if (index + 1 >= readerCubit.getChapters.length) return false;
     readerCubit.getDetailChapter(readerCubit.getChapters[index + 1]);
     if (_isShowMenu) {
       _onChangeIsShowMenu(false);
     }
+    return true;
   }
 
-  void startAutoScroll() {
-    listComicImageController.enableAutoScroll();
-    _onChangeIsShowMenu(false);
+  void enableAutoScroll() async {
+    await _onChangeIsShowMenu(false);
+    emit(state.copyWith(menu: MenuComic.autoScroll));
+    listScrollController.enableAutoScroll();
+  }
+
+  void closeAutoScroll() async {
+    await _onChangeIsShowMenu(false);
+    emit(state.copyWith(menu: MenuComic.base));
+    listScrollController.stopAutoScroll();
   }
 
   @override
   Future<void> close() {
     _controller?.dispose();
+    listScrollController.dispose();
     return super.close();
   }
 }
