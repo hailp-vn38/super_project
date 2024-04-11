@@ -13,7 +13,7 @@
     {
         "name": "OPhim",
         "author": "admin",
-        "version": 1,
+        "version": 2,
         "source": "https://ophim1.com",
         "regexp": "(ophim1).(com)",
         "description": "Xem phim trên trang OPhim",
@@ -47,9 +47,9 @@
     {
         "name": "Anime Hay",
         "author": "HyperMedia",
-        "version": 2,
-        "source": "https://animehay.me",
-        "regexp": "(animehay).(me)",
+        "version": 3,
+        "source": "https://animehay.blog",
+        "regexp": "(animehay).(blog)",
         "description": "Xem anime trang AnimeHay",
         "locale": "vi_VN",
         "type": "movie",

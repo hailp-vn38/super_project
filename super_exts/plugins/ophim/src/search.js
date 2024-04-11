@@ -13,7 +13,8 @@ async function search(url, kw, page) {
       name: item.name,
       url: "/v1/api/phim/" + item.slug,
       description: `Năm ${item.year}`,
-      cover: res.data.APP_DOMAIN_CDN_IMAGE + "/" + item.thumb_url,
+      cover:
+        res.data.APP_DOMAIN_CDN_IMAGE + "/uploads/movies/" + item.thumb_url,
     });
   }
   return Response.success(result);

@@ -2,7 +2,7 @@
   "metadata": {
     "name": "OPhim",
     "author": "admin",
-    "version": 1,
+    "version": 2,
     "source": "https://ophim1.com",
     "regexp": "(ophim1).(com)",
     "description": "Xem phim trên trang OPhim",

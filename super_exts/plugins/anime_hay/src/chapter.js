@@ -23,5 +23,5 @@ async function chapter(url) {
 }
 
 // runFn(() =>
-//   chapter("https://animehay.me/xem-phim/tran-hon-nhai-phan-3-tap-9-58893.html")
+//   chapter("https://animehay.blog/xem-phim/tran-hon-nhai-phan-3-tap-9-58893.html")
 // );

@@ -2,9 +2,9 @@
   "metadata": {
     "name": "Anime Hay",
     "author": "HyperMedia",
-    "version": 2,
-    "source": "https://animehay.me",
-    "regexp": "(animehay).(me)",
+    "version": 3,
+    "source": "https://animehay.blog",
+    "regexp": "(animehay).(blog)",
     "description": "Xem anime trang AnimeHay",
     "locale": "vi_VN",
     "type": "movie"
