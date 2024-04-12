@@ -5,6 +5,7 @@ import 'package:super_app/views/genre/genre.dart';
 import 'package:super_app/views/home/home.dart';
 import 'package:super_app/views/reader/reader.dart';
 import 'package:super_app/views/search/search.dart';
+import 'package:super_app/views/search_big/search_big.dart';
 import 'package:super_app/views/tabs/tabs.dart';
 
 class RoutesName {
@@ -16,6 +17,8 @@ class RoutesName {
   static const detail = DetailView.routeName;
   static const extensions = ExtensionsView.routeName;
   static const search = SearchView.routeName;
+  static const searchBig = SearchBigView.routeName;
+
   static const reader = ReaderView.routeName;
   static const genre = GenreView.routeName;
 }

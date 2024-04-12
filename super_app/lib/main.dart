@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:desktop_window/desktop_window.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -12,22 +13,22 @@ import 'app/constants/constants.dart';
 import 'di/components/service_locator.dart';
 
 Future<void> _configureMacosWindowUtils() async {
-  // await DesktopWindow.setMinWindowSize(const Size(600, 500));
-  await windowManager.ensureInitialized();
+  await DesktopWindow.setMinWindowSize(const Size(800, 600));
+  // await windowManager.ensureInitialized();
 
-  WindowOptions windowOptions = const WindowOptions(
-    size: Size(800, 600),
-    minimumSize: Size(800, 600),
-    center: true,
-    backgroundColor: Colors.transparent,
-    skipTaskbar: false,
-    titleBarStyle: TitleBarStyle.normal,
-  );
-  windowManager.waitUntilReadyToShow(windowOptions, () async {
-    // await windowManager.show();
-    // await windowManager.focus();
-    // await windowManager.setAspectRatio(2 / 3);
-  });
+  // WindowOptions windowOptions = const WindowOptions(
+  //   size: Size(800, 600),
+  //   minimumSize: Size(800, 600),
+  //   center: true,
+  //   // backgroundColor: Colors.transparent,
+  //   skipTaskbar: false,
+  //   titleBarStyle: TitleBarStyle.normal,
+  // );
+  // windowManager.waitUntilReadyToShow(windowOptions, () async {
+  //   // await windowManager.show();
+  //   // await windowManager.focus();
+  //   // await windowManager.setAspectRatio(2 / 3);
+  // });
 }
 
 Future<void> main() async {

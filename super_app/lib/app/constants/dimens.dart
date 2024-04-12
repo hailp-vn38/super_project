@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:super_app/app/extensions/context_extension.dart';
 
 class Dimens {
   Dimens._();
@@ -11,4 +14,20 @@ class Dimens {
   static final cardBookBorderRadius = BorderRadius.circular(8);
 
   static const radius = 12.0;
+
+  static int getCrossAxisCount(BuildContext context) {
+    final width = context.width;
+    return width ~/ getWithBookChild;
+  }
+
+  static double get getWithBookChild {
+    if (Platform.isAndroid || Platform.isIOS) {
+      return 120;
+    }
+    return 150;
+  }
+
+  static double bookAspectRatio = 2 / 3.6;
+
+  static double coverBookAspectRatio = 2 / 2.9;
 }

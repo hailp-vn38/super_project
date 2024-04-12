@@ -1,7 +1,8 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:js_runtime/js_runtime.dart';
+
 import 'package:super_app/app/extensions/string_extension.dart';
 import 'package:super_app/app/routes/routes_name.dart';
 import 'package:super_app/app/types.dart';
@@ -12,23 +13,32 @@ import 'package:super_app/widgets/widgets.dart';
 
 import '../cubit/search_cubit.dart';
 
-part 'search_page.dart';
 part '../widgets/widgets.dart';
+part 'search_page.dart';
 
 class SearchView extends StatelessWidget {
-  const SearchView({super.key, required this.extension});
+  const SearchView({super.key, required this.args});
   static const String routeName = '/search_view';
-  final Extension extension;
+  final SearchArgs args;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => SearchCubit(
           jsRuntime: getIt<JsRuntime>(),
-          databaseService: getIt<DatabaseService>(),
-          extension: extension)
+          extension: args.extension,
+          searchWord: args.searchWord)
         ..onInit(),
       child: const SearchPage(),
     );
   }
+}
+
+class SearchArgs {
+  final Extension extension;
+  final String? searchWord;
+  SearchArgs({
+    required this.extension,
+    this.searchWord,
+  });
 }

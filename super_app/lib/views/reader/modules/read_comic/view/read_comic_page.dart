@@ -22,6 +22,7 @@ class _ReadComicPageState extends State<ReadComicPage>
   @override
   Widget build(BuildContext context) {
     final textTheme = context.appTextTheme;
+    final size = MediaQuery.sizeOf(context);
     return Scaffold(
       drawer: ChaptersDrawer(
         onChangeChapter: (chapter) {
@@ -59,6 +60,14 @@ class _ReadComicPageState extends State<ReadComicPage>
                                     image: e,
                                     httpHeaders: _readComicCubit.getHttpHeaders,
                                     loading: true,
+                                    loadingWidget: const SizedBox(
+                                      height: 300,
+                                      child: Center(
+                                        child: LoadingWidget(
+                                          radius: 10,
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ))
                             .toList(),

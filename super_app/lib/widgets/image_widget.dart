@@ -6,7 +6,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:string_validator/string_validator.dart';
-import 'package:super_app/app/extensions/context_extension.dart';
 import 'package:super_app/widgets/widgets.dart';
 
 import '../app/constants/assets.dart';
@@ -15,10 +14,15 @@ enum ImageType { file, network, base64, none }
 
 class ImageWidget extends StatefulWidget {
   const ImageWidget(
-      {super.key, this.image, this.httpHeaders, this.loading = false});
+      {super.key,
+      this.image,
+      this.httpHeaders,
+      this.loading = false,
+      this.loadingWidget});
   final String? image;
   final Map<String, String>? httpHeaders;
   final bool loading;
+  final Widget? loadingWidget;
 
   @override
   State<ImageWidget> createState() => _ImageWidgetState();
@@ -76,15 +80,11 @@ class _ImageWidgetState extends State<ImageWidget> {
 
   Widget _loadingWidget() {
     if (widget.loading) {
-      return SizedBox(
-        width: context.width,
-        height: 300,
-        child: const LoadingWidget(
+      if (widget.loadingWidget != null) return widget.loadingWidget!;
+      return const Center(
+        child: LoadingWidget(
           radius: 10,
         ),
-        // child: const SpinKitFadingCircle(
-        //   color: Colors.grey,
-        // ),
       );
     }
     return Image.asset(

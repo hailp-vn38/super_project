@@ -14,6 +14,8 @@ part 'book.g.dart';
 @Name("Book")
 class Book {
   Id? id;
+
+  @Index()
   String? name;
   String? url;
   String? cover;

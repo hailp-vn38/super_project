@@ -224,6 +224,7 @@ Future<({Book book, List<Chapter> chapters, List<Genre> genres})>
       url: prams.url,
       jsScript: prams.extension.getDetailScript,
     );
+
     Book book =
         Book.fromMap({...result, "type": prams.extension.metadata.type});
     Uri bookUri = Uri.parse(book.url!);

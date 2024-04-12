@@ -27,7 +27,7 @@ class _SearchPageState extends State<SearchPage> {
       appBar: AppBar(
         title: TextField(
           focusNode: _focusNode,
-          controller: _searchCubit.textEditingController,
+          controller: _searchCubit.getTextEditingController,
           textInputAction: TextInputAction.search,
           decoration: const InputDecoration(
             filled: false,
@@ -45,7 +45,7 @@ class _SearchPageState extends State<SearchPage> {
           IconButton(
               splashRadius: 20,
               onPressed: () {
-                _searchCubit.textEditingController.clear();
+                _searchCubit.getTextEditingController.clear();
                 _focusNode.requestFocus();
               },
               icon: const Icon(Icons.close_rounded))
@@ -60,6 +60,7 @@ class _SearchPageState extends State<SearchPage> {
               StatusType.loaded => BooksWidget(
                   url: "",
                   initialData: state.books,
+                  showDes: true,
                   // initialBooks: state.books,
                   // useFetch: false,
                   // useRefresh: false,
@@ -82,7 +83,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void dispose() {
     _focusNode.dispose();
-    _searchCubit.textEditingController.dispose();
+    _searchCubit.getTextEditingController.dispose();
     super.dispose();
   }
 }

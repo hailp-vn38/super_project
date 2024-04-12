@@ -143,24 +143,27 @@ class _WatchMoviesPageState extends State<WatchMoviesPage> {
                         builder: (context, movie) {
                           if (movie == null) return const SizedBox();
                           return Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Padding(
                                 padding: EdgeInsets.symmetric(
                                     horizontal: 8, vertical: 8),
                                 child: Text("Server :"),
                               ),
-                              Wrap(
-                                children: currentChapter.getMovies!
-                                    .map((item) => ServerMovieCard(
-                                          movie: item,
-                                          currentWatch: movie.serverName ==
-                                              item.serverName,
-                                          onTap: () {
-                                            _watchMoviesCubit
-                                                .onChangeServer(item);
-                                          },
-                                        ))
-                                    .toList(),
+                              Expanded(
+                                child: Wrap(
+                                  children: currentChapter.getMovies!
+                                      .map((item) => ServerMovieCard(
+                                            movie: item,
+                                            currentWatch: movie.serverName ==
+                                                item.serverName,
+                                            onTap: () {
+                                              _watchMoviesCubit
+                                                  .onChangeServer(item);
+                                            },
+                                          ))
+                                      .toList(),
+                                ),
                               )
                             ],
                           );

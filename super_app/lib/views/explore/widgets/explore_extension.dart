@@ -21,6 +21,8 @@ class _ExploreExtensionState extends State<ExploreExtension> {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = context.appTextTheme;
+    final colorScheme = context.colorScheme;
     return Scaffold(
       appBar: AppBar(
         title: MouseRegion(
@@ -43,20 +45,25 @@ class _ExploreExtensionState extends State<ExploreExtension> {
                       ));
             },
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                    width: 40,
+                    width: 45,
                     alignment: Alignment.center,
-                    child: IconExtension(
-                      icon: _extension.metadata.icon,
+                    child: ImageWidget(
+                      image: _extension.metadata.icon,
                     )),
                 Gaps.wGap8,
-                Flexible(
-                    child: Text(
-                  _extension.metadata.name ?? "",
-                  style: context.appTextTheme.titleMedium,
-                )),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _extension.metadata.name ?? "",
+                      style: textTheme.titleMedium,
+                    ),
+                    ExtensionTag(text: _extension.metadata.type!.title),
+                  ],
+                ),
                 Gaps.wGap8,
                 const Icon(
                   Icons.expand_more_rounded,
@@ -71,7 +78,7 @@ class _ExploreExtensionState extends State<ExploreExtension> {
             IconButton(
                 onPressed: () {
                   Navigator.pushNamed(context, RoutesName.search,
-                      arguments: _extension);
+                      arguments: SearchArgs(extension: _extension));
                 },
                 icon: const Icon(Icons.search_rounded))
         ],
@@ -121,8 +128,8 @@ class TabItem extends StatefulWidget {
 class _TabItemState extends State<TabItem> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   List<ItemTabExplore> _tabs = [];
-  List<Tab> _itemTabs = [];
-  List<Widget> _tabChildren = [];
+  final List<Tab> _itemTabs = [];
+  final List<Widget> _tabChildren = [];
   @override
   void initState() {
     _tabs = widget.tabs;
@@ -139,6 +146,7 @@ class _TabItemState extends State<TabItem> with SingleTickerProviderStateMixin {
             Navigator.pushNamed(context, RoutesName.detail,
                 arguments: book.url?.replaceUrl(widget.extension.source));
           },
+          showDes: true,
         ),
       ));
     }

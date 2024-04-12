@@ -4,38 +4,38 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:js_runtime/js_runtime.dart';
 import 'package:super_app/app/types.dart';
 import 'package:super_app/models/models.dart';
-import 'package:super_app/services/database_service.dart';
 
 part 'search_state.dart';
 
 class SearchCubit extends Cubit<SearchState> {
   SearchCubit(
-      {required DatabaseService databaseService,
-      required JsRuntime jsRuntime,
-      required Extension extension})
-      : _databaseService = databaseService,
-        _jsRuntime = jsRuntime,
+      {required JsRuntime jsRuntime,
+      required Extension extension,
+      String? searchWord})
+      : _jsRuntime = jsRuntime,
         _extension = extension,
+        _textEditingController = TextEditingController(text: searchWord),
         super(const SearchState(status: StatusType.init, books: []));
-  final DatabaseService _databaseService;
-  Extension _extension;
+  final Extension _extension;
   final JsRuntime _jsRuntime;
 
-  late TextEditingController textEditingController;
-  String? _message;
+  final TextEditingController _textEditingController;
 
   Extension get extension => _extension;
+
+  TextEditingController get getTextEditingController => _textEditingController;
   void onInit() {
-    textEditingController = TextEditingController();
+    if (_textEditingController.text != "") {
+      onSearch();
+    }
   }
 
   void onSearch() async {
     try {
-      _message = null;
       emit(state.copyWith(status: StatusType.loading));
 
       final result = await _jsRuntime.getSearch<List<dynamic>>(
-          keyWord: textEditingController.text,
+          keyWord: _textEditingController.text,
           url: _extension.metadata.source!,
           jsScript: _extension.getSearchScript!,
           page: 1);
@@ -43,8 +43,7 @@ class SearchCubit extends Cubit<SearchState> {
       emit(state.copyWith(
           status: StatusType.loaded,
           books: result.map<Book>((e) => Book.fromMap(e)).toList()));
-    } on JsRuntimeException catch (error) {
-      _message = error.message;
+    } on JsRuntimeException {
       emit(state.copyWith(status: StatusType.error));
     } catch (error) {
       emit(state.copyWith(status: StatusType.error));
@@ -55,7 +54,7 @@ class SearchCubit extends Cubit<SearchState> {
     List<Book> books = [];
     try {
       final result = await _jsRuntime.getSearch<List<dynamic>>(
-          keyWord: textEditingController.text,
+          keyWord: _textEditingController.text,
           url: _extension.metadata.source!,
           jsScript: _extension.getSearchScript!,
           page: page);

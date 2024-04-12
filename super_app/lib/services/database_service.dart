@@ -166,6 +166,10 @@ class DatabaseService {
     }
   }
 
+  // Future<List<Chapter>> getChaptersByBookId(int bookId) {
+  // // return  isar.books.filter()
+  // }
+
   Future<List<Book>> getListBook(ExtensionType type) async {
     try {
       return type == ExtensionType.all
@@ -177,6 +181,21 @@ class DatabaseService {
               .findAll();
     } catch (err) {
       _logger.error(err, name: "getListBook");
+      rethrow;
+    }
+  }
+
+  Future<List<Book>> searchBookByName(
+      String name, List<ExtensionType> types) async {
+    try {
+      return isar.books
+          .filter()
+          .nameContains(name)
+          .anyOf(types, (q, element) => q.typeEqualTo(element))
+          .sortByUpdateAtDesc()
+          .findAll();
+    } catch (err) {
+      _logger.error(err, name: "searchBookByName");
       rethrow;
     }
   }

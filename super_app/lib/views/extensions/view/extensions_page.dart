@@ -147,7 +147,7 @@ class _ExtensionsInstallState extends State<ExtensionsInstall> {
                           )),
                           IconButton(
                               onPressed: () {
-                                _extensionsCubit.checkUpdateExtensions();
+                                _extensionsCubit.checkExt();
                               },
                               icon: const Icon(Icons.refresh_rounded))
                         ],
@@ -403,18 +403,18 @@ class _ExtensionCardState extends State<ExtensionCard> {
                     Gaps.hGap4,
                     Row(
                       children: [
-                        TagExtension(
+                        ExtensionTag(
                           text: "V${widget.metadataExt.version}",
                           color: Colors.orange,
                         ),
                         Gaps.wGap8,
-                        TagExtension(
+                        ExtensionTag(
                           text: widget.metadataExt.type!.name.toTitleCase,
                           color: colorScheme.primary,
                         ),
                         Gaps.wGap8,
                         if (widget.metadataExt.tag != null)
-                          TagExtension(
+                          ExtensionTag(
                             text: widget.metadataExt.tag!,
                             color: colorScheme.error,
                           ),
@@ -462,29 +462,5 @@ class _ExtensionCardState extends State<ExtensionCard> {
     }
     return IconButton(
         splashRadius: 20, onPressed: _onTap, icon: mapIcon[widget.status]!);
-  }
-}
-
-class TagExtension extends StatelessWidget {
-  const TagExtension({super.key, required this.text, required this.color});
-  final String text;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = context.appTextTheme;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-      decoration: BoxDecoration(
-          color: color.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(4),
-          border: Border.all(
-            color: color,
-          )),
-      child: Text(
-        text,
-        style: textTheme.labelSmall?.copyWith(fontSize: 8),
-      ),
-    );
   }
 }

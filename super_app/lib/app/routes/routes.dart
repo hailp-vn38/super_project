@@ -9,6 +9,7 @@ import 'package:super_app/views/genre/genre.dart';
 import 'package:super_app/views/home/home.dart';
 import 'package:super_app/views/reader/reader.dart';
 import 'package:super_app/views/search/search.dart';
+import 'package:super_app/views/search_big/search_big.dart';
 import 'package:super_app/views/splash/splash.dart';
 import 'package:super_app/views/tabs/tabs.dart';
 
@@ -31,11 +32,11 @@ class Routes {
             child: const ExploreView(), type: PageTransitionType.fade);
 
       case RoutesName.search:
-        assert(args != null && args is Extension, "args must be Extension");
+        assert(args != null && args is SearchArgs, "args must be SearchArgs");
 
         return PageTransition(
             child: SearchView(
-              extension: args as Extension,
+              args: args as SearchArgs,
             ),
             type: PageTransitionType.fade);
 
@@ -52,6 +53,10 @@ class Routes {
         return PageTransition(
             child: const ExtensionsView(),
             type: PageTransitionType.rightToLeft);
+
+      case RoutesName.searchBig:
+        return PageTransition(
+            child: const SearchBigView(), type: PageTransitionType.fade);
 
       case RoutesName.detail:
         assert(args != null && args is String, "args must be String");

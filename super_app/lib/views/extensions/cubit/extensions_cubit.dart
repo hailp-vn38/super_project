@@ -1,12 +1,13 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:dio_client/index.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:js_runtime/utils/logger.dart';
 import 'package:super_app/app/constants/constants.dart';
+import 'package:super_app/app/mixins/handler_concurrent.dart';
 import 'package:super_app/app/types.dart';
 import 'package:super_app/models/models.dart';
 import 'package:super_app/services/database_service.dart';
@@ -26,8 +27,29 @@ class ExtensionsCubit extends Cubit<ExtensionsState> {
 
   int indexTab = 0;
 
+  late HandlerConcurrent<Extension, ExtensionEntry<Extension>>
+      _handlerConcurrent;
+
+  Future<Extension?> check(ExtensionEntry<Extension> entry) async {
+    try {
+      final result = await _dioClient
+          .get(entry.extension.metadata.path!.replaceAll("zip", "json"));
+      if (result != null && result["metadata"] != null) {
+        final meta = Metadata.fromMap(result["metadata"]);
+        if (meta.version! > entry.extension.metadata.version!) {
+          return entry.extension;
+        }
+      }
+    } catch (err) {
+      //
+    }
+    return null;
+  }
+
   void onInit() {
-    checkUpdateExtensions();
+    _handlerConcurrent =
+        HandlerConcurrent<Extension, ExtensionEntry<Extension>>(
+            maxConcurrent: 1, fun: check);
   }
 
   void onChangeIndexTab(int index) {
@@ -37,13 +59,14 @@ class ExtensionsCubit extends Cubit<ExtensionsState> {
   Future<void> getCurrentExtensions() async {
     try {
       emit(state.copyWith(
-          extensions: const StateRes(status: StatusType.loading)));
+          extensions: const StateRes(status: StatusType.loading, data: [])));
       final exts = await _databaseService.getListExtension();
       _logger.info("Ext installed = ${exts.length} ",
           name: "getCurrentExtensions");
 
       emit(state.copyWith(
           extensions: StateRes(status: StatusType.loaded, data: exts)));
+      checkExt();
     } catch (err) {
       emit(state.copyWith(
           extensions: const StateRes(
@@ -116,34 +139,60 @@ class ExtensionsCubit extends Cubit<ExtensionsState> {
     return true;
   }
 
-  Future<void> checkUpdateExtensions() async {
-    try {
-      emit(state.copyWith(
-          extsUpdate: const StateRes(status: StatusType.loading)));
+  // Future<void> checkUpdateExtensions() async {
+  //   try {
+  //     emit(state.copyWith(
+  //         extsUpdate: const StateRes(status: StatusType.loading)));
 
-      final res = await _dioClient.get(Constants.urlExtensions);
-      final data =
-          List.from(jsonDecode(res)).map((e) => Metadata.fromMap(e)).toList();
-      Map<String, Metadata> mapData = {for (var item in data) item.name!: item};
-      List<Metadata> listUpdate = [];
-      for (var ext in state.extensions.data!) {
-        if (mapData.containsKey(ext.metadata.name) &&
-            ext.metadata.version! != mapData[ext.metadata.name]!.version!) {
-          listUpdate.add(mapData[ext.metadata.name]!);
+  //     final res = await _dioClient.get(Constants.urlExtensions);
+  //     final data =
+  //         List.from(jsonDecode(res)).map((e) => Metadata.fromMap(e)).toList();
+  //     Map<String, Metadata> mapData = {for (var item in data) item.name!: item};
+  //     List<Metadata> listUpdate = [];
+  //     for (var ext in state.extensions.data!) {
+  //       if (mapData.containsKey(ext.metadata.name) &&
+  //           ext.metadata.version! != mapData[ext.metadata.name]!.version!) {
+  //         listUpdate.add(mapData[ext.metadata.name]!);
+  //       }
+  //       // listUpdate.add(mapData[ext.metadata.name]!);
+  //     }
+  //     _logger.info("Update = ${listUpdate.length}",
+  //         name: "checkUpdateExtensions");
+
+  //     emit(state.copyWith(
+  //         extsUpdate: StateRes(status: StatusType.loaded, data: listUpdate)));
+  //   } catch (err) {
+  //     emit(state.copyWith(
+  //         allExtension: const StateRes(
+  //             status: StatusType.error, message: "Update extensions err")));
+
+  //     _logger.error(err, name: "checkUpdateExtensions");
+  //   }
+  // }
+
+  void checkExt() {
+    emit(state.copyWith(
+        extsUpdate: const StateRes(status: StatusType.loading, data: [])));
+
+    int step = 0;
+    for (var ext in state.extensions.data ?? []) {
+      _handlerConcurrent.run(ExtensionEntry(extension: ext)).then((value) {
+        print("${ext.metadata.name} : update ${value != null}");
+        step++;
+        if (step == state.extensions.data!.length) {
+          emit(state.copyWith(
+              extsUpdate:
+                  state.extsUpdate.copyWith(status: StatusType.loaded)));
+
+          print("xong");
         }
-        // listUpdate.add(mapData[ext.metadata.name]!);
-      }
-      _logger.info("Update = ${listUpdate.length}",
-          name: "checkUpdateExtensions");
 
-      emit(state.copyWith(
-          extsUpdate: StateRes(status: StatusType.loaded, data: listUpdate)));
-    } catch (err) {
-      emit(state.copyWith(
-          allExtension: const StateRes(
-              status: StatusType.error, message: "Update extensions err")));
-
-      _logger.error(err, name: "checkUpdateExtensions");
+        if (value != null) {
+          emit(state.copyWith(
+              extsUpdate: state.extsUpdate.copyWith(
+                  data: [value.metadata, ...state.extsUpdate.data!])));
+        }
+      });
     }
   }
 
@@ -162,6 +211,13 @@ class ExtensionsCubit extends Cubit<ExtensionsState> {
         .toList();
     emit(state.copyWith(
         extsUpdate: StateRes(status: StatusType.loaded, data: data)));
+    getCurrentExtensions();
     return true;
+  }
+
+  @override
+  Future<void> close() {
+    _handlerConcurrent.close();
+    return super.close();
   }
 }

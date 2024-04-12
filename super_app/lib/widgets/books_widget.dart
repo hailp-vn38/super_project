@@ -3,11 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:js_runtime/js_runtime.dart';
-import 'package:super_app/app/constants/gaps.dart';
 import 'package:super_app/app/extensions/context_extension.dart';
-import 'package:super_app/app/extensions/string_extension.dart';
 import 'package:super_app/models/models.dart';
-import 'package:super_app/widgets/widgets.dart';
+import 'package:super_app/widgets/book_item.dart';
 
 typedef OnFetchListBook = Future<List<Book>> Function(String url, int page);
 
@@ -19,13 +17,19 @@ class BooksWidget extends StatefulWidget {
       this.onTap,
       this.onLongTap,
       this.initialData,
-      this.isLoad = true});
+      this.isLoad = true,
+      required this.showDes,
+      this.showType = false,
+      this.showTrack = false});
   final List<Book>? initialData;
   final OnFetchListBook? onFetchListBook;
   final ValueChanged<Book>? onTap;
   final ValueChanged<Book>? onLongTap;
   final bool isLoad;
   final String url;
+  final bool showDes;
+  final bool showType;
+  final bool showTrack;
 
   @override
   State<BooksWidget> createState() => _BooksWidgetState();
@@ -163,8 +167,11 @@ class _BooksWidgetState extends State<BooksWidget> {
                   return BookItem(
                     key: ValueKey(book.id),
                     book: book,
-                    onTap: () => widget.onTap?.call(book),
-                    onLongTap: () => widget.onLongTap?.call(book),
+                    onTap: (value) => widget.onTap?.call(value),
+                    onLongTap: (value) => widget.onLongTap?.call(value),
+                    showDescription: widget.showDes,
+                    showTrack: widget.showTrack,
+                    showType: widget.showType,
                   );
                 },
                 childCount: _listBook.length,
@@ -208,70 +215,70 @@ class _BooksWidgetState extends State<BooksWidget> {
   }
 }
 
-class BookItem extends StatelessWidget {
-  const BookItem(
-      {super.key,
-      required this.book,
-      required this.onTap,
-      required this.onLongTap});
-  final Book book;
-  final VoidCallback onTap;
-  final VoidCallback onLongTap;
+// class BookItem extends StatelessWidget {
+//   const BookItem(
+//       {super.key,
+//       required this.book,
+//       required this.onTap,
+//       required this.onLongTap});
+//   final Book book;
+//   final VoidCallback onTap;
+//   final VoidCallback onLongTap;
 
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: onTap,
-        onLongPress: onLongTap,
-        child: Card(
-          margin: EdgeInsets.zero,
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              AspectRatio(
-                aspectRatio: 2 / 2.7,
-                child: ImageWidget(
-                  image: book.cover!,
-                ),
-              ),
-              const SizedBox(
-                height: 4,
-              ),
-              Expanded(
-                  child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                child: Column(
-                  children: [
-                    Gaps.hGap4,
-                    Expanded(
-                      child: Text(
-                        book.name!.toTitleCase,
-                        style: context.appTextTheme.labelMedium
-                            ?.copyWith(height: 1.2),
-                        maxLines: 2,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    Text(
-                      book.description ?? "",
-                      style: context.appTextTheme.bodySmall
-                          ?.copyWith(height: 1, fontSize: 11),
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      overflow: TextOverflow.visible,
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                  ],
-                ),
-              ))
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return MouseRegion(
+//       cursor: SystemMouseCursors.click,
+//       child: GestureDetector(
+//         onTap: onTap,
+//         onLongPress: onLongTap,
+//         child: Card(
+//           margin: EdgeInsets.zero,
+//           child: Column(
+//             mainAxisSize: MainAxisSize.max,
+//             children: [
+//               AspectRatio(
+//                 aspectRatio: 2 / 2.7,
+//                 child: ImageWidget(
+//                   image: book.cover!,
+//                 ),
+//               ),
+//               const SizedBox(
+//                 height: 4,
+//               ),
+//               Expanded(
+//                   child: Padding(
+//                 padding: const EdgeInsets.symmetric(horizontal: 4),
+//                 child: Column(
+//                   children: [
+//                     Gaps.hGap4,
+//                     Expanded(
+//                       child: Text(
+//                         book.name!.toTitleCase,
+//                         style: context.appTextTheme.labelMedium
+//                             ?.copyWith(height: 1.2),
+//                         maxLines: 2,
+//                         textAlign: TextAlign.center,
+//                       ),
+//                     ),
+//                     Text(
+//                       book.description ?? "",
+//                       style: context.appTextTheme.bodySmall
+//                           ?.copyWith(height: 1, fontSize: 11),
+//                       textAlign: TextAlign.center,
+//                       maxLines: 1,
+//                       overflow: TextOverflow.visible,
+//                     ),
+//                     const SizedBox(
+//                       height: 8,
+//                     ),
+//                   ],
+//                 ),
+//               ))
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }

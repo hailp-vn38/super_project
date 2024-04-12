@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:js_runtime/js_runtime.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -18,6 +19,7 @@ import 'package:super_app/models/models.dart';
 import 'package:super_app/services/database_service.dart';
 import 'package:super_app/views/explore/cubit/explore_cubit.dart';
 import 'package:super_app/views/genre/genre.dart';
+import 'package:super_app/views/search/search.dart';
 import 'package:super_app/widgets/widgets.dart';
 
 part 'explore_page.dart';

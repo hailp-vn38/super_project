@@ -21,6 +21,7 @@ class _GenrePageState extends State<GenrePage> {
       appBar: AppBar(centerTitle: false, title: Text(_genreCubit.titleGenre)),
       body: BooksWidget(
         url: _genreCubit.getGenre.url!,
+        showDes: true,
         onFetchListBook: (url, page) {
           return _genreCubit.onGetListBook(page);
         },

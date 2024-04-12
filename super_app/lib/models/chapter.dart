@@ -13,7 +13,11 @@ part 'chapter.g.dart';
 class Chapter {
   Id? id;
 
+  @Index()
   int? index;
+
+  @Index()
+  int? bookId;
 
   String? name;
 
@@ -36,6 +40,7 @@ class Chapter {
   Chapter({
     this.id = Isar.autoIncrement,
     this.index,
+    this.bookId,
     this.name,
     this.url,
     this.dateUpload,
@@ -65,6 +70,7 @@ class Chapter {
     return Chapter(
         id: id ?? this.id,
         index: index ?? this.index,
+        bookId: bookId ?? this.bookId,
         name: name ?? this.name,
         url: url ?? this.url,
         dateUpload: dateUpload ?? this.dateUpload,
@@ -80,6 +86,7 @@ class Chapter {
     return <String, dynamic>{
       'id': id,
       'index': index,
+      'bookId': bookId,
       'name': name,
       'url': url,
       'dateUpload': dateUpload,
@@ -97,6 +104,7 @@ class Chapter {
     return Chapter(
         id: map['id'],
         index: map['index'],
+        bookId: map['bookId'],
         name: map['name'] != null ? map['name'] as String : null,
         url: map['url'] != null ? map['url'] as String : null,
         dateUpload:
@@ -139,11 +147,17 @@ class Chapter {
   }
 
   @override
+  String toString() {
+    return 'Chapter(id: $id, index: $index, bookId: $bookId, name: $name, url: $url, dateUpload: $dateUpload, isBookmarked: $isBookmarked, isRead: $isRead, novel: $novel, comic: $comic, movies: $movies, offset: $offset)';
+  }
+
+  @override
   bool operator ==(covariant Chapter other) {
     if (identical(this, other)) return true;
 
     return other.id == id &&
         other.index == index &&
+        other.bookId == bookId &&
         other.name == name &&
         other.url == url &&
         other.dateUpload == dateUpload &&
@@ -159,6 +173,7 @@ class Chapter {
   int get hashCode {
     return id.hashCode ^
         index.hashCode ^
+        bookId.hashCode ^
         name.hashCode ^
         url.hashCode ^
         dateUpload.hashCode ^
@@ -168,11 +183,6 @@ class Chapter {
         comic.hashCode ^
         movies.hashCode ^
         offset.hashCode;
-  }
-
-  @override
-  String toString() {
-    return 'Chapter(id: $id, index: $index, name: $name, url: $url, dateUpload: $dateUpload, isBookmarked: $isBookmarked, isRead: $isRead, novel: $novel, comic: $comic, movies: $movies, offset: $offset)';
   }
 }
 
