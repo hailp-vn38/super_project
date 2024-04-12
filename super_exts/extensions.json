@@ -34,6 +34,20 @@
         "icon": "https://raw.githubusercontent.com/lamphuchai-dev/super_project/exts/super_exts/plugins/net_truyen/icon.png"
     },
     {
+        "name": "Manga18Club",
+        "author": "admin",
+        "version": 1,
+        "source": "https://manga18.club",
+        "regexp": "(manga18).(club)",
+        "description": "Đọc truyện trên trang Manga18.Club",
+        "locale": "en_Us",
+        "type": "comic",
+        "tag": "nsfw",
+        "note": "Dùng VPN để xem",
+        "path": "https://raw.githubusercontent.com/lamphuchai-dev/super_project/exts/super_exts/plugins/manga18_club/extension.zip",
+        "icon": "https://raw.githubusercontent.com/lamphuchai-dev/super_project/exts/super_exts/plugins/manga18_club/icon.png"
+    },
+    {
         "name": "Kkphim",
         "author": "admin",
         "version": 1,

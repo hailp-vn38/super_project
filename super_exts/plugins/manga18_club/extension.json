@@ -1,0 +1,23 @@
+{
+  "metadata": {
+    "name": "Manga18Club",
+    "author": "admin",
+    "version": 1,
+    "source": "https://manga18.club",
+    "regexp": "(manga18).(club)",
+    "description": "Đọc truyện trên trang Manga18.Club",
+    "locale": "en_Us",
+    "type": "comic",
+    "tag": "nsfw",
+    "note": "Dùng VPN để xem"
+  },
+  "script": {
+    "tabs": "./src/tabs.js",
+    "home": "src/home.js",
+    "detail": "src/detail.js",
+    "chapters": "src/chapters.js",
+    "chapter": "src/chapter.js",
+    "search": "src/search.js",
+    "genre": "src/genre.js"
+  }
+}
