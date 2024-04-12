@@ -1,0 +1,19 @@
+{
+  "metadata": {
+    "name": "Avdbapi",
+    "author": "admin",
+    "version": 1,
+    "source": "https://avdbapi.com",
+    "regexp": "(avdbapi).(com)",
+    "description": "Xem phim trên Avdbapi",
+    "type": "movie",
+    "tag": "nsfw"
+  },
+  "script": {
+    "tabs": "src/tabs.js",
+    "home": "src/home.js",
+    "detail": "src/detail.js",
+    "chapters": "src/chapters.js",
+    "chapter": "src/chapter.js"
+  }
+}
