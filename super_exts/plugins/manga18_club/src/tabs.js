@@ -4,5 +4,9 @@ async function tabs() {
       title: "Latest Release",
       url: "/latest-release",
     },
+    {
+      title: "Manga List",
+      url: "/list-manga",
+    },
   ]);
 }

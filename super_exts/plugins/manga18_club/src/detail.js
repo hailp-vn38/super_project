@@ -64,12 +64,12 @@ async function detail(url) {
   }
   return Response.success({
     name,
-    cover,
+    cover: cover.replaceAll("cover_250x350.jpg", "cover_thumb_2.webp"),
     status: status,
     author: author,
     description: description != null ? description.trim() : "",
     url,
-    chapters:chapters.reverse(),
+    chapters: chapters.reverse(),
     genres,
   });
 }
