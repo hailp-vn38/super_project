@@ -2,7 +2,7 @@
   "metadata": {
     "name": "Manga18Club",
     "author": "admin",
-    "version": 1,
+    "version": 2,
     "source": "https://manga18.club",
     "regexp": "(manga18).(club)",
     "description": "Đọc truyện trên trang Manga18.Club",

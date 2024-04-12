@@ -69,7 +69,7 @@ async function detail(url) {
     author: author,
     description: description != null ? description.trim() : "",
     url,
-    chapters,
+    chapters:chapters.reverse(),
     genres,
   });
 }
