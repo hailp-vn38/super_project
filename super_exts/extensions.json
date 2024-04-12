@@ -11,6 +11,31 @@
         "icon": "https://raw.githubusercontent.com/lamphuchai-dev/super_project/exts/super_exts/plugins/truyencv/icon.png"
     },
     {
+        "name": "SayHentai",
+        "author": "admin",
+        "version": 1,
+        "source": "https://sayhentai.pro",
+        "regexp": "(sayhentai).(pro)",
+        "description": "Đọc truyện trên trang SayHentai",
+        "locale": "vi_Vn",
+        "type": "comic",
+        "tag": "nsfw",
+        "path": "https://raw.githubusercontent.com/lamphuchai-dev/super_project/exts/super_exts/plugins/say_hentai/extension.zip",
+        "icon": "https://raw.githubusercontent.com/lamphuchai-dev/super_project/exts/super_exts/plugins/say_hentai/icon.png"
+    },
+    {
+        "name": "Phê Truyện",
+        "author": "admin",
+        "version": 1,
+        "source": "https://phetruyen.vip",
+        "regexp": "(phetruyen).(vip)",
+        "description": "Đọc truyện trên trang Phê Truyện",
+        "locale": "vi_Vn",
+        "type": "comic",
+        "path": "https://raw.githubusercontent.com/lamphuchai-dev/super_project/exts/super_exts/plugins/phe_truyen/extension.zip",
+        "icon": "https://raw.githubusercontent.com/lamphuchai-dev/super_project/exts/super_exts/plugins/phe_truyen/icon.png"
+    },
+    {
         "name": "OPhim",
         "author": "admin",
         "version": 2,
