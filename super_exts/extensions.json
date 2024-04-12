@@ -13,7 +13,7 @@
     {
         "name": "SayHentai",
         "author": "admin",
-        "version": 1,
+        "version": 2,
         "source": "https://sayhentai.pro",
         "regexp": "(sayhentai).(pro)",
         "description": "Đọc truyện trên trang SayHentai",

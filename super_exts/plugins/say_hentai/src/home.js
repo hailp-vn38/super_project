@@ -1,7 +1,5 @@
 async function home(url, page) {
-  if (page != null) {
-    page = 1;
-  }
+  if (!page) page = 1;
 
   const res = await Extension.request(url, {
     queryParameters: { page: page },
@@ -27,11 +25,13 @@ async function home(url, page) {
       name: name.trim(),
       url: bookUrl,
       description: description != null ? description.trim() : "",
-      cover: await Extension.getAttributeText(html, "img", "src"),
+      cover:
+        (await Extension.getAttributeText(html, "img", "src")) ||
+        (await Extension.getAttributeText(html, "img", "data-src")),
     });
   }
 
   return Response.success(result);
 }
 
-// runFn(() => home("https://sayhentai.pro"));
+// runFn(() => home("https://sayhentai.pro", 2));
