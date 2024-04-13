@@ -15,8 +15,8 @@ async function detail(book_url) {
         movies: [
           {
             server_name: res.episodes[0].server_name,
-            data: item.link_embed,
-            type: "iframe",
+            data: item.link_m3u8,
+            type: "file",
           },
         ],
       });
