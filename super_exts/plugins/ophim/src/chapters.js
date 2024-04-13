@@ -17,8 +17,8 @@ async function chapters(bookUrl) {
         movies: [
           {
             server_name: server_name,
-            data: item.link_embed,
-            type: "embed",
+            data: item.link_m3u8,
+            type: "file",
           },
         ],
       });

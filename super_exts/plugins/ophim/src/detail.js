@@ -17,8 +17,8 @@ async function detail(book_url) {
         movies: [
           {
             server_name: server_name,
-            data: item.link_embed,
-            type: "embed",
+            data: item.link_m3u8,
+            type: "file",
           },
         ],
       });
