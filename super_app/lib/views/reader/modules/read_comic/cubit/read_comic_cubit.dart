@@ -21,7 +21,7 @@ class ReadComicCubit extends Cubit<ReadComicState> {
 
   Book get getBook => readerCubit.args.book;
 
-  List<Chapter> get getChapters => readerCubit.args.chapters;
+  List<Chapter> get getChapters => readerCubit.getChapters;
 
   bool _currentOnTouchScreen = false;
 
@@ -84,28 +84,23 @@ class ReadComicCubit extends Cubit<ReadComicState> {
 
   void onChangeChapter(Chapter chapter) {
     _onChangeIsShowMenu(false);
-    readerCubit.getDetailChapter(chapter);
+    readerCubit.onChangeChapter(chapter);
   }
 
-  void perChapter() {
-    final index = readerCubit.getCurrentChapter.index!;
-    if (index == 0) return;
-    // listComicImageController.setScrollIndex = 0;
-
-    readerCubit.getDetailChapter(readerCubit.getChapters[index - 1]);
-    if (_isShowMenu) {
+  bool perChapter() {
+    final result = readerCubit.perChapter();
+    if (result && _isShowMenu) {
       _onChangeIsShowMenu(false);
     }
+    return result;
   }
 
   bool nextChapter() {
-    final index = readerCubit.getCurrentChapter.index!;
-    if (index + 1 >= readerCubit.getChapters.length) return false;
-    readerCubit.getDetailChapter(readerCubit.getChapters[index + 1]);
-    if (_isShowMenu) {
+    final result = readerCubit.nextChapter();
+    if (result && _isShowMenu) {
       _onChangeIsShowMenu(false);
     }
-    return true;
+    return result;
   }
 
   void enableAutoScroll() async {

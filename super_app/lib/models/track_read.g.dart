@@ -17,43 +17,58 @@ const TrackReadSchema = CollectionSchema(
   name: r'TrackRead',
   id: 6574406807537300432,
   properties: {
-    r'chapterId': PropertySchema(
+    r'bookId': PropertySchema(
       id: 0,
+      name: r'bookId',
+      type: IsarType.long,
+    ),
+    r'chapterId': PropertySchema(
+      id: 1,
       name: r'chapterId',
       type: IsarType.long,
     ),
+    r'currentChapterName': PropertySchema(
+      id: 2,
+      name: r'currentChapterName',
+      type: IsarType.string,
+    ),
     r'currentPage': PropertySchema(
-      id: 1,
+      id: 3,
       name: r'currentPage',
       type: IsarType.long,
     ),
     r'hashCode': PropertySchema(
-      id: 2,
+      id: 4,
       name: r'hashCode',
       type: IsarType.long,
     ),
     r'indexChapter': PropertySchema(
-      id: 3,
+      id: 5,
       name: r'indexChapter',
       type: IsarType.long,
     ),
-    r'currentChapterName': PropertySchema(
-      id: 4,
-      name: r'currentChapterName',
+    r'lastChapterName': PropertySchema(
+      id: 6,
+      name: r'lastChapterName',
       type: IsarType.string,
     ),
     r'offset': PropertySchema(
-      id: 5,
+      id: 7,
       name: r'offset',
       type: IsarType.double,
     ),
     r'percent': PropertySchema(
-      id: 6,
+      id: 8,
       name: r'percent',
       type: IsarType.long,
     ),
+    r'totalChapter': PropertySchema(
+      id: 9,
+      name: r'totalChapter',
+      type: IsarType.long,
+    ),
     r'totalPage': PropertySchema(
-      id: 7,
+      id: 10,
       name: r'totalPage',
       type: IsarType.long,
     )
@@ -84,6 +99,12 @@ int _trackReadEstimateSize(
       bytesCount += 3 + value.length * 3;
     }
   }
+  {
+    final value = object.lastChapterName;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   return bytesCount;
 }
 
@@ -93,14 +114,17 @@ void _trackReadSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeLong(offsets[0], object.chapterId);
-  writer.writeLong(offsets[1], object.currentPage);
-  writer.writeLong(offsets[2], object.hashCode);
-  writer.writeLong(offsets[3], object.indexChapter);
-  writer.writeString(offsets[4], object.currentChapterName);
-  writer.writeDouble(offsets[5], object.offset);
-  writer.writeLong(offsets[6], object.percent);
-  writer.writeLong(offsets[7], object.totalPage);
+  writer.writeLong(offsets[0], object.bookId);
+  writer.writeLong(offsets[1], object.chapterId);
+  writer.writeString(offsets[2], object.currentChapterName);
+  writer.writeLong(offsets[3], object.currentPage);
+  writer.writeLong(offsets[4], object.hashCode);
+  writer.writeLong(offsets[5], object.indexChapter);
+  writer.writeString(offsets[6], object.lastChapterName);
+  writer.writeDouble(offsets[7], object.offset);
+  writer.writeLong(offsets[8], object.percent);
+  writer.writeLong(offsets[9], object.totalChapter);
+  writer.writeLong(offsets[10], object.totalPage);
 }
 
 TrackRead _trackReadDeserialize(
@@ -110,14 +134,17 @@ TrackRead _trackReadDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = TrackRead(
-    chapterId: reader.readLongOrNull(offsets[0]),
-    currentPage: reader.readLongOrNull(offsets[1]),
+    bookId: reader.readLongOrNull(offsets[0]),
+    chapterId: reader.readLongOrNull(offsets[1]),
+    currentChapterName: reader.readStringOrNull(offsets[2]),
+    currentPage: reader.readLongOrNull(offsets[3]),
     id: id,
-    indexChapter: reader.readLongOrNull(offsets[3]),
-    currentChapterName: reader.readStringOrNull(offsets[4]),
-    offset: reader.readDoubleOrNull(offsets[5]),
-    percent: reader.readLongOrNull(offsets[6]),
-    totalPage: reader.readLongOrNull(offsets[7]),
+    indexChapter: reader.readLongOrNull(offsets[5]),
+    lastChapterName: reader.readStringOrNull(offsets[6]),
+    offset: reader.readDoubleOrNull(offsets[7]),
+    percent: reader.readLongOrNull(offsets[8]),
+    totalChapter: reader.readLongOrNull(offsets[9]),
+    totalPage: reader.readLongOrNull(offsets[10]),
   );
   return object;
 }
@@ -134,16 +161,22 @@ P _trackReadDeserializeProp<P>(
     case 1:
       return (reader.readLongOrNull(offset)) as P;
     case 2:
-      return (reader.readLong(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 3:
       return (reader.readLongOrNull(offset)) as P;
     case 4:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 5:
-      return (reader.readDoubleOrNull(offset)) as P;
-    case 6:
       return (reader.readLongOrNull(offset)) as P;
+    case 6:
+      return (reader.readStringOrNull(offset)) as P;
     case 7:
+      return (reader.readDoubleOrNull(offset)) as P;
+    case 8:
+      return (reader.readLongOrNull(offset)) as P;
+    case 9:
+      return (reader.readLongOrNull(offset)) as P;
+    case 10:
       return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -241,6 +274,75 @@ extension TrackReadQueryWhere
 
 extension TrackReadQueryFilter
     on QueryBuilder<TrackRead, TrackRead, QFilterCondition> {
+  QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition> bookIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'bookId',
+      ));
+    });
+  }
+
+  QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition> bookIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'bookId',
+      ));
+    });
+  }
+
+  QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition> bookIdEqualTo(
+      int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'bookId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition> bookIdGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'bookId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition> bookIdLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'bookId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition> bookIdBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'bookId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition> chapterIdIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -308,6 +410,160 @@ extension TrackReadQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition>
+      currentChapterNameIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'currentChapterName',
+      ));
+    });
+  }
+
+  QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition>
+      currentChapterNameIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'currentChapterName',
+      ));
+    });
+  }
+
+  QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition>
+      currentChapterNameEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'currentChapterName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition>
+      currentChapterNameGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'currentChapterName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition>
+      currentChapterNameLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'currentChapterName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition>
+      currentChapterNameBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'currentChapterName',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition>
+      currentChapterNameStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'currentChapterName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition>
+      currentChapterNameEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'currentChapterName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition>
+      currentChapterNameContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'currentChapterName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition>
+      currentChapterNameMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'currentChapterName',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition>
+      currentChapterNameIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'currentChapterName',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition>
+      currentChapterNameIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'currentChapterName',
+        value: '',
       ));
     });
   }
@@ -580,31 +836,31 @@ extension TrackReadQueryFilter
   }
 
   QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition>
-      currentChapterNameIsNull() {
+      lastChapterNameIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'currentChapterName',
+        property: r'lastChapterName',
       ));
     });
   }
 
   QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition>
-      currentChapterNameIsNotNull() {
+      lastChapterNameIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'currentChapterName',
+        property: r'lastChapterName',
       ));
     });
   }
 
   QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition>
-      currentChapterNameEqualTo(
+      lastChapterNameEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'currentChapterName',
+        property: r'lastChapterName',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -612,7 +868,7 @@ extension TrackReadQueryFilter
   }
 
   QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition>
-      currentChapterNameGreaterThan(
+      lastChapterNameGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -620,7 +876,7 @@ extension TrackReadQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'currentChapterName',
+        property: r'lastChapterName',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -628,7 +884,7 @@ extension TrackReadQueryFilter
   }
 
   QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition>
-      currentChapterNameLessThan(
+      lastChapterNameLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -636,7 +892,7 @@ extension TrackReadQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'currentChapterName',
+        property: r'lastChapterName',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -644,7 +900,7 @@ extension TrackReadQueryFilter
   }
 
   QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition>
-      currentChapterNameBetween(
+      lastChapterNameBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -653,7 +909,7 @@ extension TrackReadQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'currentChapterName',
+        property: r'lastChapterName',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -664,13 +920,13 @@ extension TrackReadQueryFilter
   }
 
   QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition>
-      currentChapterNameStartsWith(
+      lastChapterNameStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'currentChapterName',
+        property: r'lastChapterName',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -678,13 +934,13 @@ extension TrackReadQueryFilter
   }
 
   QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition>
-      currentChapterNameEndsWith(
+      lastChapterNameEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'currentChapterName',
+        property: r'lastChapterName',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -692,10 +948,10 @@ extension TrackReadQueryFilter
   }
 
   QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition>
-      currentChapterNameContains(String value, {bool caseSensitive = true}) {
+      lastChapterNameContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
-        property: r'currentChapterName',
+        property: r'lastChapterName',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -703,10 +959,10 @@ extension TrackReadQueryFilter
   }
 
   QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition>
-      currentChapterNameMatches(String pattern, {bool caseSensitive = true}) {
+      lastChapterNameMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
-        property: r'currentChapterName',
+        property: r'lastChapterName',
         wildcard: pattern,
         caseSensitive: caseSensitive,
       ));
@@ -714,20 +970,20 @@ extension TrackReadQueryFilter
   }
 
   QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition>
-      currentChapterNameIsEmpty() {
+      lastChapterNameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'currentChapterName',
+        property: r'lastChapterName',
         value: '',
       ));
     });
   }
 
   QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition>
-      currentChapterNameIsNotEmpty() {
+      lastChapterNameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'currentChapterName',
+        property: r'lastChapterName',
         value: '',
       ));
     });
@@ -880,6 +1136,79 @@ extension TrackReadQueryFilter
     });
   }
 
+  QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition>
+      totalChapterIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'totalChapter',
+      ));
+    });
+  }
+
+  QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition>
+      totalChapterIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'totalChapter',
+      ));
+    });
+  }
+
+  QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition> totalChapterEqualTo(
+      int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'totalChapter',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition>
+      totalChapterGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'totalChapter',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition>
+      totalChapterLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'totalChapter',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition> totalChapterBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'totalChapter',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<TrackRead, TrackRead, QAfterFilterCondition> totalPageIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -959,6 +1288,18 @@ extension TrackReadQueryLinks
     on QueryBuilder<TrackRead, TrackRead, QFilterCondition> {}
 
 extension TrackReadQuerySortBy on QueryBuilder<TrackRead, TrackRead, QSortBy> {
+  QueryBuilder<TrackRead, TrackRead, QAfterSortBy> sortByBookId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'bookId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TrackRead, TrackRead, QAfterSortBy> sortByBookIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'bookId', Sort.desc);
+    });
+  }
+
   QueryBuilder<TrackRead, TrackRead, QAfterSortBy> sortByChapterId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'chapterId', Sort.asc);
@@ -968,6 +1309,19 @@ extension TrackReadQuerySortBy on QueryBuilder<TrackRead, TrackRead, QSortBy> {
   QueryBuilder<TrackRead, TrackRead, QAfterSortBy> sortByChapterIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'chapterId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TrackRead, TrackRead, QAfterSortBy> sortByCurrentChapterName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'currentChapterName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TrackRead, TrackRead, QAfterSortBy>
+      sortByCurrentChapterNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'currentChapterName', Sort.desc);
     });
   }
 
@@ -1007,16 +1361,15 @@ extension TrackReadQuerySortBy on QueryBuilder<TrackRead, TrackRead, QSortBy> {
     });
   }
 
-  QueryBuilder<TrackRead, TrackRead, QAfterSortBy> sortBycurrentChapterName() {
+  QueryBuilder<TrackRead, TrackRead, QAfterSortBy> sortByLastChapterName() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'currentChapterName', Sort.asc);
+      return query.addSortBy(r'lastChapterName', Sort.asc);
     });
   }
 
-  QueryBuilder<TrackRead, TrackRead, QAfterSortBy>
-      sortBycurrentChapterNameDesc() {
+  QueryBuilder<TrackRead, TrackRead, QAfterSortBy> sortByLastChapterNameDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'currentChapterName', Sort.desc);
+      return query.addSortBy(r'lastChapterName', Sort.desc);
     });
   }
 
@@ -1044,6 +1397,18 @@ extension TrackReadQuerySortBy on QueryBuilder<TrackRead, TrackRead, QSortBy> {
     });
   }
 
+  QueryBuilder<TrackRead, TrackRead, QAfterSortBy> sortByTotalChapter() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'totalChapter', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TrackRead, TrackRead, QAfterSortBy> sortByTotalChapterDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'totalChapter', Sort.desc);
+    });
+  }
+
   QueryBuilder<TrackRead, TrackRead, QAfterSortBy> sortByTotalPage() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'totalPage', Sort.asc);
@@ -1059,6 +1424,18 @@ extension TrackReadQuerySortBy on QueryBuilder<TrackRead, TrackRead, QSortBy> {
 
 extension TrackReadQuerySortThenBy
     on QueryBuilder<TrackRead, TrackRead, QSortThenBy> {
+  QueryBuilder<TrackRead, TrackRead, QAfterSortBy> thenByBookId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'bookId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TrackRead, TrackRead, QAfterSortBy> thenByBookIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'bookId', Sort.desc);
+    });
+  }
+
   QueryBuilder<TrackRead, TrackRead, QAfterSortBy> thenByChapterId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'chapterId', Sort.asc);
@@ -1068,6 +1445,19 @@ extension TrackReadQuerySortThenBy
   QueryBuilder<TrackRead, TrackRead, QAfterSortBy> thenByChapterIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'chapterId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TrackRead, TrackRead, QAfterSortBy> thenByCurrentChapterName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'currentChapterName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TrackRead, TrackRead, QAfterSortBy>
+      thenByCurrentChapterNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'currentChapterName', Sort.desc);
     });
   }
 
@@ -1119,16 +1509,15 @@ extension TrackReadQuerySortThenBy
     });
   }
 
-  QueryBuilder<TrackRead, TrackRead, QAfterSortBy> thenBycurrentChapterName() {
+  QueryBuilder<TrackRead, TrackRead, QAfterSortBy> thenByLastChapterName() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'currentChapterName', Sort.asc);
+      return query.addSortBy(r'lastChapterName', Sort.asc);
     });
   }
 
-  QueryBuilder<TrackRead, TrackRead, QAfterSortBy>
-      thenBycurrentChapterNameDesc() {
+  QueryBuilder<TrackRead, TrackRead, QAfterSortBy> thenByLastChapterNameDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'currentChapterName', Sort.desc);
+      return query.addSortBy(r'lastChapterName', Sort.desc);
     });
   }
 
@@ -1156,6 +1545,18 @@ extension TrackReadQuerySortThenBy
     });
   }
 
+  QueryBuilder<TrackRead, TrackRead, QAfterSortBy> thenByTotalChapter() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'totalChapter', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TrackRead, TrackRead, QAfterSortBy> thenByTotalChapterDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'totalChapter', Sort.desc);
+    });
+  }
+
   QueryBuilder<TrackRead, TrackRead, QAfterSortBy> thenByTotalPage() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'totalPage', Sort.asc);
@@ -1171,9 +1572,23 @@ extension TrackReadQuerySortThenBy
 
 extension TrackReadQueryWhereDistinct
     on QueryBuilder<TrackRead, TrackRead, QDistinct> {
+  QueryBuilder<TrackRead, TrackRead, QDistinct> distinctByBookId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'bookId');
+    });
+  }
+
   QueryBuilder<TrackRead, TrackRead, QDistinct> distinctByChapterId() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'chapterId');
+    });
+  }
+
+  QueryBuilder<TrackRead, TrackRead, QDistinct> distinctByCurrentChapterName(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'currentChapterName',
+          caseSensitive: caseSensitive);
     });
   }
 
@@ -1195,10 +1610,10 @@ extension TrackReadQueryWhereDistinct
     });
   }
 
-  QueryBuilder<TrackRead, TrackRead, QDistinct> distinctBycurrentChapterName(
+  QueryBuilder<TrackRead, TrackRead, QDistinct> distinctByLastChapterName(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'currentChapterName',
+      return query.addDistinctBy(r'lastChapterName',
           caseSensitive: caseSensitive);
     });
   }
@@ -1212,6 +1627,12 @@ extension TrackReadQueryWhereDistinct
   QueryBuilder<TrackRead, TrackRead, QDistinct> distinctByPercent() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'percent');
+    });
+  }
+
+  QueryBuilder<TrackRead, TrackRead, QDistinct> distinctByTotalChapter() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'totalChapter');
     });
   }
 
@@ -1230,9 +1651,22 @@ extension TrackReadQueryProperty
     });
   }
 
+  QueryBuilder<TrackRead, int?, QQueryOperations> bookIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'bookId');
+    });
+  }
+
   QueryBuilder<TrackRead, int?, QQueryOperations> chapterIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'chapterId');
+    });
+  }
+
+  QueryBuilder<TrackRead, String?, QQueryOperations>
+      currentChapterNameProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'currentChapterName');
     });
   }
 
@@ -1254,10 +1688,9 @@ extension TrackReadQueryProperty
     });
   }
 
-  QueryBuilder<TrackRead, String?, QQueryOperations>
-      currentChapterNameProperty() {
+  QueryBuilder<TrackRead, String?, QQueryOperations> lastChapterNameProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'currentChapterName');
+      return query.addPropertyName(r'lastChapterName');
     });
   }
 
@@ -1270,6 +1703,12 @@ extension TrackReadQueryProperty
   QueryBuilder<TrackRead, int?, QQueryOperations> percentProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'percent');
+    });
+  }
+
+  QueryBuilder<TrackRead, int?, QQueryOperations> totalChapterProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'totalChapter');
     });
   }
 

@@ -11,6 +11,7 @@ import 'package:super_app/app/mixins/handler_concurrent.dart';
 import 'package:super_app/app/types.dart';
 import 'package:super_app/models/models.dart';
 import 'package:super_app/services/database_service.dart';
+import 'package:super_app/utils/file_utils.dart';
 
 part 'extensions_state.dart';
 
@@ -34,10 +35,14 @@ class ExtensionsCubit extends Cubit<ExtensionsState> {
     try {
       final result = await _dioClient
           .get(entry.extension.metadata.path!.replaceAll("zip", "json"));
-      if (result != null && result["metadata"] != null) {
-        final meta = Metadata.fromMap(result["metadata"]);
+
+      final map = jsonDecode(result);
+      if (map != null && map["metadata"] != null) {
+        Metadata meta = Metadata.fromMap(map["metadata"]);
         if (meta.version! > entry.extension.metadata.version!) {
-          return entry.extension;
+          meta.icon = entry.extension.metadata.icon;
+          meta.path = entry.extension.metadata.path;
+          return entry.extension.copyWith(metadata: meta);
         }
       }
     } catch (err) {
@@ -124,7 +129,7 @@ class ExtensionsCubit extends Cubit<ExtensionsState> {
     return onUninstallExt(ext);
   }
 
-  Future<bool> onInstallExt(Metadata metadata) async {
+  Future<bool> onInstallByMetadata(Metadata metadata) async {
     final bytes = await DioClient().get(metadata.path!,
         options: Options(responseType: ResponseType.bytes));
     final installed =
@@ -139,38 +144,40 @@ class ExtensionsCubit extends Cubit<ExtensionsState> {
     return true;
   }
 
-  // Future<void> checkUpdateExtensions() async {
-  //   try {
-  //     emit(state.copyWith(
-  //         extsUpdate: const StateRes(status: StatusType.loading)));
+  Future<void> onInstallByFile(Extension ext) async {
+    final installed = await _databaseService.insertExtension(ext);
+    if (!installed) {
+      // thông báo url sai đinh dạng
+    } else {
+      getCurrentExtensions();
+    }
+  }
 
-  //     final res = await _dioClient.get(Constants.urlExtensions);
-  //     final data =
-  //         List.from(jsonDecode(res)).map((e) => Metadata.fromMap(e)).toList();
-  //     Map<String, Metadata> mapData = {for (var item in data) item.name!: item};
-  //     List<Metadata> listUpdate = [];
-  //     for (var ext in state.extensions.data!) {
-  //       if (mapData.containsKey(ext.metadata.name) &&
-  //           ext.metadata.version! != mapData[ext.metadata.name]!.version!) {
-  //         listUpdate.add(mapData[ext.metadata.name]!);
-  //       }
-  //       // listUpdate.add(mapData[ext.metadata.name]!);
-  //     }
-  //     _logger.info("Update = ${listUpdate.length}",
-  //         name: "checkUpdateExtensions");
+  Future<void> onInstallByUrl(String url) async {
+    try {
+      if (!url.startsWith("http")) {
+        // thông báo url sai đinh dạng
+      }
+      final bytes = await DioClient()
+          .get(url, options: Options(responseType: ResponseType.bytes));
 
-  //     emit(state.copyWith(
-  //         extsUpdate: StateRes(status: StatusType.loaded, data: listUpdate)));
-  //   } catch (err) {
-  //     emit(state.copyWith(
-  //         allExtension: const StateRes(
-  //             status: StatusType.error, message: "Update extensions err")));
-
-  //     _logger.error(err, name: "checkUpdateExtensions");
-  //   }
-  // }
+      final installed = await _databaseService.insertExtensionByUrl(bytes, url);
+      if (!installed) {
+        // thông báo url sai đinh dạng
+      } else {
+        getCurrentExtensions();
+      }
+    } catch (err) {
+      _logger.error(err, name: "onInstallByUrl");
+    }
+  }
 
   void checkExt() {
+    if (state.extensions.data!.isEmpty) {
+      emit(state.copyWith(
+          extsUpdate: const StateRes(status: StatusType.loaded, data: [])));
+      return;
+    }
     emit(state.copyWith(
         extsUpdate: const StateRes(status: StatusType.loading, data: [])));
 
@@ -197,22 +204,38 @@ class ExtensionsCubit extends Cubit<ExtensionsState> {
   }
 
   Future<bool> onUpdateExt(Metadata metadata) async {
-    final bytes = await DioClient().get(metadata.path!,
-        options: Options(responseType: ResponseType.bytes));
+    try {
+      final bytes = await DioClient().get(metadata.path!,
+          options: Options(responseType: ResponseType.bytes));
 
-    final ext = state.extensions.data!
-        .firstWhereOrNull((ext) => ext.metadata.name == metadata.name);
-    if (ext == null) return false;
-    final installed = await _databaseService.updateExtensionByUrl(
-        bytes, metadata.path!, ext.id!);
-    if (!installed) return false;
-    final data = state.extsUpdate.data!
-        .where((el) => el.name != ext.metadata.name)
-        .toList();
-    emit(state.copyWith(
-        extsUpdate: StateRes(status: StatusType.loaded, data: data)));
-    getCurrentExtensions();
-    return true;
+      final ext = state.extensions.data!
+          .firstWhereOrNull((ext) => ext.metadata.name == metadata.name);
+      if (ext == null) return false;
+      final installed = await _databaseService.updateExtensionByUrl(
+          bytes, metadata.path!, ext.id!);
+      if (!installed) return false;
+      final data = state.extsUpdate.data!
+          .where((el) => el.name != ext.metadata.name)
+          .toList();
+      emit(state.copyWith(
+          extsUpdate: StateRes(status: StatusType.loaded, data: data)));
+      getCurrentExtensions();
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  void pickFileZip() async {
+    try {
+      final bytes = await FileUtils.pickFileZip();
+      if (bytes == null) return;
+
+      await FileUtils.zipFileToExtension(bytes);
+      await getCurrentExtensions();
+    } catch (err) {
+      _logger.error(err, name: "pickFileZip");
+    }
   }
 
   @override

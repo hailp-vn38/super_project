@@ -1825,49 +1825,54 @@ const MetadataSchema = Schema(
       name: r'icon',
       type: IsarType.string,
     ),
-    r'language': PropertySchema(
+    r'isNsfw': PropertySchema(
       id: 5,
+      name: r'isNsfw',
+      type: IsarType.bool,
+    ),
+    r'language': PropertySchema(
+      id: 6,
       name: r'language',
       type: IsarType.string,
     ),
     r'locale': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'locale',
       type: IsarType.string,
     ),
     r'name': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'name',
       type: IsarType.string,
     ),
     r'path': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'path',
       type: IsarType.string,
     ),
     r'regexp': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'regexp',
       type: IsarType.string,
     ),
     r'source': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'source',
       type: IsarType.string,
     ),
     r'tag': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'tag',
       type: IsarType.string,
     ),
     r'type': PropertySchema(
-      id: 12,
+      id: 13,
       name: r'type',
       type: IsarType.string,
       enumMap: _MetadatatypeEnumValueMap,
     ),
     r'version': PropertySchema(
-      id: 13,
+      id: 14,
       name: r'version',
       type: IsarType.long,
     )
@@ -1964,15 +1969,16 @@ void _metadataSerialize(
   writer.writeString(offsets[2], object.description);
   writer.writeLong(offsets[3], object.hashCode);
   writer.writeString(offsets[4], object.icon);
-  writer.writeString(offsets[5], object.language);
-  writer.writeString(offsets[6], object.locale);
-  writer.writeString(offsets[7], object.name);
-  writer.writeString(offsets[8], object.path);
-  writer.writeString(offsets[9], object.regexp);
-  writer.writeString(offsets[10], object.source);
-  writer.writeString(offsets[11], object.tag);
-  writer.writeString(offsets[12], object.type?.name);
-  writer.writeLong(offsets[13], object.version);
+  writer.writeBool(offsets[5], object.isNsfw);
+  writer.writeString(offsets[6], object.language);
+  writer.writeString(offsets[7], object.locale);
+  writer.writeString(offsets[8], object.name);
+  writer.writeString(offsets[9], object.path);
+  writer.writeString(offsets[10], object.regexp);
+  writer.writeString(offsets[11], object.source);
+  writer.writeString(offsets[12], object.tag);
+  writer.writeString(offsets[13], object.type?.name);
+  writer.writeLong(offsets[14], object.version);
 }
 
 Metadata _metadataDeserialize(
@@ -1986,15 +1992,15 @@ Metadata _metadataDeserialize(
     browser: reader.readBoolOrNull(offsets[1]),
     description: reader.readStringOrNull(offsets[2]),
     icon: reader.readStringOrNull(offsets[4]),
-    language: reader.readStringOrNull(offsets[5]),
-    locale: reader.readStringOrNull(offsets[6]),
-    name: reader.readStringOrNull(offsets[7]),
-    path: reader.readStringOrNull(offsets[8]),
-    regexp: reader.readStringOrNull(offsets[9]),
-    source: reader.readStringOrNull(offsets[10]),
-    tag: reader.readStringOrNull(offsets[11]),
-    type: _MetadatatypeValueEnumMap[reader.readStringOrNull(offsets[12])],
-    version: reader.readLongOrNull(offsets[13]),
+    language: reader.readStringOrNull(offsets[6]),
+    locale: reader.readStringOrNull(offsets[7]),
+    name: reader.readStringOrNull(offsets[8]),
+    path: reader.readStringOrNull(offsets[9]),
+    regexp: reader.readStringOrNull(offsets[10]),
+    source: reader.readStringOrNull(offsets[11]),
+    tag: reader.readStringOrNull(offsets[12]),
+    type: _MetadatatypeValueEnumMap[reader.readStringOrNull(offsets[13])],
+    version: reader.readLongOrNull(offsets[14]),
   );
   return object;
 }
@@ -2017,7 +2023,7 @@ P _metadataDeserializeProp<P>(
     case 4:
       return (reader.readStringOrNull(offset)) as P;
     case 5:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 6:
       return (reader.readStringOrNull(offset)) as P;
     case 7:
@@ -2031,8 +2037,10 @@ P _metadataDeserializeProp<P>(
     case 11:
       return (reader.readStringOrNull(offset)) as P;
     case 12:
-      return (_MetadatatypeValueEnumMap[reader.readStringOrNull(offset)]) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 13:
+      return (_MetadatatypeValueEnumMap[reader.readStringOrNull(offset)]) as P;
+    case 14:
       return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -2043,11 +2051,13 @@ const _MetadatatypeEnumValueMap = {
   r'comic': r'comic',
   r'novel': r'novel',
   r'movie': r'movie',
+  r'all': r'all',
 };
 const _MetadatatypeValueEnumMap = {
   r'comic': ExtensionType.comic,
   r'novel': ExtensionType.novel,
   r'movie': ExtensionType.movie,
+  r'all': ExtensionType.all,
 };
 
 extension MetadataQueryFilter
@@ -2568,6 +2578,16 @@ extension MetadataQueryFilter
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'icon',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Metadata, Metadata, QAfterFilterCondition> isNsfwEqualTo(
+      bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isNsfw',
+        value: value,
       ));
     });
   }

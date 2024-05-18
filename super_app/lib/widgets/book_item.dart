@@ -76,7 +76,7 @@ class BookItem extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 6, vertical: 2),
                             child: Text(
-                              "${book.trackRead.value?.indexChapter != null ? "${book.trackRead.value!.indexChapter! + 1}" : "--"}/${book.chapters.length}",
+                              "${book.trackRead.value?.indexChapter != null ? "${book.trackRead.value!.indexChapter! + 1}" : "--"}/${book.trackRead.value!.totalChapter}",
                               style: textTheme.bodySmall
                                   ?.copyWith(color: Colors.white, fontSize: 10),
                             ),

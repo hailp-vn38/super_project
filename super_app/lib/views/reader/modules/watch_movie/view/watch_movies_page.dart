@@ -17,9 +17,22 @@ class _WatchMoviesPageState extends State<WatchMoviesPage> {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = context.appTextTheme;
     return Scaffold(
       appBar: AppBar(
-          centerTitle: false, title: Text(_watchMoviesCubit.getBook.name!)),
+        centerTitle: false,
+        titleTextStyle: textTheme.titleMedium,
+        title: Text(_watchMoviesCubit.getBook.name!),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, RoutesName.detail,
+                    arguments: _watchMoviesCubit.getBook.url?.replaceUrl(
+                        _watchMoviesCubit.readerCubit.args.extension!.source));
+              },
+              icon: const Icon(Icons.info_rounded))
+        ],
+      ),
       body: RefreshIndicator(
         onRefresh: () async {},
         child: SingleChildScrollView(
@@ -27,14 +40,13 @@ class _WatchMoviesPageState extends State<WatchMoviesPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AspectRatio(
-                aspectRatio:
-                    (Platform.isAndroid || Platform.isIOS) ? 16 / 9 : 3 / 1,
+                aspectRatio: 16 / 9,
                 child: BlocListener<WatchMoviesCubit, WatchMoviesState>(
                   listener: (context, state) {
-                    if (state.movie != null && Platform.isMacOS ||
-                        Platform.isWindows) {
-                      _watchMoviesCubit.onWatchWebView();
-                    }
+                    // if (state.movie != null && Platform.isMacOS ||
+                    //     Platform.isWindows) {
+                    //   _watchMoviesCubit.onWatchWebView();
+                    // }
                   },
                   child: BlocConsumer<ReaderCubit, ReaderState>(
                     listener: (context, state) {
@@ -73,31 +85,52 @@ class _WatchMoviesPageState extends State<WatchMoviesPage> {
                                 );
                               }
 
-                              if (Platform.isMacOS || Platform.isWindows) {
-                                return LoadErrMovie(
-                                  onTap: () {
-                                    _watchMoviesCubit.onWatchWebView();
-                                  },
+                              if ((Platform.isMacOS || Platform.isWindows) &&
+                                  movie.type != MovieType.file) {
+                                return MouseRegion(
+                                  cursor: SystemMouseCursors.click,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      _watchMoviesCubit.onWatchWebView();
+                                    },
+                                    child: const ColoredBox(
+                                      color: Colors.black,
+                                      child: Center(
+                                        child: Icon(
+                                          Icons.play_arrow,
+                                          size: 50,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 );
                               }
-                              return PlayMovieWebView(
-                                key: ValueKey(
-                                    "${current.data!.name}_${movie.serverName}"),
-                                url: movie.data,
-                                onTapWatch: () {
-                                  // _watchMoviesCubit.onWatchWebView();
-                                  final snackBar = SnackBar(
-                                    content: const Text('Hi, I am a SnackBar!'),
-                                    backgroundColor: (Colors.black12),
-                                    action: SnackBarAction(
-                                      label: 'dismiss',
-                                      onPressed: () {},
-                                    ),
-                                  );
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(snackBar);
-                                },
-                              );
+                              return switch (movie.type) {
+                                MovieType.file => PlayMedia(
+                                    url: movie.data,
+                                    httpHeaders:
+                                        _watchMoviesCubit.httpHeaders(),
+                                  ),
+                                _ => PlayMovieWebView(
+                                    key: ValueKey(
+                                        "${current.data!.name}_${movie.serverName}"),
+                                    url: movie.data,
+                                    onTapWatch: () {
+                                      // _watchMoviesCubit.onWatchWebView();
+                                      final snackBar = SnackBar(
+                                        content:
+                                            const Text('Hi, I am a SnackBar!'),
+                                        backgroundColor: (Colors.black12),
+                                        action: SnackBarAction(
+                                          label: 'dismiss',
+                                          onPressed: () {},
+                                        ),
+                                      );
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(snackBar);
+                                    },
+                                  )
+                              };
                             },
                           ),
                         StatusType.error => LoadErrMovie(
@@ -111,11 +144,12 @@ class _WatchMoviesPageState extends State<WatchMoviesPage> {
                   ),
                 ),
               ),
-              BlocSelector<ReaderCubit, ReaderState, Chapter>(
+              BlocSelector<ReaderCubit, ReaderState, Chapter?>(
                 selector: (state) {
-                  return state.readCurrentChapter.data!;
+                  return state.readCurrentChapter.data;
                 },
                 builder: (context, currentChapter) {
+                  if (currentChapter == null) return const SizedBox();
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -141,7 +175,10 @@ class _WatchMoviesPageState extends State<WatchMoviesPage> {
                           return state.movie;
                         },
                         builder: (context, movie) {
-                          if (movie == null) return const SizedBox();
+                          if (movie == null ||
+                              currentChapter.getMovies == null) {
+                            return const SizedBox();
+                          }
                           return Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -169,63 +206,6 @@ class _WatchMoviesPageState extends State<WatchMoviesPage> {
                           );
                         },
                       ),
-                      MouseRegion(
-                        cursor: SystemMouseCursors.click,
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(context, RoutesName.detail,
-                                arguments: _watchMoviesCubit.getBook.url
-                                    ?.replaceUrl(_watchMoviesCubit
-                                        .readerCubit.args.extension!.source));
-                          },
-                          child: Container(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8),
-                              height: 80,
-                              child: Row(
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(4),
-                                    child: AspectRatio(
-                                      aspectRatio: 2 / 3,
-                                      child: ImageWidget(
-                                        image: _watchMoviesCubit.getBook.cover,
-                                      ),
-                                    ),
-                                  ),
-                                  Gaps.wGap16,
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Gaps.hGap4,
-                                      Text(
-                                        _watchMoviesCubit.getBook.name!,
-                                        style: context.appTextTheme.titleMedium,
-                                      ),
-                                      Text(
-                                        "${_watchMoviesCubit.getChapters.length} tập",
-                                        style: context.appTextTheme.bodySmall,
-                                      ),
-                                      RichText(
-                                          text: TextSpan(children: [
-                                        TextSpan(
-                                            text: "Trạng thái : ",
-                                            style: context
-                                                .appTextTheme.bodyMedium),
-                                        TextSpan(
-                                            text:
-                                                "${_watchMoviesCubit.getBook.status}",
-                                            style: context
-                                                .appTextTheme.titleMedium),
-                                      ])),
-                                      Gaps.hGap4,
-                                    ],
-                                  )
-                                ],
-                              )),
-                        ),
-                      ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 8),
@@ -250,33 +230,30 @@ class _WatchMoviesPageState extends State<WatchMoviesPage> {
                           ],
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: BlocSelector<ReaderCubit, ReaderState,
-                            List<Chapter>>(
-                          selector: (state) => state.chapters,
-                          builder: (context, chapters) {
-                            return Wrap(
-                              spacing: 8,
-                              runSpacing: 8,
-                              children: chapters
-                                  .map((chapter) => ChapterCard(
-                                        chapter: chapter,
-                                        currentWatch: chapter.index ==
-                                            currentChapter.index,
-                                        onTap: () {
-                                          _watchMoviesCubit
-                                              .onChangeChapter(chapter);
-                                        },
-                                      ))
-                                  .toList(),
-                            );
-                          },
-                        ),
-                      ),
                     ],
                   );
                 },
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: BlocBuilder<ReaderCubit, ReaderState>(
+                  builder: (context, readerCubit) {
+                    return Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: readerCubit.chapters
+                          .map((chapter) => ChapterCard(
+                                chapter: chapter,
+                                currentWatch: chapter.index ==
+                                    readerCubit.trackRead.indexChapter,
+                                onTap: () {
+                                  _watchMoviesCubit.onChangeChapter(chapter);
+                                },
+                              ))
+                          .toList(),
+                    );
+                  },
+                ),
               ),
               Gaps.hGap16,
             ],

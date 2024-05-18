@@ -24,12 +24,12 @@ class ReaderCubit extends Cubit<ReaderState> {
   })  : _databaseService = databaseService,
         _jsRuntime = jsRuntime,
         super(ReaderState(
-            chapters: args.chapters,
             trackRead: args.track,
+            chapters: args.chapters ?? [],
             loadExtensionErr: false,
-            readCurrentChapter: StateRes(
-                status: StatusType.init,
-                data: args.chapters[args.track.indexChapter ?? 0])));
+            readCurrentChapter: const StateRes(
+              status: StatusType.init,
+            )));
 
   final _logger = Logger("ReaderCubit");
 
@@ -47,46 +47,8 @@ class ReaderCubit extends Cubit<ReaderState> {
 
   ReaderArgs args;
 
-  @override
-  void onChange(Change<ReaderState> change) {
-    super.onChange(change);
-
-    // Kiểm tra thay đổi chapter
-    // + up offset của track read hiện tại vào chapter củ
-    // + up thông tin chapter mới vào track read : index,chapterId,offset
-    final current = change.currentState;
-    final next = change.nextState;
-    if (book!.id == null) return;
-    if (current.readCurrentChapter.data != null &&
-        next.readCurrentChapter.data != null &&
-        current.readCurrentChapter.data!.index !=
-            next.readCurrentChapter.data!.index) {
-      final currentChapter = current.readCurrentChapter.data!
-          .copyWith(offset: getTrackRead.offset);
-      final nextChapter = next.readCurrentChapter.data!;
-
-      final track = next.trackRead.copyWith(
-          offset: nextChapter.offset,
-          currentChapterName: nextChapter.name,
-          chapterId: nextChapter.id,
-          indexChapter: nextChapter.index);
-
-      emit(state.copyWith(trackRead: track));
-
-      book!.updateAt = DateTime.now();
-
-      _databaseService.updateBookData(
-          book: book!, trackRead: track, chapter: currentChapter);
-      updateChapterInChapters(currentChapter);
-
-      _logger.log("change chapter ${state.trackRead.indexChapter}",
-          name: "onChange");
-    }
-  }
-
   void onInit() async {
     book = args.book;
-
     await getExtension();
     if (extension == null) return;
     if (getTrackRead.indexChapter != null &&
@@ -94,21 +56,17 @@ class ReaderCubit extends Cubit<ReaderState> {
       emit(state.copyWith(loadExtensionErr: true));
       return;
     }
-    final chapters = getChapters.sorted((a, b) => a.index!.compareTo(b.index!));
-
-    emit(state.copyWith(chapters: chapters));
-
-    _logger.log("chapter index : ${getTrackRead.indexChapter}", name: "onInit");
+    _logger.log(
+        " Book :\n id = ${book?.id}\n name = ${book?.name}\n chapters = ${getChapters.length} \n reader index = ${state.trackRead.indexChapter}",
+        name: "onInit");
 
     getDetailChapter(getChapters[getTrackRead.indexChapter ?? 0]);
   }
 
   Future<void> getExtension() async {
-    args = args.copyWith(
-        chapters: args.chapters.sorted((a, b) => a.index!.compareTo(b.index!)));
     if (args.extension == null) {
       final ext =
-          await _databaseService.getExtensionBySource(args.book.getSource);
+          await _databaseService.getExtensionByName(args.book.extensionName!);
       if (ext == null) {
         emit(state.copyWith(loadExtensionErr: true));
         return;
@@ -116,6 +74,65 @@ class ReaderCubit extends Cubit<ReaderState> {
       args = args.copyWith(extension: ext);
     }
     extension = args.extension!;
+    if (book?.id == null) {
+      final chapters =
+          state.chapters.sorted((a, b) => a.index!.compareTo(b.index!));
+      emit(state.copyWith(
+          chapters: chapters,
+          readCurrentChapter: StateRes(
+              status: StatusType.init,
+              data: chapters[args.track.indexChapter!])));
+    } else {
+      final chapters = await _databaseService.getChaptersByBookId(book!.id!);
+      emit(state.copyWith(
+          chapters: chapters,
+          readCurrentChapter: StateRes(
+              status: StatusType.init,
+              data: chapters[args.track.indexChapter!])));
+    }
+  }
+
+  void update({required Chapter current, required Chapter next}) {
+    current.offset = state.trackRead.offset;
+    final track = state.trackRead.copyWith(
+        offset: next.offset,
+        currentChapterName: next.name,
+        chapterId: next.id,
+        indexChapter: next.index);
+
+    if (book?.id != null) {
+      book!.updateAt = DateTime.now();
+      _databaseService.updateTrackRead(track);
+    }
+    List<Chapter> chapters = getChapters;
+    chapters[current.index!] = current;
+
+    emit(state.copyWith(
+        chapters: chapters,
+        trackRead: track,
+        readCurrentChapter: StateRes(status: StatusType.init, data: next)));
+    getDetailChapter(next);
+  }
+
+  bool perChapter() {
+    final currentIndex = state.readCurrentChapter.data!.index!;
+    if (currentIndex == 0) return false;
+
+    final perChapter = getChapters[currentIndex - 1];
+    update(current: state.readCurrentChapter.data!, next: perChapter);
+    return true;
+  }
+
+  bool nextChapter() {
+    final currentIndex = state.readCurrentChapter.data!.index!;
+    if (currentIndex + 1 >= getChapters.length) return false;
+    final nextChapter = getChapters[currentIndex + 1];
+    update(current: state.readCurrentChapter.data!, next: nextChapter);
+    return true;
+  }
+
+  void onChangeChapter(Chapter chapter) {
+    update(current: state.readCurrentChapter.data!, next: chapter);
   }
 
   Future<Chapter> getChapterByType(
@@ -138,8 +155,6 @@ class ReaderCubit extends Cubit<ReaderState> {
   }
 
   void getDetailChapter(Chapter chapter) async {
-    _logger.log("chapter index : ${chapter.index}", name: "getDetailChapter");
-
     try {
       emit(state.copyWith(
           loadExtensionErr: false,
@@ -238,14 +253,6 @@ class ReaderCubit extends Cubit<ReaderState> {
     final percent = ((currentPage / totalPage) * 100).clamp(0, 100).toInt();
 
     return (currentPage: currentPage, totalPage: totalPage, percent: percent);
-  }
-
-  void updateChapterInChapters(Chapter chapter) {
-    List<Chapter> chapters = getChapters;
-    chapters[chapter.index!] = chapter;
-    emit(state.copyWith(chapters: chapters));
-    _logger.info("index chapter :${chapter.index}",
-        name: "updateChapterInChapters");
   }
 
   @override

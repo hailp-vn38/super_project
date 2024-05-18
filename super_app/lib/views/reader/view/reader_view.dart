@@ -41,12 +41,12 @@ class ReaderArgs {
   final Extension? extension;
   final Book book;
   final TrackRead track;
-  final List<Chapter> chapters;
+  final List<Chapter>? chapters;
   ReaderArgs({
     this.extension,
     required this.book,
     required this.track,
-    required this.chapters,
+    this.chapters,
   });
 
   ReaderArgs copyWith({

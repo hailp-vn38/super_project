@@ -29,5 +29,5 @@ class Dimens {
 
   static double bookAspectRatio = 2 / 3.6;
 
-  static double coverBookAspectRatio = 2 / 2.9;
+  static double coverBookAspectRatio = 2 / 2.8;
 }

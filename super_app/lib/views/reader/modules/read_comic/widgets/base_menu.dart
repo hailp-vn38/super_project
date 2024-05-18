@@ -103,7 +103,7 @@ class BaseMenu extends StatelessWidget {
                               BlocBuilder<ReaderCubit, ReaderState>(
                                 builder: (context, state) {
                                   return Text(
-                                    state.readCurrentChapter.data!.name ?? "",
+                                    state.trackRead.currentChapterName ?? "",
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: textTheme.bodySmall,

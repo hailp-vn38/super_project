@@ -85,20 +85,18 @@ class BaseMenu extends StatelessWidget {
               child: Container(
                 // height: 120,
                 color: colorBackground,
-                padding: EdgeInsets.symmetric(horizontal: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: Column(
                   children: [
                     Gaps.hGap12,
                     Align(
                       alignment: Alignment.center,
-                      child: BlocSelector<ReaderCubit, ReaderState,
-                          StateRes<Chapter>>(
+                      child: BlocSelector<ReaderCubit, ReaderState, TrackRead>(
                         selector: (state) {
-                          return state.readCurrentChapter;
+                          return state.trackRead;
                         },
-                        builder: (context, state) {
-                          if (state.data == null) return const SizedBox();
-                          return Text(state.data!.name ?? "");
+                        builder: (context, track) {
+                          return Text(track.currentChapterName ?? "");
                         },
                       ),
                     ),
@@ -107,7 +105,7 @@ class BaseMenu extends StatelessWidget {
                         IconButton(
                             onPressed: readNovelCubit.perChapter,
                             icon: const Icon(Icons.arrow_back_ios_new_rounded)),
-                        Expanded(child: SizedBox()),
+                        const Expanded(child: SizedBox()),
                         IconButton(
                             onPressed: readNovelCubit.nextChapter,
                             icon: const Icon(Icons.arrow_forward_ios_rounded))

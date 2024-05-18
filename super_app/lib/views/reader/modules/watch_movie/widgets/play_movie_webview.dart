@@ -15,6 +15,7 @@ class _PlayMovieWebViewState extends State<PlayMovieWebView> {
 
   InAppWebViewController? _webViewController;
   InAppWebViewSettings settings = InAppWebViewSettings(
+      iframeReferrerPolicy: ReferrerPolicy.fromNativeValue(""),
       supportZoom: false,
       mediaPlaybackRequiresUserGesture: true,
       iframeAllowFullscreen: true,

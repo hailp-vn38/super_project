@@ -16,7 +16,7 @@ class ReadNovelCubit extends Cubit<ReadNovelState> {
 
   Book get getBook => readerCubit.args.book;
 
-  List<Chapter> get getChapters => readerCubit.args.chapters;
+  List<Chapter> get getChapters => readerCubit.getChapters;
 
   bool _currentOnTouchScreen = false;
   AnimationController? _controller;
@@ -65,39 +65,30 @@ class ReadNovelCubit extends Cubit<ReadNovelState> {
     return value;
   }
 
-  void perChapter() {
-    final index = readerCubit.getCurrentChapter.index!;
-    if (index == 0) return;
-    // readerCubit.updateChapter(readerCubit.getCurrentChapter);
-
-    readerCubit.getDetailChapter(readerCubit.getChapters[index - 1]);
-
-    if (_isShowMenu) {
-      _onChangeIsShowMenu(false);
-    }
+  void onChangeChapter(Chapter chapter) {
+    _onChangeIsShowMenu(false);
+    readerCubit.onChangeChapter(chapter);
   }
 
-  void nextChapter() {
-    final index = readerCubit.getCurrentChapter.index!;
-    if (index >= readerCubit.getChapters.length) return;
-    // readerCubit.updateChapter(readerCubit.getCurrentChapter);
-    readerCubit.getDetailChapter(readerCubit.getChapters[index + 1]);
-    if (_isShowMenu) {
+  bool perChapter() {
+    final result = readerCubit.perChapter();
+    if (result && _isShowMenu) {
       _onChangeIsShowMenu(false);
     }
+    return result;
+  }
+
+  bool nextChapter() {
+    final result = readerCubit.nextChapter();
+    if (result && _isShowMenu) {
+      _onChangeIsShowMenu(false);
+    }
+    return result;
   }
 
   void onChangeScrollIndex(int index) {
     final chapter = readerCubit.getCurrentChapter;
     // chapter.scrollIndex = index;
-  }
-
-  void onChangeChapter(Chapter chapter) {
-    // readerCubit.updateChapter(readerCubit.getCurrentChapter);
-    readerCubit.getDetailChapter(chapter);
-    if (_isShowMenu) {
-      _onChangeIsShowMenu(false);
-    }
   }
 
   void hideMenu() {

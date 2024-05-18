@@ -166,14 +166,14 @@ class _BookItemState extends State<_BookItem> {
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    Text(
-                      _book.chapters.length.toString(),
-                      style: context.appTextTheme.bodySmall
-                          ?.copyWith(height: 1, fontSize: 11),
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      overflow: TextOverflow.visible,
-                    ),
+                    // Text(
+                    //   _book.chapters.length.toString(),
+                    //   style: context.appTextTheme.bodySmall
+                    //       ?.copyWith(height: 1, fontSize: 11),
+                    //   textAlign: TextAlign.center,
+                    //   maxLines: 1,
+                    //   overflow: TextOverflow.visible,
+                    // ),
                     const SizedBox(
                       height: 4,
                     ),

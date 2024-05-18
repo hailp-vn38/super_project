@@ -369,6 +369,11 @@ class _BookDetailState extends State<BookDetail> {
                                                       currentChapterName:
                                                           chapter.name,
                                                       chapterId: chapter.id,
+                                                      lastChapterName:
+                                                          chaptersRes
+                                                              .data!.last.name,
+                                                      totalChapter: chaptersRes
+                                                          .data!.length,
                                                       offset: 0.0,
                                                       percent: 0),
                                                   extension: _detailCubit

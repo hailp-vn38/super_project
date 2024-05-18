@@ -16,7 +16,7 @@ class Chapter {
   @Index()
   int? index;
 
-  @Index()
+  @Index(name: "bookId")
   int? bookId;
 
   String? name;

@@ -91,12 +91,12 @@ class _SearchBigPageState extends State<SearchBigPage> {
                           showType: true,
                           onFetchListBook: (url, page) async => [],
                           onTap: (book) {
-                            Navigator.pushNamed(context, RoutesName.reader,
-                                arguments: ReaderArgs(
-                                    book: book,
-                                    chapters: book.chapters.toList(),
-                                    track: book.trackRead.value!,
-                                    extension: null));
+                            // Navigator.pushNamed(context, RoutesName.reader,
+                            //     arguments: ReaderArgs(
+                            //         book: book,
+                            //         chapters: book.chapters.toList(),
+                            //         track: book.trackRead.value!,
+                            //         extension: null));
                           },
                         ),
                   _ => const SizedBox()

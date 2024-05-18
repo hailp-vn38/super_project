@@ -1,12 +1,14 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:collection/collection.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:super_app/models/extension.dart';
 import 'package:archive/archive_io.dart';
 
 class FileUtils {
   static Future<Extension> zipFileToExtension(
-      List<int> bytes, String url) async {
+      List<int> bytes, {String? url}) async {
     final archive = ZipDecoder().decodeBytes(bytes);
     final fileExt =
         archive.files.firstWhereOrNull((item) => item.name == "extension.json");
@@ -70,5 +72,19 @@ class FileUtils {
       }
     }
     throw Exception("Error");
+  }
+
+  static Future<List<int>?> pickFileZip() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['zip'],
+      );
+      if (result == null) return null;
+      final file = File(result.files.first.path!);
+      return await file.readAsBytes();
+    } catch (e) {
+      return null;
+    }
   }
 }

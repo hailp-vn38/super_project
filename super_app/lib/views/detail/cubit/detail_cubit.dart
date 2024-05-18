@@ -1,13 +1,13 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 
-import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:js_runtime/js_runtime.dart';
 import 'package:js_runtime/utils/logger.dart';
+import 'package:super_app/app/blocs/cubit/app_cubit.dart';
 
 import 'package:super_app/app/extensions/string_extension.dart';
 import 'package:super_app/app/types.dart';
@@ -20,9 +20,11 @@ class DetailCubit extends Cubit<DetailState> {
   DetailCubit(
       {required DatabaseService databaseService,
       required JsRuntime jsRuntime,
+      required AppCubit appCubit,
       required this.bookUrl})
       : _databaseService = databaseService,
         _jsRuntime = jsRuntime,
+        _appCubit = appCubit,
         super(const DetailState(
             bookState: StateRes(status: StatusType.init),
             chaptersState: StateRes(status: StatusType.init),
@@ -31,6 +33,7 @@ class DetailCubit extends Cubit<DetailState> {
   final _logger = Logger("DetailBookCubit");
 
   final DatabaseService _databaseService;
+  final AppCubit _appCubit;
   Extension? _extension;
   final JsRuntime _jsRuntime;
   final String bookUrl;
@@ -169,32 +172,30 @@ class DetailCubit extends Cubit<DetailState> {
   Future<bool> addLibrary() async {
     try {
       Book book = bookState.data!;
-      book.chapters.addAll(chaptersState.data ?? []);
+      // book.chapters.addAll(chaptersState.data ?? []);
       book.genres.addAll(state.genresState.data ?? []);
       final chapter = chaptersState.data!.first;
       book.trackRead.value = TrackRead(
-        indexChapter: chapter.index,
-        currentChapterName: chapter.name,
-        offset: 0.0,
-        percent: 0,
-      );
+          indexChapter: chapter.index,
+          currentChapterName: chapter.name,
+          offset: 0.0,
+          percent: 0,
+          totalChapter: chaptersState.data!.length,
+          lastChapterName: chaptersState.data!.last.name);
       book.updateAt = DateTime.now();
-      final bookLibrary = await _databaseService.insertBook(book);
-      if (bookLibrary == null) return false;
+      final bookId =
+          await _appCubit.addLibrary(book: book, chapters: chaptersState.data!);
+      if (bookId == null) return false;
 
-      final chapters = bookLibrary.chapters
-          .toList()
-          .sorted((a, b) => a.index!.compareTo(b.index!));
-      _databaseService.updateTrackRead(
-          bookLibrary.trackRead.value!.copyWith(chapterId: chapters.first.id));
+      final bookLocal = await _databaseService.getBookById(bookId);
+      final chapters = await _databaseService.getChaptersByBookId(bookId);
 
       emit(DetailState(
-          bookState: StateRes(status: StatusType.loaded, data: bookLibrary),
+          bookState: StateRes(status: StatusType.loaded, data: bookLocal),
           chaptersState: StateRes(status: StatusType.loaded, data: chapters),
           genresState: StateRes(
-              status: StatusType.loaded, data: bookLibrary.genres.toList())));
-      _logger.error("add success bookId : ${bookLibrary.id}",
-          name: "addLibrary");
+              status: StatusType.loaded, data: bookLocal!.genres.toList())));
+      _logger.log("add success bookId : $bookId", name: "addLibrary");
       return true;
     } catch (err) {
       _logger.error(err, name: "addLibrary");
@@ -225,8 +226,9 @@ Future<({Book book, List<Chapter> chapters, List<Genre> genres})>
       jsScript: prams.extension.getDetailScript,
     );
 
-    Book book =
-        Book.fromMap({...result, "type": prams.extension.metadata.type});
+    Book book = Book.fromMap(result);
+    book.extensionName = prams.extension.metadata.name;
+    book.type = prams.extension.metadata.type;
     Uri bookUri = Uri.parse(book.url!);
     // Kiểm tra xem book url đã có url hợp kệ hay chưa
     if (!bookUri.isScheme("HTTP")) {

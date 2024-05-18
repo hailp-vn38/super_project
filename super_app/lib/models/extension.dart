@@ -290,6 +290,11 @@ class Metadata {
   factory Metadata.fromJson(String source) =>
       Metadata.fromMap(json.decode(source) as Map<String, dynamic>);
 
+  bool get isNsfw {
+    if (tag != null && tag == "nsfw") return true;
+    return false;
+  }
+
   @override
   String toString() {
     return 'Metadata(name: $name, author: $author, version: $version, source: $source, regexp: $regexp, description: $description, locale: $locale, language: $language, type: $type, path: $path, icon: $icon, tag: $tag, browser: $browser)';

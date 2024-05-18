@@ -6,6 +6,7 @@ import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:js_runtime/js_runtime.dart';
 import 'package:sliver_tools/sliver_tools.dart';
+import 'package:super_app/app/blocs/cubit/app_cubit.dart';
 
 import 'package:super_app/app/constants/gaps.dart';
 import 'package:super_app/app/extensions/context_extension.dart';
@@ -35,7 +36,8 @@ class DetailView extends StatelessWidget {
       create: (context) => DetailCubit(
           bookUrl: bookUrl,
           jsRuntime: getIt<JsRuntime>(),
-          databaseService: getIt<DatabaseService>())
+          databaseService: getIt<DatabaseService>(),
+          appCubit: context.read<AppCubit>())
         ..onInit(),
       child: const DetailPage(),
     );

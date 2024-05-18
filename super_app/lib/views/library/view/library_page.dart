@@ -130,10 +130,9 @@ class _LibraryPageState extends State<LibraryPage> {
                   onTap: (value) {
                     Navigator.pushNamed(context, RoutesName.reader,
                         arguments: ReaderArgs(
-                            book: book,
-                            chapters: book.chapters.toList(),
-                            track: book.trackRead.value!,
-                            extension: null));
+                          book: value,
+                          track: value.trackRead.value!,
+                        ));
                   },
                   onLongTap: (value) {
                     showModalBottomSheet(

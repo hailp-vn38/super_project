@@ -52,15 +52,17 @@ class DatabaseService {
     }
   }
 
-  Future<Book> addChaptersInBook(
-      {required Book book, required List<Chapter> chapters}) async {
+  Future<List<int>> insertChapters({required List<Chapter> chapters}) async {
     try {
-      book.chapters.addAll(chapters);
-      isar.writeTxnSync(() {
-        book.chapters.saveSync();
-      });
-      _pushBookStream(book, MessageType.UPDATE);
-      return book;
+      return isar.writeTxn(() => isar.chapters.putAll(chapters));
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<List<Chapter>> getChaptersByBookId(int id) async {
+    try {
+      return isar.chapters.filter().bookIdEqualTo(id).sortByIndex().findAll();
     } catch (error) {
       rethrow;
     }
@@ -68,13 +70,9 @@ class DatabaseService {
 
   Future<Book> deleteBook(Book book) async {
     try {
-      List<int> chapterIds = [];
+      // List<int> chapterIds = [];
       List<int> genreIds = [];
       int? trackReadId;
-
-      if (book.chapters.isNotEmpty) {
-        chapterIds = book.chapters.map((e) => e.id!).toList();
-      }
       if (book.genres.isNotEmpty) {
         genreIds = book.genres.map((e) => e.id!).toList();
       }
@@ -85,9 +83,7 @@ class DatabaseService {
       await isar.writeTxn(() async {
         final isDelete = await isar.books.delete(book.id!);
         if (isDelete) {
-          if (chapterIds.isNotEmpty) {
-            await isar.chapters.deleteAll(chapterIds);
-          }
+          await isar.chapters.filter().bookIdEqualTo(book.id).deleteAll();
           if (genreIds.isNotEmpty) {
             await isar.genres.deleteAll(genreIds);
           }
@@ -117,6 +113,10 @@ class DatabaseService {
       rethrow;
     }
   }
+
+  // Future<bool> deleteChaptersByBookId(int id) async {
+  //   isar.chapters.deleteByIndex("indexName", [id]);
+  // }
 
   Future<dynamic> updateBookData(
       {required Book book,
@@ -202,7 +202,17 @@ class DatabaseService {
 
   Future<bool> insertExtensionByUrl(List<int> bytes, String url) async {
     try {
-      final ext = await FileUtils.zipFileToExtension(bytes, url);
+      final ext = await FileUtils.zipFileToExtension(bytes, url: url);
+      final extId = await isar.writeTxn(() => isar.extensions.put(ext));
+      _logger.info("extId : $extId");
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  Future<bool> insertExtension(Extension ext) async {
+    try {
       final extId = await isar.writeTxn(() => isar.extensions.put(ext));
       _logger.info("extId : $extId");
       return true;
@@ -214,7 +224,7 @@ class DatabaseService {
   Future<bool> updateExtensionByUrl(
       List<int> bytes, String url, int extId) async {
     try {
-      final ext = await FileUtils.zipFileToExtension(bytes, url);
+      final ext = await FileUtils.zipFileToExtension(bytes, url: url);
       final id = await isar
           .writeTxn(() => isar.extensions.put(ext.copyWith(id: extId)));
       _logger.info("extId : $id");
@@ -248,6 +258,13 @@ class DatabaseService {
         return false;
       }
     });
+  }
+
+  Future<Extension?> getExtensionByName(String name) async {
+    return await isar.extensions
+        .filter()
+        .metadata((q) => q.nameEqualTo(name))
+        .findFirst();
   }
 
   Future<Extension?> get getExtensionFirst async {

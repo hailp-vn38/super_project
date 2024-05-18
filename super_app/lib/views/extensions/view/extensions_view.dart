@@ -1,5 +1,6 @@
 import 'package:dio_client/index.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -11,6 +12,7 @@ import 'package:super_app/app/types.dart';
 import 'package:super_app/di/components/service_locator.dart';
 import 'package:super_app/models/models.dart';
 import 'package:super_app/services/database_service.dart';
+import 'package:super_app/utils/file_utils.dart';
 import 'package:super_app/widgets/widgets.dart';
 
 import '../cubit/extensions_cubit.dart';
@@ -18,7 +20,9 @@ import '../cubit/extensions_cubit.dart';
 part 'extensions_page.dart';
 part '../widgets/widgets.dart';
 part '../widgets/search.dart';
-
+part '../widgets/my_extension.dart';
+part '../widgets/all_extension.dart';
+part '../widgets/extension_card.dart';
 
 
 class ExtensionsView extends StatelessWidget {

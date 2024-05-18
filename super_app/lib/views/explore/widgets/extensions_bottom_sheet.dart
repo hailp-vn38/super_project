@@ -224,7 +224,7 @@ class ExtensionCard extends StatelessWidget {
                   style: textTheme.labelSmall?.copyWith(fontSize: 8),
                 ),
               )),
-          if (extension.metadata.tag != null)
+          if (extension.metadata.isNsfw)
             Positioned(
                 bottom: 0,
                 left: 0,
@@ -238,7 +238,7 @@ class ExtensionCard extends StatelessWidget {
                         bottomLeft: Radius.circular(8),
                       )),
                   child: Text(
-                    extension.metadata.tag!,
+                    "18+",
                     style: textTheme.labelSmall?.copyWith(fontSize: 8),
                   ),
                 ))

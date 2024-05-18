@@ -5,7 +5,9 @@ import 'package:super_app/app/blocs/cubit/app_cubit.dart';
 import 'package:super_app/app/routes/routes_name.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:super_app/di/components/service_locator.dart';
+import 'package:super_app/services/database_service.dart';
 import 'package:super_app/services/settings_service.dart';
+import 'package:super_app/views/home/home.dart';
 import 'app/routes/routes.dart';
 
 class App extends StatelessWidget {
@@ -16,8 +18,10 @@ class App extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) =>
-              AppCubit(settingService: getIt<SettingService>())..onInit(),
+          create: (context) => AppCubit(
+              settingService: getIt<SettingService>(),
+              databaseService: getIt<DatabaseService>())
+            ..onInit(),
         )
       ],
       child: BlocBuilder<AppCubit, AppState>(
